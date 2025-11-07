@@ -1,0 +1,24 @@
+{
+  "name": "traininggov-scraper-executable",
+  "version": "1.0.0",
+  "description": "Standalone executable for scraping training.gov.au units",
+  "main": "run.ts",
+  "bin": {
+    "unit-scraper": "./dist/run.js"
+  },
+  "scripts": {
+    "build": "tsc && pkg dist/run.js --targets node18-macos-x64,node18-win-x64 --output build/unit-scraper",
+    "build:mac": "tsc && pkg dist/run.js --targets node18-macos-x64 --output build/unit-scraper-macos",
+    "build:win": "tsc && pkg dist/run.js --targets node18-win-x64 --output build/unit-scraper-windows.exe",
+    "start": "npx tsx run.ts",
+    "clean": "rm -rf dist build"
+  },
+  "pkg": {
+    "assets": [
+      "node_modules/**/*"
+    ],
+    "scripts": [
+      "dist/**/*.js"
+    ]
+  }
+}

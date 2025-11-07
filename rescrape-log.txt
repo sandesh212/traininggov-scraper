@@ -1,0 +1,731 @@
+
+🔄 Starting Unit Sync...
+
+📖 Reading unit codes from: Units.xlsx
+📊 Output Excel: UnitsData.xlsx
+💾 Data directory: data
+
+🔍 Extracted 49 potential unit codes from Excel
+✅ Found 49 unit codes in input Excel
+   Units: BSBTWK201, HLTAID011, MARA022, MARA024, MARB027, MARB028, MARB029, MARB031, MARB032, MARB060, MARB061, MARC033, MARC034, MARC035, MARC036, MARC037, MARC038, MARC039, MARC040, MARC041, MARC042, MARC043, MARC044, MARC047, MARC048, MARC064, MARF027, MARF028, MARF029, MARF030, MARF060, MARG007, MARH013, MARH017, MARH019, MARH036, MARH037, MARI003, MARI006, MARJ006, MARJ007, MARK007, MARK008, MARK013, MARN008, MARN009, MARN019, MARN020, RIIWHS202E
+
+🔍 Checking for existing units in: data/UnitsData.xlsx
+ℹ️  Could not read existing Excel: ENOENT: no such file or directory, open 'data/UnitsData.xlsx'
+📋 Found 0 units already in output Excel
+
+🌐 Validating and scraping 49 units...
+
+🔍 Checking: BSBTWK201...
+[Fetcher] Requesting: https://training.gov.au/training/details/BSBTWK201/unitdetails
+[Fetcher] Launching browser...
+[Fetcher] Browser launched
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/BSBTWK201/unitdetails (317938 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: HLTAID011...
+[Fetcher] Requesting: https://training.gov.au/training/details/HLTAID011/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/HLTAID011/unitdetails (328229 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARA022...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARA022/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARA022/unitdetails (279867 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARA024...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARA024/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARA024/unitdetails (272404 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARB027...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB027/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB027/unitdetails (282058 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARB028...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB028/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB028/unitdetails (273298 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARB029...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB029/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB029/unitdetails (284903 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARB031...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB031/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB031/unitdetails (277784 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARB032...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB032/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB032/unitdetails (279128 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARB060...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB060/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB060/unitdetails (280935 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARB061...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB061/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB061/unitdetails (266918 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC033...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC033/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC033/unitdetails (282935 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC034...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC034/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC034/unitdetails (278364 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC035...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC035/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC035/unitdetails (281884 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC036...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC036/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC036/unitdetails (277567 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC037...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC037/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC037/unitdetails (279124 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC038...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC038/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC038/unitdetails (281931 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC039...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC039/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC039/unitdetails (286361 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC040...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC040/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC040/unitdetails (278504 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC041...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC041/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC041/unitdetails (280491 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC042...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC042/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC042/unitdetails (276988 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC043...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC043/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC043/unitdetails (277081 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC044...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC044/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC044/unitdetails (288278 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC047...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC047/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC047/unitdetails (273526 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC048...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC048/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC048/unitdetails (272287 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARC064...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC064/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC064/unitdetails (264736 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARF027...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARF027/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARF027/unitdetails (296260 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARF028...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARF028/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARF028/unitdetails (295267 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARF029...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARF029/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARF029/unitdetails (301311 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARF030...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARF030/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARF030/unitdetails (300647 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARF060...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARF060/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARF060/unitdetails (291961 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARG007...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARG007/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARG007/unitdetails (273778 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARH013...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARH013/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARH013/unitdetails (284944 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARH017...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARH017/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARH017/unitdetails (285828 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARH019...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARH019/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARH019/unitdetails (267683 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARH036...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARH036/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARH036/unitdetails (272074 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARH037...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARH037/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARH037/unitdetails (278790 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARI003...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARI003/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARI003/unitdetails (288999 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARI006...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARI006/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARI006/unitdetails (272906 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARJ006...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARJ006/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARJ006/unitdetails (281297 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARJ007...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARJ007/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARJ007/unitdetails (287156 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARK007...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARK007/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARK007/unitdetails (290558 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARK008...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARK008/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARK008/unitdetails (283423 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARK013...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARK013/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARK013/unitdetails (270009 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARN008...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARN008/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARN008/unitdetails (292980 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARN009...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARN009/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARN009/unitdetails (296530 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARN019...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARN019/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARN019/unitdetails (273896 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: MARN020...
+[Fetcher] Requesting: https://training.gov.au/training/details/MARN020/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARN020/unitdetails (263497 bytes rendered)
+   ✅ Valid unit found
+🔍 Checking: RIIWHS202E...
+[Fetcher] Requesting: https://training.gov.au/training/details/RIIWHS202E/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/RIIWHS202E/unitdetails (298984 bytes rendered)
+   ✅ Valid unit found
+[Fetcher] Closing browser...
+
+📊 Validation Summary:
+   ✅ Valid units: 49
+   ❌ Invalid units: 0
+   ⚠️  Error units: 0
+
+
+🌐 Scraping 49 valid units...
+
+[Fetcher] Requesting: https://training.gov.au/training/details/BSBTWK201/unitdetails
+[Fetcher] Launching browser...
+[Fetcher] Browser launched
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/BSBTWK201/unitdetails (317933 bytes rendered)
+
+✅ Scraped: BSBTWK201 - Work effectively with others
+   Release: Release 1
+   Elements: 0
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/HLTAID011/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/HLTAID011/unitdetails (328230 bytes rendered)
+
+✅ Scraped: HLTAID011 - Provide First Aid
+   Release: Release 1
+   Elements: 0
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARA022/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARA022/unitdetails (279866 bytes rendered)
+
+✅ Scraped: MARA022 - Manage loading, discharging and stowing of cargo
+   Release: Release 2
+   Elements: 6
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARA024/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARA024/unitdetails (272429 bytes rendered)
+
+✅ Scraped: MARA024 - Manage vessel stability
+   Release: Release 2
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB027/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB027/unitdetails (282012 bytes rendered)
+
+✅ Scraped: MARB027 - Perform basic servicing and maintenance of main propulsion unit and auxiliary systems
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB028/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB028/unitdetails (273297 bytes rendered)
+
+✅ Scraped: MARB028 - Service marine internal combustion engines and propulsion and auxiliary systems
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB029/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB029/unitdetails (284902 bytes rendered)
+
+✅ Scraped: MARB029 - Perform routine maintenance on a vessel up to 24 metres
+   Release: Release 2
+   Elements: 8
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB031/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB031/unitdetails (277782 bytes rendered)
+
+✅ Scraped: MARB031 - Maintain marine internal combustion engines, propulsion plant and auxiliary systems
+   Release: Release 2
+   Elements: 5
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB032/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB032/unitdetails (279128 bytes rendered)
+
+✅ Scraped: MARB032 - Undertake basic maintenance of electrical systems
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB060/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB060/unitdetails (280911 bytes rendered)
+
+✅ Scraped: MARB060 - Slip or dock a vessel and maintain hull on a vessel up to 100 metres
+   Release: Release 1
+   Elements: 6
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARB061/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARB061/unitdetails (266919 bytes rendered)
+
+✅ Scraped: MARB061 - Plan and supervise routine maintenance on a vessel up to 100 metres
+   Release: Release 1
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC033/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC033/unitdetails (282907 bytes rendered)
+
+✅ Scraped: MARC033 - Complete engine room tasks
+   Release: Release 2
+   Elements: 6
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC034/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC034/unitdetails (278393 bytes rendered)
+
+✅ Scraped: MARC034 - Maintain hull out of water
+   Release: Release 2
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC035/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC035/unitdetails (281855 bytes rendered)
+
+✅ Scraped: MARC035 - Operate and maintain extra low and low voltage electrical systems and equipment
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC036/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC036/unitdetails (277567 bytes rendered)
+
+✅ Scraped: MARC036 - Operate deck machinery
+   Release: Release 2
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC037/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC037/unitdetails (279124 bytes rendered)
+
+✅ Scraped: MARC037 - Operate inboard and outboard motors
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC038/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC038/unitdetails (281930 bytes rendered)
+
+✅ Scraped: MARC038 - Operate main propulsion unit and auxiliary systems
+   Release: Release 2
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC039/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC039/unitdetails (286361 bytes rendered)
+
+✅ Scraped: MARC039 - Operate marine internal combustion engines, and propulsion and auxiliary systems
+   Release: Release 2
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC040/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC040/unitdetails (278505 bytes rendered)
+
+✅ Scraped: MARC040 - Manage fuel systems
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC041/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC041/unitdetails (280490 bytes rendered)
+
+✅ Scraped: MARC041 - Operate and monitor marine internal combustion engines, propulsion plant and auxiliary systems
+   Release: Release 2
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC042/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC042/unitdetails (277017 bytes rendered)
+
+✅ Scraped: MARC042 - Operate electrical systems
+   Release: Release 2
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC043/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC043/unitdetails (277079 bytes rendered)
+
+✅ Scraped: MARC043 - Transmit and receive information by marine radio
+   Release: Release 2
+   Elements: 5
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC044/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC044/unitdetails (288218 bytes rendered)
+
+✅ Scraped: MARC044 - Transmit and receive information by marine VHF radio
+   Release: Release 2
+   Elements: 5
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC047/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC047/unitdetails (273526 bytes rendered)
+
+✅ Scraped: MARC047 - Manage a propulsion unit using appropriate engine systems and support services
+   Release: Release 2
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC048/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC048/unitdetails (272288 bytes rendered)
+
+✅ Scraped: MARC048 - Monitor and manage vessel operations
+   Release: Release 2
+   Elements: 5
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARC064/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARC064/unitdetails (264737 bytes rendered)
+
+✅ Scraped: MARC064 - Operate deck machinery and steering gear on a vessel up to 100 metres
+   Release: Release 1
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARF027/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARF027/unitdetails (296262 bytes rendered)
+
+✅ Scraped: MARF027 - Apply basic survival skills in the event of vessel abandonment
+   Release: Release 1
+   Elements: 6
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARF028/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARF028/unitdetails (295270 bytes rendered)
+
+✅ Scraped: MARF028 - Follow procedures to minimise and fight fires on board a vessel
+   Release: Release 2
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARF029/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARF029/unitdetails (301308 bytes rendered)
+
+✅ Scraped: MARF029 - Meet work health and safety requirements
+   Release: Release 2
+   Elements: 5
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARF030/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARF030/unitdetails (300582 bytes rendered)
+
+✅ Scraped: MARF030 - Survive at sea using survival craft
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARF060/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARF060/unitdetails (291960 bytes rendered)
+
+✅ Scraped: MARF060 - Apply basic survival skills in the event of vessel abandonment
+   Release: Release 1
+   Elements: 6
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARG007/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARG007/unitdetails (273776 bytes rendered)
+
+✅ Scraped: MARG007 - Manage a small crew
+   Release: Release 2
+   Elements: 6
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARH013/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARH013/unitdetails (284945 bytes rendered)
+
+✅ Scraped: MARH013 - Plan and navigate a passage for a vessel up to 12 metres
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARH017/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARH017/unitdetails (285828 bytes rendered)
+
+✅ Scraped: MARH017 - Use wheelhouse equipment for safe navigation
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARH019/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARH019/unitdetails (267682 bytes rendered)
+
+✅ Scraped: MARH019 - Forecast weather and oceanographic conditions
+   Release: Release 2
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARH036/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARH036/unitdetails (233662 bytes rendered)
+
+✅ Scraped: MARH036 - Manage and maintain a navigational watch on board vessels up to 100 metres
+   Release: Release 1
+   Elements: 0
+   Performance Evidence: ✗
+   Knowledge Evidence: ✗
+[Fetcher] Requesting: https://training.gov.au/training/details/MARH037/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARH037/unitdetails (278767 bytes rendered)
+
+✅ Scraped: MARH037 - Plan and navigate a passage for a vessel up to 100 metres
+   Release: Release 1
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARI003/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARI003/unitdetails (289047 bytes rendered)
+
+✅ Scraped: MARI003 - Comply with regulations to ensure safe operation of a vessel up to 12 metres
+   Release: Release 2
+   Elements: 5
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARI006/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARI006/unitdetails (272907 bytes rendered)
+
+✅ Scraped: MARI006 - Observe regulations to ensure safe operation of a vessel up to 100 metres
+   Release: Release 1
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARJ006/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARJ006/unitdetails (281266 bytes rendered)
+
+✅ Scraped: MARJ006 - Follow environmental work practices
+   Release: Release 2
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARJ007/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARJ007/unitdetails (287155 bytes rendered)
+
+✅ Scraped: MARJ007 - Monitor environmental management on a vessel
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARK007/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARK007/unitdetails (290558 bytes rendered)
+
+✅ Scraped: MARK007 - Handle a vessel up to 12 metres
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARK008/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARK008/unitdetails (283420 bytes rendered)
+
+✅ Scraped: MARK008 - Manoeuvre a vessel up to 24 metres within Near Coastal waters
+   Release: Release 2
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARK013/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARK013/unitdetails (270007 bytes rendered)
+
+✅ Scraped: MARK013 - Manoeuvre a vessel up to 100 metres
+   Release: Release 1
+   Elements: 4
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARN008/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARN008/unitdetails (292980 bytes rendered)
+
+✅ Scraped: MARN008 - Apply seamanship skills aboard a vessel up to 12 metres
+   Release: Release 2
+   Elements: 5
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARN009/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARN009/unitdetails (296530 bytes rendered)
+
+✅ Scraped: MARN009 - Perform seamanship operations on board a vessel up to 24 metres
+   Release: Release 2
+   Elements: 9
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARN019/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARN019/unitdetails (273896 bytes rendered)
+
+✅ Scraped: MARN019 - Command and manage a voyage on a vessel up to 45 metres (Near coastal)
+   Release: Release 1
+   Elements: 6
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/MARN020/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/MARN020/unitdetails (263496 bytes rendered)
+
+✅ Scraped: MARN020 - Manage seaworthiness of a vessel up to 100 metres
+   Release: Release 1
+   Elements: 3
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Requesting: https://training.gov.au/training/details/RIIWHS202E/unitdetails
+[Fetcher] Waiting for content to render...
+[Fetcher] Success: https://training.gov.au/training/details/RIIWHS202E/unitdetails (298983 bytes rendered)
+
+✅ Scraped: RIIWHS202E - Enter and work in confined spaces
+   Release: Release 2
+   Elements: 0
+   Performance Evidence: ✓
+   Knowledge Evidence: ✓
+[Fetcher] Closing browser...
+
+✅ Scraping complete!
+
+📊 Updating Excel file...
+📄 Creating new Excel file
+
+📊 Excel file saved: data/UnitsData.xlsx
+   Previous rows: 0
+   New rows added: 3592
+   Total rows: 3592
+
+✨ Sync complete!
+

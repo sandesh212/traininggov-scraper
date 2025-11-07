@@ -1,0 +1,4 @@
+# Mark large HTML files as generated so GitHub Linguist ignores them in language stats
+
+debug-bsb.html linguist-generated=true
+debug-table.html linguist-generated=true

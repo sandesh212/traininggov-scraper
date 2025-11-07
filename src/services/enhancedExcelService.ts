@@ -335,7 +335,7 @@ export class EnhancedExcelExportService {
       { wch: 70 }  // Performance Evidence
     ];
 
-    // Build an additional summary sheet with horizontal KE/P columns (K1..Kn, P1..Pm)
+  // Build an additional summary sheet with horizontal KE/P columns (K1..Kn, P1..Pm)
     // Only include top-level items (one level down), no multi-level numbering
     const buildEvidenceSummary = (unitsList: Uoc[]) => {
       // Collect KE/PE arrays per unit (level 0 only)
@@ -379,7 +379,7 @@ export class EnhancedExcelExportService {
       return { rows, maxK, maxP };
     };
 
-    const { rows: summaryRows, maxK, maxP } = buildEvidenceSummary(units);
+  const { rows: summaryRows, maxK, maxP } = buildEvidenceSummary(units);
     const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
 
     // Style summary header
@@ -402,10 +402,97 @@ export class EnhancedExcelExportService {
     for (let i = 0; i < maxP; i++) summaryCols.push({ wch: 50 });
     (wsSummary as any)['!cols'] = summaryCols;
 
-    // Create workbook with both sheets
+    // Build a Units (Horizontal Evidence) sheet that mirrors core columns and appends K1..Kn and P1..Pm
+    const buildUnitsHorizontal = (unitsList: Uoc[]) => {
+      const header: any[] = [
+        'Unit Code',
+        'Release',
+        'Unit',
+        'Element',
+        'Criteria/Action',
+        'Performance Criteria',
+      ];
+      for (let i = 1; i <= maxK; i++) header.push(`K${i}`);
+      for (let i = 1; i <= maxP; i++) header.push(`P${i}`);
+
+      const rows: any[][] = [header];
+
+      for (const unit of unitsList) {
+        const ke = unit.knowledgeEvidence
+          ? this.parseNestedList(unit.knowledgeEvidence).filter(i => i.level === 0).map(i => i.content)
+          : [] as string[];
+        const pe = unit.performanceEvidence
+          ? this.parseNestedList(unit.performanceEvidence).filter(i => i.level === 0).map(i => i.content)
+          : [] as string[];
+
+        if (unit.elements && unit.elements.length > 0) {
+          for (const element of unit.elements) {
+            for (const pc of element.performanceCriteria) {
+              const pcMatch = pc.match(/^(\d+\.\d+)\s+(.+)$/);
+              const pcNumber = pcMatch ? pcMatch[1] : '';
+              const pcText = pcMatch ? pcMatch[2] : pc;
+
+              const row: any[] = [
+                unit.code,
+                unit.release || '',
+                `${unit.code} ${unit.title}`,
+                element.element,
+                pcNumber,
+                pcText,
+              ];
+              for (let i = 0; i < maxK; i++) row.push(ke[i] || '');
+              for (let i = 0; i < maxP; i++) row.push(pe[i] || '');
+              rows.push(row);
+            }
+          }
+        } else {
+          // No elements/PCs; still add a unit row so KE/PE are visible
+          const row: any[] = [
+            unit.code,
+            unit.release || '',
+            `${unit.code} ${unit.title}`,
+            '', '', ''
+          ];
+          for (let i = 0; i < maxK; i++) row.push(ke[i] || '');
+          for (let i = 0; i < maxP; i++) row.push(pe[i] || '');
+          rows.push(row);
+        }
+      }
+
+      return rows;
+    };
+
+    const unitsHorizontalRows = buildUnitsHorizontal(units);
+    const wsUnitsHoriz = XLSX.utils.aoa_to_sheet(unitsHorizontalRows);
+
+    // Style header
+    if (unitsHorizontalRows[0]) {
+      const headerStyle = this.getCellStyle('header');
+      for (let col = 0; col < unitsHorizontalRows[0].length; col++) {
+        const addr = XLSX.utils.encode_cell({ r: 0, c: col });
+        if (!wsUnitsHoriz[addr]) wsUnitsHoriz[addr] = { t: 's', v: '' } as any;
+        (wsUnitsHoriz[addr] as any).s = headerStyle;
+      }
+    }
+
+    // Column widths
+    const horizCols: any[] = [
+      { wch: 15 }, // Unit Code
+      { wch: 12 }, // Release
+      { wch: 50 }, // Unit
+      { wch: 40 }, // Element
+      { wch: 10 }, // Criteria/Action
+      { wch: 60 }, // Performance Criteria
+    ];
+    for (let i = 0; i < maxK; i++) horizCols.push({ wch: 50 });
+    for (let i = 0; i < maxP; i++) horizCols.push({ wch: 50 });
+    (wsUnitsHoriz as any)['!cols'] = horizCols;
+
+    // Create workbook with three sheets
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Units');
     XLSX.utils.book_append_sheet(wb, wsSummary, 'Evidence (Horizontal)');
+    XLSX.utils.book_append_sheet(wb, wsUnitsHoriz, 'Units (Horizontal)');
 
     // Write file
     XLSX.writeFile(wb, filepath);
@@ -418,6 +505,7 @@ export class EnhancedExcelExportService {
     console.log(`   New rows added: ${newRows}`);
     console.log(`   Total rows (Units sheet): ${allData.length - 1}`); // Subtract header
     console.log(`   Evidence summary columns: K1..K${maxK}, P1..P${maxP}`);
+    console.log(`   Units (Horizontal) rows: ${unitsHorizontalRows.length - 1}`);
   }
 
   async exportFromJsonl(jsonlPath: string, excelFilename?: string, append: boolean = true): Promise<void> {

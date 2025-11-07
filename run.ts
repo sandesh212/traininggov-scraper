@@ -17,7 +17,7 @@
 
 import * as path from "path";
 import { promises as fs } from "fs";
-import { syncUnits } from "./src/autoSync.js";
+import { syncUnits } from "./src/autoSync";
 
 const BANNER = `
 ╔════════════════════════════════════════════════════════════╗

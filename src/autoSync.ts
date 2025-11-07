@@ -262,7 +262,17 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
   const allUnitsToProcess = [...unitsToScrape, ...unitsToRetry];
 
   if (allUnitsToProcess.length === 0) {
-    console.log('\n✅ All units are up to date!\n');
+    console.log('\n✅ All units are up to date!');
+    // Ensure Excel reflects latest layout (including horizontal Evidence sheet)
+    try {
+      console.log('📊 Rebuilding Excel to ensure latest layout...');
+      const excelExporter = new EnhancedExcelExportService(config.dataDir, config.outputExcel);
+      const jsonlPath = path.join(config.dataDir, 'uoc.jsonl');
+      await excelExporter.exportFromJsonl(jsonlPath, config.outputExcel, false);
+    } catch (e) {
+      console.log('⚠️  Could not rebuild Excel:', (e as any)?.message || e);
+    }
+    console.log('');
     return {
       success: true,
       validCount: existingUnits.size,

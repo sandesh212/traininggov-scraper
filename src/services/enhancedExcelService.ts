@@ -335,9 +335,77 @@ export class EnhancedExcelExportService {
       { wch: 70 }  // Performance Evidence
     ];
 
-    // Create workbook
+    // Build an additional summary sheet with horizontal KE/P columns (K1..Kn, P1..Pm)
+    // Only include top-level items (one level down), no multi-level numbering
+    const buildEvidenceSummary = (unitsList: Uoc[]) => {
+      // Collect KE/PE arrays per unit (level 0 only)
+      const perUnit = unitsList.map(u => {
+        const ke = u.knowledgeEvidence
+          ? this.parseNestedList(u.knowledgeEvidence).filter(i => i.level === 0).map(i => i.content)
+          : [] as string[];
+        const pe = u.performanceEvidence
+          ? this.parseNestedList(u.performanceEvidence).filter(i => i.level === 0).map(i => i.content)
+          : [] as string[];
+        return { u, ke, pe };
+      });
+
+      const maxK = perUnit.reduce((m, x) => Math.max(m, x.ke.length), 0);
+      const maxP = perUnit.reduce((m, x) => Math.max(m, x.pe.length), 0);
+
+      const header: any[] = [
+        'Unit Code',
+        'Release',
+        'Unit'
+      ];
+      // K1..Kmax then P1..Pmax
+      for (let i = 1; i <= maxK; i++) header.push(`K${i}`);
+      for (let i = 1; i <= maxP; i++) header.push(`P${i}`);
+
+      const rows: any[][] = [header];
+
+      for (const { u, ke, pe } of perUnit) {
+        const row: any[] = [
+          u.code,
+          u.release || '',
+          `${u.code} ${u.title}`
+        ];
+        // Fill KE cells
+        for (let i = 0; i < maxK; i++) row.push(ke[i] || '');
+        // Fill PE cells
+        for (let i = 0; i < maxP; i++) row.push(pe[i] || '');
+        rows.push(row);
+      }
+
+      return { rows, maxK, maxP };
+    };
+
+    const { rows: summaryRows, maxK, maxP } = buildEvidenceSummary(units);
+    const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
+
+    // Style summary header
+    if (summaryRows[0]) {
+      const headerStyle = this.getCellStyle('header');
+      for (let col = 0; col < summaryRows[0].length; col++) {
+        const addr = XLSX.utils.encode_cell({ r: 0, c: col });
+        if (!wsSummary[addr]) wsSummary[addr] = { t: 's', v: '' } as any;
+        (wsSummary[addr] as any).s = headerStyle;
+      }
+    }
+
+    // Column widths for summary
+    const summaryCols: any[] = [
+      { wch: 15 }, // Unit Code
+      { wch: 12 }, // Release
+      { wch: 50 }, // Unit
+    ];
+    for (let i = 0; i < maxK; i++) summaryCols.push({ wch: 50 });
+    for (let i = 0; i < maxP; i++) summaryCols.push({ wch: 50 });
+    (wsSummary as any)['!cols'] = summaryCols;
+
+    // Create workbook with both sheets
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Units');
+    XLSX.utils.book_append_sheet(wb, wsSummary, 'Evidence (Horizontal)');
 
     // Write file
     XLSX.writeFile(wb, filepath);
@@ -348,7 +416,8 @@ export class EnhancedExcelExportService {
     console.log(`\n📊 Excel file saved: ${filepath}`);
     console.log(`   Previous rows: ${previousRows}`);
     console.log(`   New rows added: ${newRows}`);
-    console.log(`   Total rows: ${allData.length - 1}`); // Subtract header
+    console.log(`   Total rows (Units sheet): ${allData.length - 1}`); // Subtract header
+    console.log(`   Evidence summary columns: K1..K${maxK}, P1..P${maxP}`);
   }
 
   async exportFromJsonl(jsonlPath: string, excelFilename?: string, append: boolean = true): Promise<void> {

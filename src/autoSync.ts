@@ -403,8 +403,17 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
   const jsonlPath = path.join(config.dataDir, 'uoc.jsonl');
   
   const content = await fs.readFile(jsonlPath, 'utf-8');
-  const lines = content.trim().split('\n').filter(Boolean);
-  const allUnits: Uoc[] = lines.map(line => JSON.parse(line));
+  const lines = content.trim().split('\n').filter(line => line.trim().length > 0);
+  const allUnits: Uoc[] = [];
+  
+  for (const line of lines) {
+    try {
+      const unit = JSON.parse(line);
+      allUnits.push(unit);
+    } catch (error: any) {
+      console.warn(`⚠️  Skipping invalid JSON line: ${line.substring(0, 50)}...`);
+    }
+  }
   
   const newlyScrapedUnits = allUnits.filter(u => validUnits.includes(u.code));
   

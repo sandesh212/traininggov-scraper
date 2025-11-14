@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { Uoc, UocElement } from "../models/uoc.js";
+import { Uoc, UocElement, UocSection } from "../models/uoc.js";
 
 export type SimpleUoc = {
   code: string;
@@ -67,6 +67,18 @@ function extractCodeAndTitle($: cheerio.CheerioAPI): { code: string; title: stri
 
   // Fallback: check h1
   const h1 = $("h1").first().text().trim();
+
+  // Handle pages that use the text "Unit of Competency: CODE" in h1
+  const uocMatch = /Unit of Competency:\s*([A-Z]{2,}\w*\d{2,})/i.exec(h1);
+  if (uocMatch) {
+    const code = uocMatch[1];
+    // Try to read a title from an H2 like "Title: ..."
+    const h2 = $("h2").first().text().trim();
+    const titleMatch = h2.match(/Title:\s*(.+)$/i);
+    const title = titleMatch ? titleMatch[1].trim() : "";
+    return { code, title };
+  }
+
   const match = /^([A-Z]{2,}\w*\d{2,})\s*[-–—]?\s*(.+)$/.exec(h1);
   if (match) return { code: match[1], title: match[2] };
 
@@ -525,6 +537,16 @@ export function parseUocHtml(html: string, url: string): Uoc {
   const $ = cheerio.load(html);
 
   const { code, title } = extractCodeAndTitle($);
+  // Extract a short description if present (paragraph with 'Description:')
+  let description: string | undefined;
+  $("p").each((_: number, p: any) => {
+    const t = $(p).text().trim();
+    const m = t.match(/^\s*Description:\s*(.+)$/i);
+    if (m) {
+      description = m[1].trim();
+      return false; // break
+    }
+  });
   const { status, release } = extractStatus($);
 
   const applicationRaw = readDlByLabel($, "Application") ?? extractTextFromSection($, "Application");
@@ -555,10 +577,41 @@ export function parseUocHtml(html: string, url: string): Uoc {
 
   const { supersededBy, supersedes } = extractSupersession($);
 
+  // Generic hierarchical section extraction (captures order & raw content)
+  const sections: UocSection[] = [];
+  $("h2, h3, h4").each((_: number, el: any) => {
+    const $h = $(el);
+    const headingText = $h.text().trim();
+    if (!headingText) return;
+    const tag = $h.get(0).tagName.toLowerCase();
+    const level = tag === 'h2' ? 2 : tag === 'h3' ? 3 : 4;
+    const paragraphs: string[] = [];
+    const lists: string[][] = [];
+    let cur = $h.next();
+    while (cur.length && !cur.is('h2, h3, h4')) {
+      if (cur.is('p')) {
+        const t = cur.text().trim();
+        if (t) paragraphs.push(t);
+      } else if (cur.is('ul, ol')) {
+        const items = cur.find('> li').map((i: number, li: any) => {
+          const $li = $(li);
+          // Remove nested lists for text capture
+          const cloned = $li.clone();
+          cloned.children('ul, ol').remove();
+          return cloned.text().trim();
+        }).get().filter(Boolean);
+        if (items.length) lists.push(items);
+      }
+      cur = cur.next();
+    }
+    sections.push({ heading: headingText, level, paragraphs, lists });
+  });
+
   const uoc: Uoc = {
     url,
     code,
     title,
+    description,
     status,
     release,
     application,
@@ -572,6 +625,7 @@ export function parseUocHtml(html: string, url: string): Uoc {
     knowledgeEvidence,
     supersededBy: supersededBy ?? null,
     supersedes: supersedes ?? null,
+    sections: sections.length ? sections : undefined,
     lastFetchedAt: new Date().toISOString()
   };
 

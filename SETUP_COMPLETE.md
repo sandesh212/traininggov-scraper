@@ -1,6 +1,6 @@
 # ✅ Setup Complete - Summary
 
-## 🎉 Program Successfully Running!
+## 🎉 Program Successfully Running
 
 Your training.gov.au scraper is now fully operational with all automatic features enabled!
 
@@ -9,6 +9,7 @@ Your training.gov.au scraper is now fully operational with all automatic feature
 **Scraped Units:** 128 out of 129
 **Location:** `data/` folder (auto-created)
 **Files Generated:**
+
 - ✅ `data/uoc.jsonl` - 735KB (128 units, no duplicates)
 - ✅ `data/UnitsData.xlsx` - 5.0MB (formatted, color-coded)
 - ✅ `data/error-log.json` - Error tracking (1 timeout)
@@ -16,41 +17,47 @@ Your training.gov.au scraper is now fully operational with all automatic feature
 ## 🚀 Automatic Features Implemented
 
 ### 1. **Auto-Dependency Installation** ✅
+
 - **Mac/Linux**: `START.sh` automatically runs `npm install` if `node_modules` doesn't exist
 - **Windows**: `START.bat` automatically runs `npm install` if `node_modules` doesn't exist
 - **First run**: Takes 1-2 minutes to install dependencies
 - **Subsequent runs**: Instant start
 
 ### 2. **Auto-Folder Creation** ✅
+
 - **`data/` folder**: Created automatically on first run
 - **Works everywhere**: Mac, Windows, Linux
 - **Zero manual setup**: Program creates everything it needs
 
 ### 3. **Auto-File Creation** ✅
+
 - **`uoc.jsonl`**: Created automatically when first unit is scraped
 - **`UnitsData.xlsx`**: Created automatically on export
 - **`error-log.json`**: Created automatically if errors occur
 
 ### 4. **Smart Validation** ✅
+
 - **Extracted**: 129 codes from Units.xlsx
 - **Filtered**: SCUBA, HACCP (invalid codes blocked)
 - **Validated**: All codes match training.gov.au format
 - **Missing codes found**: RIIWHS202E, ACMWHS401, BSBLDR301 (now included)
 
 ### 5. **Performance Optimizations** ✅
+
 - **Concurrent validation**: 5 units at once
 - **Concurrent scraping**: 3 units at once
 - **Reduced delays**: 1 second (was 3 seconds)
 - **Speed improvement**: 3-4x faster overall
 
 ### 6. **No Duplicates** ✅
+
 - **JSONL**: Old entries removed before adding new data
 - **Excel**: Existing units replaced with fresh data
 - **Result**: Always latest data, zero duplicates
 
 ## 📁 File Structure
 
-```
+```text
 traininggov-scraper/
 ├── Units.xlsx              ← YOUR INPUT (only file you provide)
 ├── START.sh                ← Mac/Linux launcher (auto-installs deps)
@@ -110,11 +117,13 @@ traininggov-scraper/
 ## 📝 Error Handling
 
 **Current Error:**
+
 - `SFIDIV304`: Navigation timeout (30 seconds exceeded)
 - **Will retry**: Program tracks this and retries on next run
 - **Max retries**: 3 attempts with 5-second delay
 
 **To retry failed units:**
+
 ```bash
 # Mac/Linux
 ./START.sh
@@ -128,12 +137,14 @@ Program automatically detects and retries failed units!
 ## 🎯 User Experience
 
 **For Mac/Linux Users:**
+
 1. Place `Units.xlsx` in folder
 2. Double-click `START.sh`
 3. Wait 5-7 minutes
 4. Open `data/UnitsData.xlsx`
 
 **For Windows Users:**
+
 1. Place `Units.xlsx` in folder
 2. Double-click `START.bat`
 3. Wait 5-7 minutes
@@ -144,12 +155,14 @@ Program automatically detects and retries failed units!
 ## 🔧 Technical Details
 
 **Dependencies Auto-Installed:**
+
 - `playwright` - Browser automation
 - `cheerio` - HTML parsing
 - `xlsx` & `xlsx-js-style` - Excel read/write
 - `tsx` - TypeScript execution
 
 **System Requirements:**
+
 - Node.js v18+ (user installs once)
 - Internet connection
 - ~500MB disk space (for browser + dependencies)

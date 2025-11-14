@@ -1,0 +1,32 @@
+# Exclusions per distribution requirements
+# Do NOT upload data outputs or scraped artifacts
+/data/
+
+# Exclude test sources and test helper scripts
+/tests/
+/test-auto.sh
+/test-quick.sh
+/test-excel-gen.js
+
+# Large template workbook not to be uploaded
+/UnitsOfCompetency.xlsx
+
+# Node modules and build output (standard)
+/node_modules/
+/dist/
+
+# OS / editor noise
+.DS_Store
+.vscode/
+
+# Logs & temp
+*.log
+rescrape-log.txt
+sync-log.txt
+error-log.json
+
+# Temporary Excel lock files
+~$*.xlsx
+
+# Keep Units.xlsx (input) – do NOT ignore
+# Units.xlsx

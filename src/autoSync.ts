@@ -12,7 +12,7 @@ import XLSX from 'xlsx';
 import { Crawler } from "./crawler.js";
 import { Fetcher } from "./fetcher.js";
 import { ExportService } from "./services/exportService.js";
-import { EnhancedExcelExportService } from "./services/enhancedExcelService.js";
+import { MaritimeExcelService } from "./services/maritimeExcelService.js";
 import { parseUocHtml } from "./parsers/uocParser.js";
 import { promises as fs } from "fs";
 import * as path from "path";
@@ -263,12 +263,11 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
 
   if (allUnitsToProcess.length === 0) {
     console.log('\n✅ All units are up to date!');
-    // Ensure Excel reflects latest layout (including horizontal Evidence sheet)
+    // Ensure Excel reflects latest layout (maritime multi-sheet format)
     try {
-      console.log('📊 Rebuilding Excel to ensure latest layout...');
-      const excelExporter = new EnhancedExcelExportService(config.dataDir, config.outputExcel);
-      const jsonlPath = path.join(config.dataDir, 'uoc.jsonl');
-      await excelExporter.exportFromJsonl(jsonlPath, config.outputExcel, false);
+      console.log('📊 Rebuilding Excel with maritime format...');
+      const excelExporter = new MaritimeExcelService(config.dataDir, config.outputExcel);
+      await excelExporter.generateExcel(config.outputExcel);
     } catch (e) {
       console.log('⚠️  Could not rebuild Excel:', (e as any)?.message || e);
     }
@@ -385,7 +384,7 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
   );
 
   const crawler = new Crawler(fetcher, exporter, {
-    concurrency: 3,  // Increased from 1 - scrape 3 units at once!
+    concurrency: 2,  // Reduced to 2 to prevent "frame detached" errors
     onItem: (item) => {
       const elemCount = item.elements?.length || 0;
       const pcCount = item.elements?.reduce((s, e) => s + e.performanceCriteria.length, 0) || 0;
@@ -397,18 +396,13 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
   await crawler.crawlUocUrls(urls);
   console.log('\n✅ Scraping complete!\n');
 
-  // Export to Excel
-  console.log('📊 Updating Excel file...');
-  const excelExporter = new EnhancedExcelExportService(config.dataDir, config.outputExcel);
+  // Export to Excel with maritime multi-sheet format
+  console.log('📊 Updating Excel file with maritime format...');
+  const excelExporter = new MaritimeExcelService(config.dataDir, config.outputExcel);
   const jsonlPath = path.join(config.dataDir, 'uoc.jsonl');
   
-  const content = await fs.readFile(jsonlPath, 'utf-8');
-  const lines = content.trim().split('\n').filter(Boolean);
-  const allUnits: Uoc[] = lines.map(line => JSON.parse(line));
-  
-  const newlyScrapedUnits = allUnits.filter(u => validUnits.includes(u.code));
-  
-  await excelExporter.exportToExcel(newlyScrapedUnits, config.outputExcel, true);
+  // Generate Excel file with maritime multi-sheet format
+  await excelExporter.generateExcel(config.outputExcel);
   
   return {
     success: errorUnits.size === 0,

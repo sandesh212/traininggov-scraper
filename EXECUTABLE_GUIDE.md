@@ -2,108 +2,106 @@
 
 ## Quick Start (One-Click)
 
-### For Mac/Linux Users:
-1. Double-click `START.sh` 
-   - OR open Terminal and run: `./START.sh`
+### For Mac/Linux Users
 
-### For Windows Users:
+1. Double-click `START.sh`
+
+### For Windows Users
+
 1. Double-click `START.bat`
 
-That's it! The program will automatically:
-- ✅ Find and read `Units.xlsx`
-- ✅ Extract unit codes from all sheets
-- ✅ Skip already-scraped units
-- ✅ Retry failed units (up to 3 times)
-- ✅ Skip invalid units (404s)
-- ✅ Generate formatted Excel output
-- ✅ Save error log for next run
+### What happens on start
+
+- ✅ Finds and reads `Units.xlsx`
+- ✅ Extracts unit codes from all sheets
+- ✅ Retries failed units (up to 3 times)
+- ✅ Skips invalid units (404s)
+- ✅ Generates formatted Excel output
+- ✅ Saves error log for next run
 
 ---
 
-## Prerequisites
+## First-Time Setup
 
-### First-Time Setup:
+1. Install Node.js (if not already installed)
+    - Mac: Download from <https://nodejs.org/>
+    - Windows: Download from <https://nodejs.org/>
+    - Verify: Open terminal/cmd and run `node --version`
 
-1. **Install Node.js** (if not already installed)
-   - Mac: Download from https://nodejs.org/
-   - Windows: Download from https://nodejs.org/
-   - Verify: Open terminal/cmd and run `node --version`
+2. Install dependencies (one-time only)
 
-2. **Install Dependencies** (one-time only)
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
-3. **Create Units.xlsx**
-   - Create an Excel file named `Units.xlsx` in the same folder
-   - Add unit codes in any column (e.g., BSBTWK201, MARA022, etc.)
-   - Can have multiple sheets - all will be scanned
+3. Create Units.xlsx
+
+    - Create an Excel file named `Units.xlsx` in the same folder
+    - Can have multiple sheets — all will be scanned
+
+---
+
+## Output Files
+
+1. `data/UnitsData.xlsx` — Main output
+2. `data/uoc.jsonl` — Raw JSON data (complete structured data)
+3. `data/error-log.json` — Errors and retry tracking
 
 ---
 
 ## How It Works
 
-### Input Format (`Units.xlsx`):
-```
-Can be any Excel file with unit codes in ANY column or sheet:
+### Input Format (Units.xlsx)
+
+Can be any Excel file with unit codes in ANY column or sheet, for example:
 
 | Unit Code  | Description        |
 |------------|--------------------|
-| BSBTWK201  | Work effectively   |
 | MARA022    | Manage cargo       |
 | HLTAID011  | First aid          |
-```
 
 The program automatically finds and extracts codes like:
+
 - `BSBTWK201`
-- `MARA022`  
+- `MARA022`
 - `HLTAID011`
 - Any code matching pattern: 2+ letters + 3+ numbers
 
-### Output Files:
-
 After running, you'll get:
 
-1. **`data/UnitsData.xlsx`** - Main output
-   - Color-coded with visual hierarchy
-   - Elements and Performance Criteria
-   - Knowledge Evidence  
-   - Performance Evidence
-   - Proper numbering and formatting
-
-2. **`data/uoc.jsonl`** - Raw JSON data
-   - One unit per line
-   - Complete structured data
-
-3. **`data/error-log.json`** - Error tracking
-   - Invalid units (permanently skipped)
-   - Failed units (will retry next run)
-   - Attempt count for each failed unit
+1. `data/UnitsData.xlsx` — Main output
+    - Color-coded with visual hierarchy
+    - Elements and Performance Criteria
+    - Knowledge Evidence
+    - Performance Evidence
 
 ---
 
 ## Features
 
-### ✅ **Smart Retry Logic**
-- **Invalid units (404)**: Permanently skipped
-- **Network errors**: Retried up to 3 times
-- **Progress tracking**: Remembers what failed
-- **Automatic resume**: Next run continues where it left off
+### ✅ Smart Retry Logic
 
-### ✅ **Incremental Updates**
+- Invalid units (404): Permanently skipped
+- Failed units: Will retry next run
+- Attempt count tracked per failed unit
+
+### ✅ Incremental Updates
+
 - Only scrapes NEW units
 - Skips units already in output Excel
 - Appends to existing data
 
-### ✅ **Comprehensive Data**
+### ✅ Comprehensive Data
+
 - Elements and Performance Criteria
 - Knowledge Evidence (with nested lists)
-- Performance Evidence (with nested lists)  
+- Performance Evidence (with nested lists)
 - Assessment Conditions
 - Foundation Skills
 - Unit status, release info, etc.
 
-### ✅ **Visual Excel Formatting**
+### ✅ Visual Excel Formatting
+
 - Color-coded sections
 - Hierarchical indentation
 - Proper borders and styling
@@ -113,12 +111,15 @@ After running, you'll get:
 
 ## Usage Examples
 
-### Example 1: First Run
+### Example 1 — First Run
+
 ```bash
 ./START.sh
 ```
+
 Output:
-```
+
+```text
 ✅ Found 50 unit codes
 🆕 All 50 units will be scraped
 ✅ Successfully scraped: 48 units
@@ -126,12 +127,15 @@ Output:
 ⚠️  Failed: 1 unit (TIMEOUT001 - will retry)
 ```
 
-### Example 2: Retry Run
+### Example 2 — Retry Run
+
 ```bash
 ./START.sh
 ```
+
 Output:
-```
+
+```text
 ✅ Found 50 unit codes
 ✓  48 units already exist
 ⏭️ 1 unit skipped (known invalid)
@@ -139,7 +143,8 @@ Output:
 ✅ Successfully scraped: 1 unit
 ```
 
-### Example 3: Add New Units
+### Example 3 — Add New Units
+
 1. Add new codes to `Units.xlsx`
 2. Run `./START.sh`
 3. Only new units are scraped
@@ -149,23 +154,30 @@ Output:
 
 ## Troubleshooting
 
-### Problem: "Units.xlsx not found"
-**Solution**: Create `Units.xlsx` in the same folder as START.sh/START.bat
+### Problem: Units.xlsx not found
 
-### Problem: "Command not found: npx"
-**Solution**: Install Node.js from https://nodejs.org/
+Solution: Create `Units.xlsx` in the same folder as `START.sh`/`START.bat`.
 
-### Problem: "Cannot find module"
-**Solution**: Run `npm install` in the project folder
+### Problem: Command not found: npx
+
+Solution: Install Node.js from <https://nodejs.org/>.
+
+### Problem: Cannot find module
+
+Solution: Run `npm install` in the project folder.
 
 ### Problem: Units keep failing with network errors
-**Solution**: 
+
+Solution:
+
 - Check internet connection
-- Run again - failed units will retry automatically
+- Run again — failed units will retry automatically
 - Maximum 3 retry attempts per unit
 
 ### Problem: Permission denied on Mac
-**Solution**: 
+
+Solution:
+
 ```bash
 chmod +x START.sh
 ./START.sh
@@ -175,10 +187,10 @@ chmod +x START.sh
 
 ## File Structure
 
-```
+```text
 traininggov-scraper/
 ├── START.sh          # Mac/Linux startup script
-├── START.bat         # Windows startup script  
+├── START.bat         # Windows startup script
 ├── Units.xlsx        # INPUT: Your unit codes (CREATE THIS)
 ├── data/
 │   ├── UnitsData.xlsx      # OUTPUT: Formatted Excel
@@ -199,11 +211,11 @@ Edit the script or create a custom config:
 
 ```typescript
 const config = {
-  inputExcel: 'MyUnits.xlsx',      // Your input file
-  outputExcel: 'MyOutput.xlsx',    // Your output file
-  dataDir: 'output',               // Output directory
-  maxRetries: 5,                   // Max retry attempts
-  retryDelay: 2000                 // Delay between retries (ms)
+   inputExcel: 'MyUnits.xlsx',      // Your input file
+   outputExcel: 'MyOutput.xlsx',    // Your output file
+   dataDir: 'output',               // Output directory
+   maxRetries: 5,                   // Max retry attempts
+   retryDelay: 2000                 // Delay between retries (ms)
 };
 ```
 
@@ -220,39 +232,40 @@ npx tsx src/autoSync.ts
 
 ## Error Log Format
 
-`data/error-log.json`:
+`data/error-log.json` example:
+
 ```json
 {
-  "timestamp": "2025-11-07T10:30:00.000Z",
-  "invalidUnits": [
-    {
-      "code": "INVALID001",
-      "reason": "Unit does not exist (404)"
-    }
-  ],
-  "failedUnits": [
-    {
-      "code": "TIMEOUT001",
-      "error": "Network timeout",
-      "attempts": 2
-    }
-  ]
+   "timestamp": "2025-11-07T10:30:00.000Z",
+   "invalidUnits": [
+      {
+         "code": "INVALID001",
+         "reason": "Unit does not exist (404)"
+      }
+   ],
+   "failedUnits": [
+      {
+         "code": "TIMEOUT001",
+         "error": "Network timeout",
+         "attempts": 2
+      }
+   ]
 }
 ```
 
-- **invalidUnits**: Permanently skipped (404 errors)
-- **failedUnits**: Will retry next run (network errors)
-- **attempts**: Current retry count (max 3)
+- invalidUnits: Permanently skipped (404 errors)
+- failedUnits: Will retry next run (network errors)
+- attempts: Current retry count (max 3)
 
 ---
 
 ## Tips
 
-1. **Run regularly**: Failed units will automatically retry
-2. **Check error log**: See which units failed and why
-3. **Multiple sheets OK**: Put units in any sheet, any column
-4. **Mixed codes OK**: BSB, MAR, HLT, RII all supported
-5. **Incremental**: Add new units anytime, only new ones scraped
+1. Run regularly: Failed units will automatically retry
+2. Check error log: See which units failed and why
+3. Multiple sheets OK: Put units in any sheet, any column
+4. Mixed codes OK: BSB, MAR, HLT, RII all supported
+5. Incremental: Add new units anytime, only new ones scraped
 
 ---
 
@@ -272,29 +285,34 @@ If you encounter issues:
 
 For each unit, the program extracts:
 
-✅ **Basic Info**
+### Basic Info
+
 - Unit code and title
 - Status (Current/Superseded)
 - Release number
 - Application and description
 
-✅ **Elements & Performance Criteria**  
+### Elements & Performance Criteria
+
 - All elements
 - All performance criteria with numbers
 - Properly structured and formatted
 
-✅ **Evidence Requirements**
+### Evidence Requirements
+
 - Performance Evidence (with nested lists)
-- Knowledge Evidence (with nested lists)  
+- Knowledge Evidence (with nested lists)
 - Assessment Conditions
 
-✅ **Additional Info**
+### Additional Info
+
 - Foundation Skills
 - Prerequisites
 - Licensing/Regulatory Information
 - Supersession information
 
-✅ **Visual Formatting**
+### Visual Formatting
+
 - Color-coded sections
 - Hierarchical indentation (Level 0, 1, 2)
 - Proper borders and styling
@@ -310,7 +328,8 @@ Internal use only.
 
 ## Version
 
-**v2.0** - Executable Edition with Auto-Retry
+v2.0 — Executable Edition with Auto-Retry
+
 - One-click execution
 - Automatic retry logic
 - Smart error handling

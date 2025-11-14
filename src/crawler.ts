@@ -3,10 +3,12 @@ import { parseUocHtml } from "./parsers/uocParser.js";
 import { ExportService } from "./services/exportService.js";
 import { sleep } from "./utils/requestUtils.js";
 import { Uoc } from "./models/uoc.js";
+import { logger, classifyError } from './utils/logger.js';
 
 export type CrawlerOptions = {
   concurrency?: number;
   onItem?: (item: Uoc) => void | Promise<void>;
+  forceRefresh?: boolean; // re-fetch even if cached JSON exists
 };
 
 export class Crawler {
@@ -27,6 +29,9 @@ export class Crawler {
 
     const queue = [...new Set(urls)];
     let idx = 0;
+    let successes = 0;
+    let failures: { url: string; code?: string; message: string }[] = [];
+    const startAll = Date.now();
 
     const worker = async () => {
       while (true) {
@@ -38,9 +43,15 @@ export class Crawler {
           const uoc = parseUocHtml(html, url);
           if (this.onItem) await this.onItem(uoc);
           await this.exporter.writeJsonl(uoc);
-          await sleep(500 + Math.round(Math.random() * 500));
+          successes++;
+          // small jitter to avoid burst
+          await sleep(300 + Math.round(Math.random() * 300));
         } catch (err: any) {
-          console.error(`Failed: ${url}`, err?.message || err);
+          const message = err?.message || String(err);
+            const type = classifyError(err);
+            logger.warn(`Fail ${type} ${url} -> ${message}`);
+            failures.push({ url, message });
+            await this.exporter.logError({ url, errorType: type, message, stack: err?.stack });
         }
       }
     };
@@ -50,5 +61,13 @@ export class Crawler {
 
     // Close browser after all work done
     await this.fetcher.close();
+
+    const totalMs = Date.now() - startAll;
+    const avgMs = successes ? Math.round(totalMs / successes) : 0;
+    logger.info(`Crawl Summary targets=${queue.length} ok=${successes} fail=${failures.length} totalMs=${totalMs} avgMs=${avgMs}`);
+    if (failures.length) {
+      failures.slice(0, 10).forEach(f => logger.info(`Fail URL ${f.url} :: ${f.message}`));
+      if (failures.length > 10) logger.info(`(and ${failures.length - 10} more failures)`);
+    }
   }
 }

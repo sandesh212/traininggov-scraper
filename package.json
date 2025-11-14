@@ -10,7 +10,8 @@
     "dev": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
-    "lint": "echo \"Add ESLint if needed\"",
+    "lint": "npm run lint:md",
+    "lint:md": "markdownlint \"**/*.md\"",
     "test": "vitest"
   },
   "dependencies": {
@@ -21,6 +22,7 @@
     "xlsx-js-style": "^1.2.0"
   },
   "devDependencies": {
+    "markdownlint-cli": "^0.39.0",
     "@types/cheerio": "^0.22.35",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.7.5",

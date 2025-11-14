@@ -1,7 +1,7 @@
 import { Crawler } from "./crawler.js";
 import { Fetcher } from "./fetcher.js";
 import { ExportService } from "./services/exportService.js";
-import { ExcelExportService } from "./services/excelExportService.js";
+import { MaritimeExcelService } from "./services/maritimeExcelService.js";
 import { promises as fs } from "fs";
 
 function parseArgs(): string[] {
@@ -115,8 +115,8 @@ async function main() {
   console.log("\n✅ Done. Check data/uoc.jsonl");
 
   // Export to Excel
-  const excelExporter = new ExcelExportService("data");
-  await excelExporter.exportFromJsonl("data/uoc.jsonl", "UnitsOfCompetency.xlsx");
+  const excelExporter = new MaritimeExcelService("data", "UnitsData.xlsx");
+  await excelExporter.generateExcel();
 }
 
 main().catch((e) => {

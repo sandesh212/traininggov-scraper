@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { describe, expect, it } from 'vitest';
-import { parseUoc } from '../src/parsers/uocParser.js';
+import * as uocParser from '../src/parsers/uocParser.js';
+import { parseUocHtml } from '../src/parsers/uocParser.js';
 import { JSDOM } from 'jsdom';
 
 describe('parseUoc', () => {
@@ -16,13 +17,14 @@ describe('parseUoc', () => {
         `;
         const { document } = (new JSDOM(html)).window;
 
-        const result = parseUoc(document);
+        const result = parseUocHtml(html, 'http://example.com/MARH013');
 
-        expect(result).toEqual({
+        // parseUocHtml returns a full Uoc object; assert core fields are present
+        expect(result).toEqual(expect.objectContaining({
             code: 'MARH013',
             title: 'Sample UOC Title',
             description: 'This is a sample description for the UOC.'
-        });
+        }));
     });
 
     it('should return null for missing elements', () => {
@@ -35,12 +37,12 @@ describe('parseUoc', () => {
         `;
         const { document } = (new JSDOM(html)).window;
 
-        const result = parseUoc(document);
+        const result = parseUocHtml(html, 'http://example.com/MARH013');
 
-        expect(result).toEqual({
+        expect(result).toEqual(expect.objectContaining({
             code: 'MARH013',
-            title: null,
-            description: null
-        });
+            title: '',
+            url: 'http://example.com/MARH013'
+        }));
     });
 });

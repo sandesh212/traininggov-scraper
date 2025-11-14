@@ -4,7 +4,7 @@ This project is a web scraper designed to extract data from the Training.gov.au 
 
 ## Project Structure
 
-```
+```text
 traininggov-scraper
 ├── src
 │   ├── index.ts              # Entry point of the application
@@ -29,15 +29,20 @@ traininggov-scraper
 ## Installation
 
 1. Clone the repository:
-   ```
+
+   ```bash
    git clone https://github.com/yourusername/traininggov-scraper.git
    ```
+
 2. Navigate to the project directory:
-   ```
+
+   ```bash
    cd traininggov-scraper
    ```
+
 3. Install the dependencies:
-   ```
+
+   ```bash
    npm install
    ```
 
@@ -58,6 +63,7 @@ npx tsx src/index.ts \
 ```
 
 This will:
+
 1. Scrape the unit(s) data from training.gov.au
 2. Save the raw data to `data/uoc.jsonl` (one JSON object per line)
 3. Automatically create an Excel file at `data/UnitsOfCompetency.xlsx`
@@ -73,13 +79,16 @@ npx tsx src/exportToExcel.ts data/uoc.jsonl MyOutput.xlsx
 ### Output Formats
 
 #### JSONL Format (`data/uoc.jsonl`)
+
 - Complete structured data for all units
 - One JSON object per line
 - Easy to process programmatically
 - Contains all fields with nested structures preserved
 
 #### Excel Format (`data/UnitsOfCompetency.xlsx`)
+
 The Excel file follows this column structure:
+
 - **Unit**: Unit code and title (e.g., "MARK007 Handle a vessel up to 12 metres")
 - **Element**: Element description
 - **Criteria/Action**: Performance criteria number (e.g., "1.1", "2.3")
@@ -90,11 +99,11 @@ The Excel file follows this column structure:
 - **Performance Evidence**: Performance evidence items
 
 Each unit's data is organized with:
+
 - Performance criteria grouped by element
 - Knowledge evidence as separate rows
 - Performance evidence as separate rows
 - Assessment conditions as separate rows
-
 
 This will initiate the crawling process and start scraping data from the specified UOC pages.
 
@@ -105,7 +114,8 @@ The scraped data can be exported to various formats. The default format is JSON.
 ## Running Tests
 
 To run the unit tests for the UOC parser, use the following command:
-```
+
+```bash
 npm test
 ```
 

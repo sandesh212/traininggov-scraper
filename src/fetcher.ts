@@ -22,11 +22,11 @@ export class Fetcher {
   private backoffMs: number;
 
   constructor(opts?: FetcherOptions) {
-    this.minDelayMs = opts?.minDelayMs ?? 1500;
+    this.minDelayMs = opts?.minDelayMs ?? 2000; // increased from 1500
     this.headless = opts?.headless ?? true;
     this.timeout = opts?.timeout ?? 30000;
     this.maxRetries = opts?.maxRetries ?? 3;
-    this.backoffMs = opts?.backoffMs ?? 750;
+    this.backoffMs = opts?.backoffMs ?? 1000; // increased from 750
   }
 
   private async ensureBrowser(): Promise<Browser> {
@@ -73,6 +73,7 @@ export class Fetcher {
     while (attempt < this.maxRetries) {
       attempt++;
       const page = await browser.newPage();
+      await sleep(200); // small delay after creating page to prevent frame detach
       const start = Date.now();
       try {
         if (attempt > 1) logger.info(`Retry ${attempt}/${this.maxRetries} ${url}`); else logger.debug(`GET ${url}`);
@@ -84,7 +85,7 @@ export class Fetcher {
         await page.waitForSelector("h1", { timeout: 8000 }).catch(() => {
           // continue – some pages may lack h1 but still contain data
         });
-        await sleep(1000); // shorter settle time
+        await sleep(1500); // increased settle time to prevent frame detach
   const html = await page.content();
   const duration = Date.now() - start;
   logger.debug(`OK ${url} ${html.length} bytes in ${duration}ms`);

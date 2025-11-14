@@ -384,7 +384,7 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
   );
 
   const crawler = new Crawler(fetcher, exporter, {
-    concurrency: 3,  // Increased from 1 - scrape 3 units at once!
+    concurrency: 2,  // Reduced to 2 to prevent "frame detached" errors
     onItem: (item) => {
       const elemCount = item.elements?.length || 0;
       const pcCount = item.elements?.reduce((s, e) => s + e.performanceCriteria.length, 0) || 0;

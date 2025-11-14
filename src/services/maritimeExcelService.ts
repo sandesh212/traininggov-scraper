@@ -270,8 +270,8 @@ export class MaritimeExcelService {
       groups.forEach((g, idx) => {
         let parentLine = capitalizeLead(capitalizeSentences(g.parent));
         const text = g.children.length > 0
-          ? `"${parentLine} and:\n${g.children.map(c => `-\t${c}`)}"`.replace(/,/g,'\n')
-          : `"${parentLine}"`;
+          ? `${parentLine} and:\n${g.children.map(c => `-\t${c}`).join('\n')}`
+          : parentLine;
         appendRow([
           fullUnitName,
           'Performance Evidence',
@@ -287,8 +287,8 @@ export class MaritimeExcelService {
       groups.forEach((g, idx) => {
         let parentLine = capitalizeLead(capitalizeSentences(g.parent));
         const text = g.children.length > 0
-          ? `"${parentLine} includes:\n${g.children.map(c => `-\t${c}`)}"`.replace(/,/g,'\n')
-          : `"${parentLine}"`;
+          ? `${parentLine} includes:\n${g.children.map(c => `-\t${c}`).join('\n')}`
+          : parentLine;
         appendRow([
           fullUnitName,
           'Knowledge Evidence',

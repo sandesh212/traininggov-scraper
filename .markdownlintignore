@@ -1,3 +1,5 @@
+# Markdown Lint Ignore
+
 node_modules
 Unit Scraper.app
 .vscode
@@ -5,7 +7,9 @@ Unit Scraper.app
 **/build
 **/coverage
 **/.git
-# Temporarily exclude this guide until cleaned
+
+## Temporarily exclude guides until cleaned
+
 USER_GUIDE.md
 EXECUTABLE_SUMMARY.md
 HOW_TO_RUN.md

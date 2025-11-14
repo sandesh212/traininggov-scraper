@@ -843,8 +843,9 @@ export class MaritimeExcelService {
         const startAddr = XLSX.utils.encode_cell({ r, c: firstAssessmentColIndex });
         const endAddr = XLSX.utils.encode_cell({ r, c: lastAssessmentColIndex });
         if (!ws[mappingAddr]) (ws as any)[mappingAddr] = { t: 'n' };
-        // Equivalent formula: (#assessmentCols) - COUNTBLANK(range)
-        (ws[mappingAddr] as any).f = `${config.assessmentColumns.length}-COUNTBLANK(${startAddr}:${endAddr})`;
+        // Formula: count non-blank assessment cells, but only show if >0 (empty cell when 0)
+        const countFormula = `${config.assessmentColumns.length}-COUNTBLANK(${startAddr}:${endAddr})`;
+        (ws[mappingAddr] as any).f = `IF((${countFormula})>0,${countFormula},"")`;
       }
     }
     

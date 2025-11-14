@@ -1,4 +1,4 @@
-## Performance & Reliability Enhancements
+# Performance & Reliability Enhancements
 
 This document describes the scraping/export pipeline optimizations and tuning options.
 
@@ -9,10 +9,10 @@ This document describes the scraping/export pipeline optimizations and tuning op
 | Concurrency (Crawler) | Parallel fetch of units | `Crawler({ concurrency: N })` |
 | Retry + Backoff | Resilient against transient network/timeouts | `Fetcher({ maxRetries, backoffMs })` |
 | Polite Delay | Avoid server overload / throttling | `Fetcher({ minDelayMs })` |
-| Structured Sections | Preserve full heading/list hierarchy for rich exports | `uoc.sections` field |
+| Structured Sections | Preserve full heading/list hierarchy | `uoc.sections` field |
 | Per-Unit Cache | Fast re-use & debugging | `data/units/<CODE>.json` |
-| Error Classification | Faster triage | Types: NETWORK, TIMEOUT, PARSE, UNKNOWN |
-| Log Levels | Control verbosity | `LOG_LEVEL=error|warn|info|debug` |
+| Error Classification | Faster triage | NETWORK, TIMEOUT, PARSE, UNKNOWN |
+| Log Levels | Control verbosity | error, warn, info, debug |
 
 ### Recommended Settings
 
@@ -24,7 +24,7 @@ This document describes the scraping/export pipeline optimizations and tuning op
 
 ### Environment Variables
 
-```
+```bash
 LOG_LEVEL=info
 ```
 
@@ -32,7 +32,7 @@ Lower to `warn` or `error` to reduce console output; raise to `debug` for detail
 
 ### Error Log Format (`data/error-log.json`)
 
-```
+```json
 {
   "timestamp": "2025-11-14T00:00:00.000Z",
   "errors": [
@@ -68,10 +68,10 @@ Generated to aid advanced mapping. Columns: Unit Code, Heading Level, Heading, P
 
 ### Quick Run
 
-```
-LOG_LEVEL=info node scrape-all-units.js
+```bash
+LOG_LEVEL=info npm run start
 ```
 
 ### Verification
 
-After a full scrape: `wc -l data/uoc.jsonl` should match target count (131). Check error log for persistent failures.
+After a full scrape: `wc -l data/uoc.jsonl` should match target count (129-131). Check error log for persistent failures.

@@ -1,0 +1,11 @@
+node_modules
+Unit Scraper.app
+.vscode
+**/dist
+**/build
+**/coverage
+**/.git
+# Temporarily exclude this guide until cleaned
+USER_GUIDE.md
+EXECUTABLE_SUMMARY.md
+HOW_TO_RUN.md

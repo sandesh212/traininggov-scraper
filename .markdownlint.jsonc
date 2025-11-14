@@ -1,0 +1,28 @@
+// Markdownlint configuration
+{
+  "default": true,
+  // Headings
+  "MD003": { "style": "atx" },
+  "MD004": { "style": "dash" },
+  "MD022": true, // blanks around headings
+  "MD025": true, // single h1
+  "MD026": { "punctuation": ".,;:!" }, // trailing punctuation
+
+  // Lists
+  "MD007": { "indent": 2 },
+  "MD009": true, // no trailing spaces
+  "MD012": true, // no multiple consecutive blank lines
+  "MD013": false, // ignore line length for readability
+  "MD029": { "style": "ordered" }, // allow 1,2,3 numbering
+  "MD032": true, // blanks around lists
+
+  // Code fences
+  "MD040": true, // fenced code language required
+  "MD031": true, // blanks around fences
+
+  // Tables
+  "MD041": true, // first line heading
+
+  // Allow inline HTML when needed
+  "MD033": false
+}

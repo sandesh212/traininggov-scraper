@@ -21,12 +21,11 @@ export class MaritimeExcelService {
 
   // Define sheet configurations - matching the example file structure exactly
   // Note: Assessment column names are RTO-specific and can be customized per organization
-  private readonly SHEET_CONFIGS = [
+  private static readonly SHEET_CONFIGS = [
     {
       name: 'ESS Mapping',
       hasAMPAConditions: true,
       mappingCountLabel: 'Mapping Count',
-      // Filter: Emergency / Survival units (MARF*)
       filterPrefixes: ['MARF'],
       assessmentColumns: [
         'Sea Survival Knowledge',
@@ -34,13 +33,17 @@ export class MaritimeExcelService {
         'Fire Fighting at Sea - Classroom',
         'Sea Survival - Pool -Performance',
         'Fire fighting at Sea - The Lea - Performance '
-      ]
+      ],
+      knowledgeColumns: [
+        'Sea Survival Knowledge',
+        'Fire Fighting at Sea Knowledge'
+      ],
+      showCategories: true
     },
     {
       name: 'Deck Mapping',
       hasAMPAConditions: true,
       mappingCountLabel: 'Mapping Count',
-      // Filter: Deck operations (MARC, MARJ, MARI, MARK, MARN)
       filterPrefixes: ['MARC', 'MARJ', 'MARI', 'MARK', 'MARN'],
       assessmentColumns: [
         'Knowledge Coxswain Deck ',
@@ -50,50 +53,61 @@ export class MaritimeExcelService {
         'Vessel',
         'Classroom',
         'Readiness for assessment'
-      ]
+      ],
+      knowledgeColumns: [
+        'Knowledge Coxswain Deck ',
+        'Seamanship Knowledge ',
+        'Watchkeeping (Open book)',
+        'Watchkeeping (Closed book)'
+      ],
+      showCategories: true
     },
     {
       name: 'Navigation Mapping',
       hasAMPAConditions: true,
       mappingCountLabel: 'Mapping Count',
-      // Filter: Navigation (MARH*)
       filterPrefixes: ['MARH'],
       assessmentColumns: [
         'Symbols, Abbreviation, ENA, and Weather',
         'Passage Plan',
         'Vessel Passage'
-      ]
+      ],
+      knowledgeColumns: [
+        'Symbols, Abbreviation, ENA, and Weather',
+        'Passage Plan'
+      ],
+      showCategories: true
     },
     {
       name: 'Engineering Mapping',
       hasAMPAConditions: true,
       mappingCountLabel: 'Mapping Count',
-      // Filter: Engineering (MARB*)
       filterPrefixes: ['MARB'],
       assessmentColumns: [
         'Engineering',
         'Engineering Vessel',
         'Readiness for Assessment',
         'Work shop '
-      ]
+      ],
+      knowledgeColumns: [ 'Engineering' ],
+      showCategories: true
     },
     {
       name: 'LROCP Mapping',
       hasAMPAConditions: false,
       mappingCountLabel: 'Mapping Count',
-      // Filter: Long Range Operator Certificate of Proficiency (MARO*, MARL*)
       filterPrefixes: ['MARO', 'MARL'],
       assessmentColumns: [
-        'Learners workbook question',
         'Workbook Classroom Activity',
         'Workbook Practical assessment '
-      ]
+      ],
+      knowledgeColumns: [],
+      showCategories: true
     },
     {
       name: 'DMLA',
       hasAMPAConditions: false,
       mappingCountLabel: 'Mapping Count',
-      // Filter: Diploma / Advanced level - remaining MAR units not in other sheets
       filterPrefixes: ['MAR'],
       assessmentColumns: [
         'Stability',
@@ -101,27 +115,18 @@ export class MaritimeExcelService {
         'Machinery Practical',
         'Stability Practical',
         'Ropework'
-      ]
+      ],
+      knowledgeColumns: ['Stability', 'Machinery'],
+      showCategories: true
     },
     {
       name: 'Assessment Conditions',
       hasAMPAConditions: false,
       mappingCountLabel: 'Mapping Count',
       filterPrefixes: ['MAR'],
-      assessmentColumns: []
-    },
-    {
-      name: 'GPH-Not Delivered',
-      hasAMPAConditions: false,
-      mappingCountLabel: 'Mapping count',  // Note: lowercase 'count' in example
-      filterPrefixes: [], // No filter - for manually tracked units
-      assessmentColumns: [
-        'Column1',
-        'Column2',
-        'Column3',
-        'Column4',
-        'Column5'
-      ]
+      assessmentColumns: [],
+      knowledgeColumns: [],
+      showCategories: false
     }
   ];
 
@@ -365,7 +370,7 @@ export class MaritimeExcelService {
    * Row 0: Merged headers for assessment categories
    * Row 1: Actual column names
    */
-  private createHeaders(assessmentColumns: string[], hasAMPAConditions: boolean, mappingCountLabel: string): { row0: any[], row1: any[], merges: any[] } {
+  private createHeaders(assessmentColumns: string[], hasAMPAConditions: boolean, mappingCountLabel: string, knowledgeColumns: string[] = [], showCategories: boolean = true): { row0: any[], row1: any[], merges: any[] } {
     // Color constants for header styling (matched to provided screenshot palette approximations)
     const COLORS = {
       headerBlue: '4472C4',           // Dark blue for primary headers
@@ -380,20 +385,24 @@ export class MaritimeExcelService {
     if (hasAMPAConditions) row0.push('AMPA Conditions');
     row0.push(mappingCountLabel);
 
-    // Determine knowledge vs performance counts
-    const knowledgeCount = assessmentColumns.filter(col => 
-      /knowledge|workbook/i.test(col)
-    ).length;
-    const performanceCount = assessmentColumns.length - knowledgeCount;
+  // Determine knowledge vs performance using explicit config list; fallback to 'knowledge' substring if list empty
+  const explicitKnowledge = new Set(knowledgeColumns);
+  const knowledgeCount = assessmentColumns.filter(col => explicitKnowledge.size ? explicitKnowledge.has(col) : /knowledge/i.test(col)).length;
+  const performanceCount = assessmentColumns.length - knowledgeCount;
 
     // Add category header placeholders (merged horizontally later)
-    if (knowledgeCount > 0) {
-      row0.push('Knowledge Assessment/s');
-      for (let i = 1; i < knowledgeCount; i++) row0.push('');
-    }
-    if (performanceCount > 0) {
-      row0.push('Performance Assessment/s');
-      for (let i = 1; i < performanceCount; i++) row0.push('');
+    if (showCategories) {
+      if (knowledgeCount > 0) {
+        row0.push('Knowledge Assessment/s');
+        for (let i = 1; i < knowledgeCount; i++) row0.push('');
+      }
+      if (performanceCount > 0) {
+        row0.push('Performance Assessment/s');
+        for (let i = 1; i < performanceCount; i++) row0.push('');
+      }
+    } else {
+      // If categories hidden, still append placeholders for assessment columns to keep alignment
+      for (let i = 0; i < assessmentColumns.length; i++) row0.push('');
     }
 
     // Row 1: Actual column names below categories
@@ -423,12 +432,14 @@ export class MaritimeExcelService {
 
     // Horizontal merges for knowledge/performance category headers (row0 only)
     let categoryStart = baseColumnsCount;
-    if (knowledgeCount > 0) {
-      merges.push({ s: { r: 0, c: categoryStart }, e: { r: 0, c: categoryStart + knowledgeCount - 1 } });
-      categoryStart += knowledgeCount;
-    }
-    if (performanceCount > 0) {
-      merges.push({ s: { r: 0, c: categoryStart }, e: { r: 0, c: categoryStart + performanceCount - 1 } });
+    if (showCategories) {
+      if (knowledgeCount > 0) {
+        merges.push({ s: { r: 0, c: categoryStart }, e: { r: 0, c: categoryStart + knowledgeCount - 1 } });
+        categoryStart += knowledgeCount;
+      }
+      if (performanceCount > 0) {
+        merges.push({ s: { r: 0, c: categoryStart }, e: { r: 0, c: categoryStart + performanceCount - 1 } });
+      }
     }
 
     return { row0, row1, merges };
@@ -440,8 +451,8 @@ export class MaritimeExcelService {
   private applyStyles(ws: XLSX.WorkSheet, dataRowCount: number, columnCount: number): void {
     // Header styling constants
     const headerBlue = '4472C4';
-    const categoryKnowledge = 'D0CECE';
-    const categoryPerformance = 'FFD966';
+    const categoryKnowledge = '808080';  // Grey #808080
+    const categoryPerformance = 'FFD966';  // Yellow #FFD966
     const borderBlue = '8EA8DB';
     const assessmentGreen = '00B050';
 
@@ -476,11 +487,18 @@ export class MaritimeExcelService {
       const cellAddr = XLSX.utils.encode_cell({ r: 0, c });
       if (!ws[cellAddr]) continue;
       let fillColor = headerBlue;
+      let fontColor = 'FFFFFF';
       const value = (ws[cellAddr] as any).v;
-      if (value === 'Knowledge Assessment/s') fillColor = categoryKnowledge;
-      if (value === 'Performance Assessment/s') fillColor = categoryPerformance;
+      if (value === 'Knowledge Assessment/s') {
+        fillColor = categoryKnowledge;
+        fontColor = '000000';  // Black text
+      }
+      if (value === 'Performance Assessment/s') {
+        fillColor = categoryPerformance;
+        fontColor = '000000';  // Black text
+      }
       (ws[cellAddr] as any).s = {
-        font: { bold: true, sz: 11, color: { rgb: 'FFFFFF' } },
+        font: { bold: true, sz: 11, color: { rgb: fontColor } },
         fill: { patternType: 'solid', fgColor: { rgb: fillColor } },
         alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
         border: {
@@ -492,13 +510,12 @@ export class MaritimeExcelService {
       };
     }
 
-    // Style row1 (column names) - assessment columns get green font
+    // Style row1 (column names) - all columns get white font
     for (let c = 0; c < columnCount; c++) {
       const cellAddr = XLSX.utils.encode_cell({ r: 1, c });
       if (!ws[cellAddr]) continue;
-      const isAssessment = c >= columnCount - (ws[cellAddr] ? 0 : 0); // fallback heuristic
       (ws[cellAddr] as any).s = {
-        font: { bold: true, sz: 11, color: { rgb: (c >= (4 + 1) ? assessmentGreen : 'FFFFFF') } },
+        font: { bold: true, sz: 11, color: { rgb: 'FFFFFF' } },
         fill: { patternType: 'solid', fgColor: { rgb: headerBlue } },
         alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
         border: {
@@ -675,23 +692,37 @@ export class MaritimeExcelService {
     // Add header
     dataRows.push(['Unit', 'Assessment conditions']);
     
+    // Track where unit conditions end and AMSA section begins
+    const unitsEndRow = 1; // Will update after loop
+    
     // Add each unit with its assessment conditions
     for (const unit of units) {
       if (unit.assessmentConditions) {
+        // Format conditions: add blank line after each sentence ending with period
+        let formattedConditions = unit.assessmentConditions
+          .replace(/\.\s+/g, '.\n\n')  // Add blank line after each sentence
+          .replace(/\n{3,}/g, '\n\n')  // Normalize multiple blank lines to just 2 newlines
+          .trim();
+        
         dataRows.push([
           `${unit.code} ${unit.title}`,
-          unit.assessmentConditions
+          formattedConditions
         ]);
         // Add blank row after each unit (matching template pattern)
         dataRows.push(['', '']);
       }
     }
     
+    const unitsEndIndex = dataRows.length;
+    
     // Add AMSA Mandated Practical Assessment codes (constant footer)
-    dataRows.push(['AMSA Mandated Practical Assessment', 'W= Task mat be complete either in a workshop or on a vessel that meets the requirements of a simulated workplace']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'I= Task is to be completed by each candidate individually']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'G= Task may be completed as a group activity with individual assessment. The group must contain no more than five candidates']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'V= Task must be completed on a vessel that meets the requirements above while operating in navigable waters']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'W= Task mat be complete either in a workshop or on a vessel that meets the requirements specified above']);
     dataRows.push(['AMSA Mandated Practical Assessment', 'P= Task must be completed in water (pool, or other safe water)']);
     dataRows.push(['AMSA Mandated Practical Assessment', 'F= Task must be completed on a fire ground']);
-    dataRows.push(['AMSA Mandated Practical Assessment', 'S= Task may be completed on an approved simulator where realistic conditions are replicated']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'S= Task may be completed on an approved simulator where realistic conditions are not feasible aboard a vessel (such as an absence of traffic or navigation marks']);
     dataRows.push(['AMSA Mandated Practical Assessment', 'O= Tasks may be completed by observation']);
     
     // Create worksheet
@@ -703,14 +734,14 @@ export class MaritimeExcelService {
       { wch: 100 }  // Assessment conditions (very wide)
     ];
     
-    // Style header row
+    // Style header row - same blue as other sheets
     for (let c = 0; c < 2; c++) {
       const cellAddr = XLSX.utils.encode_cell({ r: 0, c });
       if (!ws[cellAddr]) continue;
       
       (ws[cellAddr] as any).s = {
         font: { bold: true, sz: 11 },
-        fill: { patternType: 'solid', fgColor: { rgb: 'D9E1F2' } },
+        fill: { patternType: 'solid', fgColor: { rgb: '4472C4' } },
         alignment: { horizontal: 'center', vertical: 'center' },
         border: {
           top: { style: 'thin', color: { rgb: '000000' } },
@@ -722,19 +753,43 @@ export class MaritimeExcelService {
     }
     
     // Style data rows
+    // Unit conditions section: all rows blue #D9E1F2
+    // Blank separators: black fill
+    // AMSA section: zebra striping white/blue
     for (let r = 1; r < dataRows.length; r++) {
+      const isBlankSeparator = !dataRows[r][0] && !dataRows[r][1];
+      const isAMSASection = r >= unitsEndIndex;
+      
+      // Determine row color
+      let fillColor: string | undefined;
+      if (isBlankSeparator) {
+        fillColor = '000000'; // Black for separators
+      } else if (isAMSASection) {
+        // Zebra striping for AMSA section (alternating white/blue from start of AMSA)
+        const amsaRowIndex = r - unitsEndIndex;
+        fillColor = amsaRowIndex % 2 === 0 ? 'FFFFFF' : 'D9E1F2';
+      } else {
+        // All unit condition rows are blue
+        fillColor = 'D9E1F2';
+      }
+      
       for (let c = 0; c < 2; c++) {
         const cellAddr = XLSX.utils.encode_cell({ r, c });
         if (!ws[cellAddr]) continue;
-        
         (ws[cellAddr] as any).s = {
-          border: {
+          fill: fillColor ? { patternType: 'solid', fgColor: { rgb: fillColor } } : undefined,
+          border: isBlankSeparator ? {
+            top: { style: 'thin', color: { rgb: '000000' } },
+            bottom: { style: 'thin', color: { rgb: '000000' } },
+            left: { style: 'thin', color: { rgb: '000000' } },
+            right: { style: 'thin', color: { rgb: '000000' } }
+          } : {
             top: { style: 'thin', color: { rgb: 'D3D3D3' } },
             bottom: { style: 'thin', color: { rgb: 'D3D3D3' } },
             left: { style: 'thin', color: { rgb: 'D3D3D3' } },
             right: { style: 'thin', color: { rgb: 'D3D3D3' } }
           },
-          alignment: { vertical: 'top', wrapText: true }
+          alignment: c === 0 ? { vertical: 'center', horizontal: 'left', wrapText: true } : { vertical: 'center', horizontal: 'left', wrapText: true }
         };
       }
     }
@@ -754,9 +809,11 @@ export class MaritimeExcelService {
   private createSheet(sheetName: string, config: { hasAMPAConditions: boolean, mappingCountLabel: string, assessmentColumns: string[], filterPrefixes?: string[] }, units: Uoc[], usedUnitCodes: Set<string>): XLSX.WorkSheet {
     // Generate headers
     const { row0, row1, merges } = this.createHeaders(
-      config.assessmentColumns, 
-      config.hasAMPAConditions, 
-      config.mappingCountLabel
+      config.assessmentColumns,
+      config.hasAMPAConditions,
+      config.mappingCountLabel,
+      (config as any).knowledgeColumns || [],
+      (config as any).showCategories !== false
     );
     
     // Generate data rows for all units
@@ -889,7 +946,7 @@ export class MaritimeExcelService {
     const usedUnitCodes = new Set<string>();
 
     // Create each sheet (order matters - more specific filters first)
-    for (const config of this.SHEET_CONFIGS) {
+  for (const config of MaritimeExcelService.SHEET_CONFIGS) {
   logger.debug(`Create sheet ${config.name}`);
       
       // Special handling for Assessment Conditions sheet
@@ -910,15 +967,15 @@ export class MaritimeExcelService {
     await fs.mkdir(this.outputDir, { recursive: true });
     XLSX.writeFile(wb, outputPath);
 
-  logger.info(`Excel written ${outputPath} sheets=${this.SHEET_CONFIGS.length} units=${units.length}`);
+  logger.info(`Excel written ${outputPath} sheets=${MaritimeExcelService.SHEET_CONFIGS.length} units=${units.length}`);
     
     // Count total rows (using first sheet config as reference)
     let totalRows = 0;
     for (const unit of units) {
       const rows = this.generateUnitRows(
         unit, 
-        this.SHEET_CONFIGS[0].hasAMPAConditions, 
-        this.SHEET_CONFIGS[0].assessmentColumns.length
+  MaritimeExcelService.SHEET_CONFIGS[0].hasAMPAConditions,
+  MaritimeExcelService.SHEET_CONFIGS[0].assessmentColumns.length
       );
       totalRows += rows.length;
     }

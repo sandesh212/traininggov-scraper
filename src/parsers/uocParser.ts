@@ -461,12 +461,39 @@ function extractAssessmentConditions($: cheerio.CheerioAPI): string | undefined 
     let current = header.next();
     
     while (current.length && !current.is("h2, h3")) {
-      if (current.is("p")) {
-        const text = current.text().trim();
+      if (current.is("p, div")) {
+        // Get HTML content to preserve structure
+        const html = current.html() || '';
+        
+        // Process the HTML to preserve formatting
+        let text = html
+          // Replace <br> and <br/> with newlines
+          .replace(/<br\s*\/?>/gi, '\n')
+          // Replace closing block tags with newlines
+          .replace(/<\/(p|div|li)>/gi, '\n')
+          // Handle list items - extract and format
+          .replace(/<li[^>]*>(.*?)<\/li>/gi, (_match, content) => {
+            return '\n- ' + content.trim();
+          })
+          // Remove all remaining HTML tags
+          .replace(/<[^>]+>/g, '')
+          // Decode HTML entities
+          .replace(/&nbsp;/g, ' ')
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+          // Clean up excessive whitespace but preserve intentional line breaks
+          .split('\n')
+          .map(line => line.trim())
+          .filter(line => line.length > 0)
+          .join('\n');
+        
         if (text) parts.push(text);
       } else if (current.is("ul, ol")) {
         const items = current.find("li").map((_: number, li: any) => 
-          "• " + $(li).text().trim()
+          "- " + $(li).text().trim()
         ).get();
         if (items.length) parts.push(items.join("\n"));
       }

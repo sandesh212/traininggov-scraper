@@ -349,6 +349,39 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
     return { found: false, actualCode: base };
   };
 
+  // Fallback: Search training.gov.au and pick the first matching unit details link
+  const trySearchFallback = async (queryCode: string): Promise<{ found: boolean; actualCode: string; html?: string }> => {
+    const q = encodeURIComponent(queryCode);
+    const searchUrl = `https://training.gov.au/Search/Training?searchTerm=${q}`;
+    try {
+      const html = await fetcher.get(searchUrl);
+      // Look for links like /training/details/CODE/unitdetails
+      const re = /\/training\/details\/([A-Z0-9]{4,16})\/unitdetails/gi;
+      let match: RegExpExecArray | null;
+      const seen = new Set<string>();
+      while ((match = re.exec(html)) !== null) {
+        const candidate = match[1].toUpperCase();
+        if (seen.has(candidate)) continue;
+        seen.add(candidate);
+        // Basic sanity: must include at least 3 digits
+        if ((candidate.match(/\d/g) || []).length < 3) continue;
+        // Fetch candidate page to verify
+        const url = `https://training.gov.au/training/details/${candidate}/unitdetails`;
+        try {
+          const pageHtml = await fetcher.get(url);
+          if (pageHtml.includes('Unit of competency') || pageHtml.includes('Performance Criteria') || pageHtml.includes('Performance evidence')) {
+            return { found: true, actualCode: candidate, html: pageHtml };
+          }
+        } catch (_) {
+          // try next
+        }
+      }
+    } catch (_) {
+      // ignore search failure
+    }
+    return { found: false, actualCode: queryCode.toUpperCase() };
+  };
+
   // Categorize errors
   const categorizeError = (code: string, error: any): void => {
     const errorMsg = error.message || String(error);
@@ -380,7 +413,13 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
       
       try {
         console.log(`[${idx}/${allUnitsToProcess.length}] 🔍 Checking: ${code}...`);
-        const result = await tryCodeVariations(code);
+        // First try direct and common variations
+        let result = await tryCodeVariations(code);
+        // If still not found, try site search fallback
+        if (!result.found) {
+          const searchResult = await trySearchFallback(code);
+          if (searchResult.found) result = searchResult;
+        }
         
         if (result.found) {
           validUnits.push(result.actualCode);

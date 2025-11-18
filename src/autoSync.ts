@@ -104,8 +104,10 @@ async function readUnitCodesFromExcel(filepath: string, columnName: string): Pro
   const workbook = XLSX.readFile(filepath);
   const unitCodes: string[] = [];
   
-  // Improved pattern: 2-4 letters + alphanumeric (must have digits)
+  // Primary pattern: 2-4 letters + alphanumeric (must have digits)
   const unitCodePattern = /\b([A-Z]{2,4}[A-Z0-9]{3,10})\b/g;
+  // Fallback pattern: allow a space between prefix and the rest (e.g., "ACM WHS401")
+  const spacedPattern = /\b([A-Z]{2,4})\s+([A-Z0-9]{3,10})\b/g;
 
   // Read from all sheets
   for (const sheetName of workbook.SheetNames) {
@@ -117,15 +119,32 @@ async function readUnitCodesFromExcel(filepath: string, columnName: string): Pro
       const columns = columnName ? [(row as any)[columnName]] : Object.values(row as any);
       
       for (const cellValue of columns) {
-        if (cellValue && typeof cellValue === 'string') {
-          const matches = cellValue.matchAll(unitCodePattern);
+        if (!cellValue) continue;
+        if (typeof cellValue === 'string') {
+          const text = cellValue.toUpperCase();
+          // Exact pattern matches
+          const matches = text.matchAll(unitCodePattern);
           for (const match of matches) {
-            const code = match[1];
-            
-            // Apply validation filter
-            if (isValidUnitCode(code)) {
-              unitCodes.push(code);
-            }
+            const code = match[1].toUpperCase().trim();
+            if (isValidUnitCode(code)) unitCodes.push(code);
+          }
+          // Spaced pattern matches -> concatenate groups
+          const spaced = text.matchAll(spacedPattern);
+          for (const m of spaced) {
+            const code = (m[1] + m[2]).toUpperCase().trim();
+            if (isValidUnitCode(code)) unitCodes.push(code);
+          }
+        } else if (typeof cellValue === 'number') {
+          // Ignore pure numbers (unit codes are alphanumeric)
+          continue;
+        } else if (typeof cellValue === 'object') {
+          // Convert to string if possible
+          const s = String(cellValue || '').toUpperCase();
+          if (!s) continue;
+          const matches = s.matchAll(unitCodePattern);
+          for (const match of matches) {
+            const code = match[1].toUpperCase().trim();
+            if (isValidUnitCode(code)) unitCodes.push(code);
           }
         }
       }
@@ -295,21 +314,20 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
 
   const exporter = new ExportService(config.dataDir);
 
-  // Try code variations to handle suffixes (e.g., RIIWHS202 -> RIIWHS202E)
+  // Try code variations to handle suffixes and leading E (e.g., RIIWHS202 -> RIIWHS202E, ACMWHS401 -> EACMWHS401)
   const tryCodeVariations = async (baseCode: string): Promise<{ found: boolean; actualCode: string; html?: string }> => {
-    const variations = [
-      baseCode,              // Try exact code first
-      `${baseCode}A`,        // Try with suffix A
-      `${baseCode}B`,        // Try with suffix B
-      `${baseCode}C`,
-      `${baseCode}D`,
-      `${baseCode}E`,        // Common for RII units
-      `${baseCode}F`,
-      `${baseCode}1`,        // Numeric suffixes
-      `${baseCode}2`
-    ];
+    const base = baseCode.toUpperCase().trim();
+    const suffixes = ['A','B','C','D','E','F','1','2'];
+    const variants = new Set<string>();
+    // Exact first
+    variants.add(base);
+    // Suffixes
+    for (const s of suffixes) variants.add(base + s);
+    // Leading E prefix variants
+    variants.add('E' + base);
+    for (const s of suffixes) variants.add('E' + base + s);
     
-    for (const variation of variations) {
+    for (const variation of variants) {
       const url = `https://training.gov.au/training/details/${variation}/unitdetails`;
       try {
         const html = await fetcher.get(url);
@@ -328,7 +346,7 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
       }
     }
     
-    return { found: false, actualCode: baseCode };
+    return { found: false, actualCode: base };
   };
 
   // Categorize errors

@@ -5,7 +5,8 @@ Scrapes Units of Competency from training.gov.au, preserves structure (elements,
 ## Highlights
 
 - Multi‑strategy parser: handles varied HTML structures; preserves line breaks and bullets for Assessment Conditions and Evidence.
-- Maritime Excel: 7 sheets with two‑row headers, category merges, white header text, zebra striping, black separator rows, and `COUNTA` mapping counts.
+- Dynamic code matching: automatically tries code variations (e.g., `RIIWHS202` finds `RIIWHS202D` or `RIIWHS202E`) to handle suffix changes on training.gov.au.
+- Maritime Excel: 7 sheets with two‑row headers, category merges, white header text, zebra striping, black separator rows, and `SUMPRODUCT` mapping counts (excludes null/0/empty).
 - One‑click runners: `START.sh` (Mac/Linux) and `START.bat` (Windows) auto‑install deps, read `Units.xlsx`, retry failed units, and regenerate Excel.
 - Robust retry + logging: invalid codes skipped; transient errors retried and logged to `data/error-log.json`.
 
@@ -79,6 +80,11 @@ npx tsx src/index.ts \
 - Styling: Zebra striping, full‑black separator rows between units, borders, freeze panes, auto‑filters.
 - Formulas: `Mapping Count` uses `COUNTA` across assessment columns.
 - Assessment Conditions sheet: Unit rows in blue, blank black separators between units, and AMSA footer with 8 codes.
+- Headers: Two rows with merged category cells; white header text; category colors (Knowledge grey, Performance yellow).
+- Columns (mapping sheets): `Unit`, `Element`, `Criteria/Evidence`, `Performance Criteria`, optional `AMPA Conditions`, `Mapping Count`, followed by assessment columns per sheet.
+- Styling: Zebra striping, full‑black separator rows between units, borders, freeze panes, auto‑filters.
+- Formulas: `Mapping Count` uses `SUMPRODUCT` to count only cells with actual values (excludes empty, null, and 0) across assessment columns in the same row.
+- Assessment Conditions sheet: Unit rows in blue, blank black separators between units, and AMSA footer with 8 codes.
 
 ## Tests
 
@@ -86,7 +92,7 @@ npx tsx src/index.ts \
 npm test
 ```
 
-Validates parser behavior and Excel generation (including `COUNTA` mapping counts).
+Validates parser behavior and Excel generation (including `SUMPRODUCT` mapping counts).
 
 ## Requirements
 

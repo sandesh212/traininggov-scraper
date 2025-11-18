@@ -295,6 +295,42 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
 
   const exporter = new ExportService(config.dataDir);
 
+  // Try code variations to handle suffixes (e.g., RIIWHS202 -> RIIWHS202E)
+  const tryCodeVariations = async (baseCode: string): Promise<{ found: boolean; actualCode: string; html?: string }> => {
+    const variations = [
+      baseCode,              // Try exact code first
+      `${baseCode}A`,        // Try with suffix A
+      `${baseCode}B`,        // Try with suffix B
+      `${baseCode}C`,
+      `${baseCode}D`,
+      `${baseCode}E`,        // Common for RII units
+      `${baseCode}F`,
+      `${baseCode}1`,        // Numeric suffixes
+      `${baseCode}2`
+    ];
+    
+    for (const variation of variations) {
+      const url = `https://training.gov.au/training/details/${variation}/unitdetails`;
+      try {
+        const html = await fetcher.get(url);
+        
+        // Check if page contains valid unit content
+        if (html.includes('Unit of competency') || html.includes('Performance Criteria') || html.includes('Performance evidence')) {
+          return { found: true, actualCode: variation, html };
+        }
+      } catch (error: any) {
+        // If 404 or not found, try next variation
+        if (error.message?.includes('404') || error.message?.includes('not found')) {
+          continue;
+        }
+        // For other errors (network, timeout), stop trying variations
+        throw error;
+      }
+    }
+    
+    return { found: false, actualCode: baseCode };
+  };
+
   // Categorize errors
   const categorizeError = (code: string, error: any): void => {
     const errorMsg = error.message || String(error);
@@ -313,31 +349,36 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
     }
   };
 
-  // Validate units concurrently for speed (batch of 5 at a time)
-  const CONCURRENT_BATCH = 5;
+  // Validate units concurrently for speed (batch of 3 at a time to handle variations)
+  const CONCURRENT_BATCH = 3;  // Reduced since we're trying multiple variations per code
   let processed = 0;
+  const codeMapping = new Map<string, string>(); // Maps requested code -> actual code found
   
   for (let i = 0; i < allUnitsToProcess.length; i += CONCURRENT_BATCH) {
     const batch = allUnitsToProcess.slice(i, i + CONCURRENT_BATCH);
     
     await Promise.all(batch.map(async (code) => {
-      const url = `https://training.gov.au/training/details/${code}/unitdetails`;
       const idx = ++processed;
       
       try {
         console.log(`[${idx}/${allUnitsToProcess.length}] 🔍 Checking: ${code}...`);
-        const html = await fetcher.get(url);
+        const result = await tryCodeVariations(code);
         
-        if (html.includes('Unit of competency') || html.includes('Performance Criteria') || html.includes('Performance evidence')) {
-          validUnits.push(code);
-          fetcher.setCache(url, html);
-          console.log(`   ✅ Valid`);
-        } else if (html.includes('404') || html.includes('not found')) {
-          invalidUnits.push({ code, reason: 'Unit does not exist (404)' });
-          console.log(`   ❌ Invalid (404)`);
+        if (result.found) {
+          validUnits.push(result.actualCode);
+          codeMapping.set(code, result.actualCode);
+          if (result.html) {
+            const url = `https://training.gov.au/training/details/${result.actualCode}/unitdetails`;
+            fetcher.setCache(url, result.html);
+          }
+          if (result.actualCode !== code) {
+            console.log(`   ✅ Found as: ${result.actualCode}`);
+          } else {
+            console.log(`   ✅ Valid`);
+          }
         } else {
-          invalidUnits.push({ code, reason: 'No unit content detected' });
-          console.log(`   ❌ Invalid (no data)`);
+          invalidUnits.push({ code, reason: 'Unit does not exist (404 - tried variations)' });
+          console.log(`   ❌ Invalid (not found with any variation)`);
         }
       } catch (error: any) {
         categorizeError(code, error);
@@ -348,7 +389,7 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
     
     // Small delay between batches
     if (i + CONCURRENT_BATCH < allUnitsToProcess.length) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 800));
     }
   }
 

@@ -22,7 +22,9 @@ traininggov-scraper
 │   ├── parsers/uocParser.ts      # Robust parser (bullets, line breaks preserved)
 │   ├── services/exportService.ts # JSONL writer + per‑unit cache
 │   ├── services/maritimeExcelService.ts # Maritime multi‑sheet Excel generator
-│   ├── models/*.ts               # Types
+│   ├── models/                   # Types
+│   │   ├── uoc.ts
+│   │   └── scrapeResult.ts
 │   └── utils/logger.ts           # Lightweight logger
 ├── tests
 │   ├── maritimeExcelService.test.ts

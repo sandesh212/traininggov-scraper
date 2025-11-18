@@ -23,6 +23,8 @@ traininggov-scraper/
 ├── src/autoSync.ts           ← Auto-retry flow (reads Units.xlsx)
 ├── src/index.ts              ← Scrape specific URLs (optional)
 ├── src/services/maritimeExcelService.ts  ← Excel generator (maritime)
+├── src/models/uoc.ts         ← UoC model
+├── src/models/scrapeResult.ts← Export models
 ├── USER_GUIDE.md             ← Full user documentation
 └── data/                     ← Auto-created for outputs
 ```
@@ -104,7 +106,7 @@ The program accepts **ANY Excel format**:
 - Two‑row headers with merged category cells (Knowledge grey, Performance yellow) and white header text.
 - Columns: `Unit`, `Element`, `Criteria/Evidence`, `Performance Criteria`, optional `AMPA Conditions`, `Mapping Count`, plus per‑sheet assessment columns.
 - Styling: Zebra striping, full‑black separator rows, borders, freeze panes, auto‑filters.
-- Formulas: `Mapping Count` uses `COUNTA` across assessment columns.
+- Formulas: `Mapping Count` uses `SUMPRODUCT` across assessment columns per row (counts only non-empty, non-zero values).
 - Assessment Conditions: Unit rows (blue), black blank separators, AMSA footer with all 8 codes.
 
 ## 🔧 Requirements for End Users
@@ -130,6 +132,8 @@ User steps:
 3. Place their `Units.xlsx` in the folder
 4. Double-click `START.sh` (Mac) or `START.bat` (Windows)
 5. Open `data/UnitsData.xlsx`
+
+Note: Unit codes can be provided with or without suffixes. The program automatically tries code variations (e.g., `RIIWHS202` → `RIIWHS202D/E`) to match current training.gov.au codes.
 
 ## 🎯 Key Advantages
 

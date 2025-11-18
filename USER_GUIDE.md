@@ -13,6 +13,7 @@ Automatically scrapes Unit of Competency data from training.gov.au and exports t
 - ✅ **No duplicates** - always updates existing units with fresh data
 - ✅ **Auto-creates folders and files** as needed
 - ✅ **Auto-installs dependencies** on first run
+- ✅ **Dynamic code matching** — provide codes with or without suffixes; the program tries common variations (e.g., `RIIWHS202` resolves to `RIIWHS202D/E`).
 
 ## 🚀 Quick Start (One-Click)
 
@@ -110,6 +111,8 @@ Also check HLTAID011 from last semester
 
 **All formats work!** The program uses smart pattern matching.
 
+Tip: You can write unit codes without their trailing letter/number. The program will attempt common suffixes automatically to match current training.gov.au codes.
+
 ## 🔄 How Duplicates Are Handled
 
 ### **JSONL Data File (data/uoc.jsonl)**
@@ -161,7 +164,7 @@ Run 2: Scrape MARA022 (again), HLTAID011 (new)
 - 📊 Maritime-format workbook with 7 sheets (ESS, Deck, Navigation, Engineering, LROCP, DMLA, Assessment Conditions)
 - 🎨 Two-row headers with merged category cells; white header text; zebra striping and borders
 - 📝 Performance/Knowledge Evidence grouped; Assessment Conditions preserved with bullets/line breaks
-- ✅ Ready for review/mapping; Mapping Count uses `COUNTA`
+- ✅ Ready for review/mapping; Mapping Count uses `SUMPRODUCT` to count only cells with actual values in the same row (excludes empty, null, and 0)
 - 🔄 **Always up-to-date** — existing units replaced, not duplicated
 
 **Columns (mapping sheets):**

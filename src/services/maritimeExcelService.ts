@@ -884,7 +884,7 @@ export class MaritimeExcelService {
     const lastCol = XLSX.utils.encode_col(totalColumns - 1);
     ws['!autofilter'] = { ref: `A2:${lastCol}${dataRows.length + 2}` };
 
-    // Auto-populate Mapping Count with COUNTA over assessment cell range per row
+    // Auto-populate Mapping Count: count cells with actual values (exclude empty, null, 0)
     if (config.assessmentColumns.length > 0) {
       const mappingCountColIndex = config.hasAMPAConditions ? 5 : 4;
       const firstAssessmentColIndex = mappingCountColIndex + 1;
@@ -895,8 +895,9 @@ export class MaritimeExcelService {
         const startAddr = XLSX.utils.encode_cell({ r, c: firstAssessmentColIndex });
         const endAddr = XLSX.utils.encode_cell({ r, c: lastAssessmentColIndex });
         if (!ws[mappingAddr]) (ws as any)[mappingAddr] = { t: 'n' };
-        // Formula: count non-blank assessment cells using COUNTA
-        (ws[mappingAddr] as any).f = `COUNTA(${startAddr}:${endAddr})`;
+        // Formula: SUMPRODUCT counts cells that are not blank, not 0, and not null
+        // This excludes empty cells, cells with 0, and truly blank cells
+        (ws[mappingAddr] as any).f = `SUMPRODUCT(--((${startAddr}:${endAddr}<>"")*( ${startAddr}:${endAddr}<>0)))`;
       }
     }
     

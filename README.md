@@ -1,128 +1,103 @@
-# Training.gov.au Scraper
+# Training.gov.au Scraper (Maritime Excel Format)
 
-This project is a web scraper designed to extract data from the Training.gov.au website, specifically targeting Units of Competency (UOCs). The scraper fetches HTML content from specified UOC pages, parses the relevant information, and allows for exporting the data in various formats.
+Scrapes Units of Competency from training.gov.au, preserves structure (elements, PCs, performance/knowledge evidence, assessment conditions), and generates a maritime-format multi‑sheet Excel workbook with category headers, zebra striping, and formulas.
+
+## Highlights
+
+- Multi‑strategy parser: handles varied HTML structures; preserves line breaks and bullets for Assessment Conditions and Evidence.
+- Maritime Excel: 7 sheets with two‑row headers, category merges, white header text, zebra striping, black separator rows, and `COUNTA` mapping counts.
+- One‑click runners: `START.sh` (Mac/Linux) and `START.bat` (Windows) auto‑install deps, read `Units.xlsx`, retry failed units, and regenerate Excel.
+- Robust retry + logging: invalid codes skipped; transient errors retried and logged to `data/error-log.json`.
 
 ## Project Structure
 
 ```text
 traininggov-scraper
 ├── src
-│   ├── index.ts              # Entry point of the application
-│   ├── crawler.ts            # Crawler class for orchestrating the scraping process
-│   ├── fetcher.ts            # Fetcher class for handling HTTP requests
-│   ├── parsers
-│   │   └── uocParser.ts      # Parser for extracting UOC data from HTML
-│   ├── models
-│   │   └── uoc.ts            # UOC model defining the structure of UOC objects
-│   ├── services
-│   │   └── exportService.ts   # Service for exporting scraped data
-│   └── utils
-│       └── requestUtils.ts    # Utility functions for making HTTP requests
+│   ├── index.ts                  # CLI: scrape specific URLs, then export
+│   ├── autoSync.ts               # Main flow: read Units.xlsx, validate, scrape, export
+│   ├── crawler.ts                # Orchestrates scraping
+│   ├── fetcher.ts                # Headless browser fetcher
+│   ├── parsers/uocParser.ts      # Robust parser (bullets, line breaks preserved)
+│   ├── services/exportService.ts # JSONL writer + per‑unit cache
+│   ├── services/maritimeExcelService.ts # Maritime multi‑sheet Excel generator
+│   ├── models/*.ts               # Types
+│   └── utils/logger.ts           # Lightweight logger
 ├── tests
-│   └── uocParser.test.ts      # Unit tests for the UOC parser
-├── package.json                # npm configuration file
-├── tsconfig.json              # TypeScript configuration file
-├── .gitignore                  # Files and directories to ignore in version control
-└── README.md                   # Project documentation
+│   ├── maritimeExcelService.test.ts
+│   └── uocParser.test.ts
+├── START.sh / START.bat          # One‑click launchers (Units.xlsx input)
+├── Unit Scraper.app (macOS)      # Double‑clickable app bundle (optional)
+├── data/                         # Outputs (created automatically)
+│   ├── uoc.jsonl                 # One JSON object per unit
+│   ├── UnitsData.xlsx            # Maritime workbook
+│   └── error-log.json            # Validation + retry tracking
+└── package.json, tsconfig.json
 ```
 
-## Installation
+## Run
 
-1. Clone the repository:
+### Easiest: Double‑click
 
-   ```bash
-   git clone https://github.com/yourusername/traininggov-scraper.git
-   ```
+- macOS/Linux: double‑click `START.sh`
+- Windows: double‑click `START.bat`
 
-2. Navigate to the project directory:
+Requirements: Node.js v18+, an `Units.xlsx` file in the project root. Results are written to `data/UnitsData.xlsx` and `data/uoc.jsonl`.
 
-   ```bash
-   cd traininggov-scraper
-   ```
-
-3. Install the dependencies:
-
-   ```bash
-   npm install
-   ```
-
-## Usage
-
-### Scraping Units of Competency
-
-To scrape one or more units and automatically export to both JSONL and Excel formats:
+### CLI: Use Units.xlsx
 
 ```bash
-# Scrape a single unit
-npx tsx src/index.ts https://training.gov.au/training/details/MARK007/unitdetails
+# Install deps (first time)
+npm install
 
-# Scrape multiple units
+# Run autosync (reads Units.xlsx, all sheets/columns)
+npx tsx src/autoSync.ts
+
+# Options
+npx tsx src/autoSync.ts --input MyUnits.xlsx --output Results.xlsx --column "Unit Code"
+```
+
+### CLI: Direct URLs
+
+```bash
 npx tsx src/index.ts \
   https://training.gov.au/training/details/MARK007/unitdetails \
   https://training.gov.au/training/details/MARH013/unitdetails
 ```
 
-This will:
+## Output
 
-1. Scrape the unit(s) data from training.gov.au
-2. Save the raw data to `data/uoc.jsonl` (one JSON object per line)
-3. Automatically create an Excel file at `data/UnitsOfCompetency.xlsx`
+### JSONL (`data/uoc.jsonl`)
 
-### Excel Export Only
+- One unit per line; complete structured fields; duplicates replaced.
 
-If you already have scraped data in JSONL format and want to export it to Excel:
+### Excel (`data/UnitsData.xlsx`)
 
-```bash
-npx tsx src/exportToExcel.ts data/uoc.jsonl MyOutput.xlsx
-```
+- Sheets: ESS Mapping, Deck Mapping, Navigation Mapping, Engineering Mapping, LROCP Mapping, DMLA, Assessment Conditions.
+- Headers: Two rows with merged category cells; white header text; category colors (Knowledge grey, Performance yellow).
+- Columns (mapping sheets): `Unit`, `Element`, `Criteria/Evidence`, `Performance Criteria`, optional `AMPA Conditions`, `Mapping Count`, followed by assessment columns per sheet.
+- Styling: Zebra striping, full‑black separator rows between units, borders, freeze panes, auto‑filters.
+- Formulas: `Mapping Count` uses `COUNTA` across assessment columns.
+- Assessment Conditions sheet: Unit rows in blue, blank black separators between units, and AMSA footer with 8 codes.
 
-### Output Formats
-
-#### JSONL Format (`data/uoc.jsonl`)
-
-- Complete structured data for all units
-- One JSON object per line
-- Easy to process programmatically
-- Contains all fields with nested structures preserved
-
-#### Excel Format (`data/UnitsOfCompetency.xlsx`)
-
-The Excel file follows this column structure:
-
-- **Unit**: Unit code and title (e.g., "MARK007 Handle a vessel up to 12 metres")
-- **Element**: Element description
-- **Criteria/Action**: Performance criteria number (e.g., "1.1", "2.3")
-- **Performance Criteria**: Full text of the performance criterion
-- **AMPA Conditions**: Assessment conditions (if applicable)
-- **Mapping Comment**: Reserved for manual comments
-- **Knowledge/Assessment**: Knowledge evidence items
-- **Performance Evidence**: Performance evidence items
-
-Each unit's data is organized with:
-
-- Performance criteria grouped by element
-- Knowledge evidence as separate rows
-- Performance evidence as separate rows
-- Assessment conditions as separate rows
-
-This will initiate the crawling process and start scraping data from the specified UOC pages.
-
-## Exporting Data
-
-The scraped data can be exported to various formats. The default format is JSON. You can modify the export settings in the `exportService.ts` file.
-
-## Running Tests
-
-To run the unit tests for the UOC parser, use the following command:
+## Tests
 
 ```bash
 npm test
 ```
 
+Validates parser behavior and Excel generation (including `COUNTA` mapping counts).
+
+## Requirements
+
+- Node.js v18+
+- macOS/Windows/Linux
+- Network connectivity to training.gov.au
+
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
+Issues and PRs welcome. Please run `npm test` before submitting.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+MIT

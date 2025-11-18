@@ -157,23 +157,22 @@ Run 2: Scrape MARA022 (again), HLTAID011 (new)
 ## 📈 Output Files
 
 ### **1. data/UnitsData.xlsx** (Main output)
-- 📊 Color-coded Excel file with visual hierarchy
-- 🎨 Professional formatting with borders and colors
-- 📝 Proper indentation for nested items
-- ✅ Ready for review/mapping
-- 🔄 **Always up-to-date** - existing units replaced, not duplicated
 
-**Columns:**
-- Unit Code
-- Release
-- Unit (full title)
+- 📊 Maritime-format workbook with 7 sheets (ESS, Deck, Navigation, Engineering, LROCP, DMLA, Assessment Conditions)
+- 🎨 Two-row headers with merged category cells; white header text; zebra striping and borders
+- 📝 Performance/Knowledge Evidence grouped; Assessment Conditions preserved with bullets/line breaks
+- ✅ Ready for review/mapping; Mapping Count uses `COUNTA`
+- 🔄 **Always up-to-date** — existing units replaced, not duplicated
+
+**Columns (mapping sheets):**
+
+- Unit
 - Element
-- Criteria/Action
+- Criteria/Evidence
 - Performance Criteria
-- AMPA Conditions
-- Mapping Comment
-- Knowledge/Assessment
-- Performance Evidence
+- AMPA Conditions (if applicable)
+- Mapping Count
+- Assessment columns (vary per sheet)
 
 ### **2. data/uoc.jsonl** (Raw data)
 - One JSON object per line

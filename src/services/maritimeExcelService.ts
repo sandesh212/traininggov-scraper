@@ -884,12 +884,7 @@ export class MaritimeExcelService {
     const lastCol = XLSX.utils.encode_col(totalColumns - 1);
     ws['!autofilter'] = { ref: `A2:${lastCol}${dataRows.length + 2}` };
 
-    // Auto-populate Mapping Count with formula counting non-empty assessment cells
-    // Logic: COUNTA over assessment column range in each data row.
-    // This mirrors manual mapping updates—when assessors fill assessment columns, count updates.
-    // Apply template-equivalent Mapping Count formula:
-    // ((COLUMNS(TableESS[])) - 6) - (COUNTBLANK(TableESS[[#This Row],[FirstAssess]:[LastAssess]]))
-    // We mimic logic without structured table by converting to equivalent COUNTA range but subtract blanks relative to number of assessment columns.
+    // Auto-populate Mapping Count with COUNTA over assessment cell range per row
     if (config.assessmentColumns.length > 0) {
       const mappingCountColIndex = config.hasAMPAConditions ? 5 : 4;
       const firstAssessmentColIndex = mappingCountColIndex + 1;
@@ -900,9 +895,8 @@ export class MaritimeExcelService {
         const startAddr = XLSX.utils.encode_cell({ r, c: firstAssessmentColIndex });
         const endAddr = XLSX.utils.encode_cell({ r, c: lastAssessmentColIndex });
         if (!ws[mappingAddr]) (ws as any)[mappingAddr] = { t: 'n' };
-        // Formula: count non-blank assessment cells, but only show if >0 (empty cell when 0)
-        const countFormula = `${config.assessmentColumns.length}-COUNTBLANK(${startAddr}:${endAddr})`;
-        (ws[mappingAddr] as any).f = `IF((${countFormula})>0,${countFormula},"")`;
+        // Formula: count non-blank assessment cells using COUNTA
+        (ws[mappingAddr] as any).f = `COUNTA(${startAddr}:${endAddr})`;
       }
     }
     

@@ -30,3 +30,4 @@ error-log.json
 
 # Keep Units.xlsx (input) – do NOT ignore
 # Units.xlsx
+.DS_Store

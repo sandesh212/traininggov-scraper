@@ -109,17 +109,22 @@ async function readUnitCodesFromExcel(filepath: string, columnName: string): Pro
   // Fallback pattern: allow a space between prefix and the rest (e.g., "ACM WHS401")
   const spacedPattern = /\b([A-Z]{2,4})\s+([A-Z0-9]{3,10})\b/g;
 
-  // Read from all sheets
+  // Read from all sheets - scan ALL cells including first row
   for (const sheetName of workbook.SheetNames) {
     console.log(`   📄 Reading sheet: "${sheetName}"`);
     const worksheet = workbook.Sheets[sheetName];
-    const rows = XLSX.utils.sheet_to_json(worksheet);
-
-    for (const row of rows) {
-      const columns = columnName ? [(row as any)[columnName]] : Object.values(row as any);
-      
-      for (const cellValue of columns) {
-        if (!cellValue) continue;
+    
+    // Get sheet range to scan ALL cells including first row
+    const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+    
+    // Scan every cell in the sheet
+    for (let R = range.s.r; R <= range.e.r; R++) {
+      for (let C = range.s.c; C <= range.e.c; C++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+        const cell = worksheet[cellAddress];
+        if (!cell || !cell.v) continue;
+        
+        const cellValue = cell.v;
         if (typeof cellValue === 'string') {
           const text = cellValue.toUpperCase();
           // Exact pattern matches
@@ -135,9 +140,9 @@ async function readUnitCodesFromExcel(filepath: string, columnName: string): Pro
             if (isValidUnitCode(code)) unitCodes.push(code);
           }
         } else if (typeof cellValue === 'number') {
-          // Ignore pure numbers (unit codes are alphanumeric)
+          // Skip pure numbers
           continue;
-        } else if (typeof cellValue === 'object') {
+        } else {
           // Convert to string if possible
           const s = String(cellValue || '').toUpperCase();
           if (!s) continue;

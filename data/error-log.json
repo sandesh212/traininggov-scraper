@@ -1,11 +1,17 @@
 {
-  "timestamp": "2025-11-14T05:28:51.919Z",
+  "timestamp": "2025-11-19T00:18:32.334Z",
   "summary": {
-    "totalChecked": 129,
-    "valid": 129,
-    "invalid": 0,
+    "totalChecked": 132,
+    "valid": 131,
+    "invalid": 1,
     "errors": 0
   },
-  "invalidUnits": [],
+  "invalidUnits": [
+    {
+      "code": "CHC14015",
+      "reason": "Unit does not exist (404 - tried variations)",
+      "permanent": true
+    }
+  ],
   "errorUnits": []
 }

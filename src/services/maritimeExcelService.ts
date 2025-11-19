@@ -896,8 +896,8 @@ export class MaritimeExcelService {
         const endAddr = XLSX.utils.encode_cell({ r, c: lastAssessmentColIndex });
         if (!ws[mappingAddr]) (ws as any)[mappingAddr] = { t: 'n' };
         // Formula: SUMPRODUCT counts cells that are not blank, not 0, and not null
-        // This excludes empty cells, cells with 0, and truly blank cells
-        (ws[mappingAddr] as any).f = `SUMPRODUCT(--((${startAddr}:${endAddr}<>"")*( ${startAddr}:${endAddr}<>0)))`;
+        // Wrapped in IF to display blank when count is 0
+        (ws[mappingAddr] as any).f = `IF(SUMPRODUCT(--((${startAddr}:${endAddr}<>"")*( ${startAddr}:${endAddr}<>0)))=0,"",SUMPRODUCT(--((${startAddr}:${endAddr}<>"")*( ${startAddr}:${endAddr}<>0))))`;
       }
     }
     

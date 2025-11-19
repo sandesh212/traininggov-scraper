@@ -75,10 +75,11 @@ describe('MaritimeExcelService', () => {
         const addr = XLSX.utils.encode_cell({ r: sheetRowNumber, c: mappingCountCol });
         const cell: any = ws[addr];
         expect(cell, `Mapping Count cell missing at row index ${sheetRowNumber}`).toBeTruthy();
-        expect(cell.f, `Expected SUMPRODUCT formula at ${addr}`).toMatch(/^SUMPRODUCT\(--\(\([A-Z]+\d+:[A-Z]+\d+<>""\)\*\( [A-Z]+\d+:[A-Z]+\d+<>0\)\)\)$/);
+        // Updated: Formula now wrapped in IF to show blank when count is 0
+        expect(cell.f, `Expected IF/SUMPRODUCT formula at ${addr}`).toMatch(/^IF\(SUMPRODUCT\(--\(\([A-Z]+\d+:[A-Z]+\d+<>""\)\*\( [A-Z]+\d+:[A-Z]+\d+<>0\)\)\)=0,"",SUMPRODUCT\(--\(\([A-Z]+\d+:[A-Z]+\d+<>""\)\*\( [A-Z]+\d+:[A-Z]+\d+<>0\)\)\)\)$/);
         // Specifically should reference G..I for this config (note: space before second range)
         const rowOneBased = sheetRowNumber + 1; // convert to Excel row number
-        expect(cell.f).toBe(`SUMPRODUCT(--((G${rowOneBased}:I${rowOneBased}<>"")*( G${rowOneBased}:I${rowOneBased}<>0)))`);
+        expect(cell.f).toBe(`IF(SUMPRODUCT(--((G${rowOneBased}:I${rowOneBased}<>"")*( G${rowOneBased}:I${rowOneBased}<>0)))=0,"",SUMPRODUCT(--((G${rowOneBased}:I${rowOneBased}<>"")*( G${rowOneBased}:I${rowOneBased}<>0))))`);
       }
     });
 
@@ -99,7 +100,8 @@ describe('MaritimeExcelService', () => {
       const cell: any = ws[addr];
       
       expect(cell).toBeTruthy();
-      expect(cell.f).toBe(`SUMPRODUCT(--((F3:G3<>"")*( F3:G3<>0)))`);
+      // Updated: Formula now wrapped in IF to show blank when count is 0
+      expect(cell.f).toBe(`IF(SUMPRODUCT(--((F3:G3<>"")*( F3:G3<>0)))=0,"",SUMPRODUCT(--((F3:G3<>"")*( F3:G3<>0))))`);
     });
   });
 

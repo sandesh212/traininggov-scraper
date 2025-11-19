@@ -96,7 +96,7 @@ function isValidUnitCode(code: string): boolean {
   return code.match(/^[A-Z]{2,4}[A-Z0-9]*\d+[A-Z]?$/i) !== null;
 }
 
-async function readUnitCodesFromExcel(filepath: string, columnName: string): Promise<string[]> {
+async function readUnitCodesFromExcel(filepath: string, columnName: string): Promise<{ codes: string[]; duplicates: { code: string; count: number }[] }> {
   if (!await fs.access(filepath).then(() => true).catch(() => false)) {
     throw new Error(`Input Excel file not found: ${filepath}`);
   }
@@ -156,9 +156,28 @@ async function readUnitCodesFromExcel(filepath: string, columnName: string): Pro
     }
   }
 
+  // Detect duplicates before deduplication
+  const duplicates = new Map<string, number>();
+  unitCodes.forEach(code => {
+    duplicates.set(code, (duplicates.get(code) || 0) + 1);
+  });
+  
+  const duplicateList = Array.from(duplicates.entries())
+    .filter(([_, count]) => count > 1)
+    .map(([code, count]) => ({ code, count }));
+  
   const uniqueCodes = [...new Set(unitCodes)];
   console.log(`   ✓ Extracted ${uniqueCodes.length} unique unit codes\n`);
-  return uniqueCodes;
+  
+  if (duplicateList.length > 0) {
+    console.log(`   ⚠️  Duplicate codes found (these were deduplicated):`);
+    duplicateList.forEach(({ code, count }) => {
+      console.log(`      - ${code} (appeared ${count} times)`);
+    });
+    console.log('');
+  }
+  
+  return { codes: uniqueCodes, duplicates: duplicateList };
 }
 
 async function getExistingUnits(excelPath: string): Promise<Map<string, string>> {
@@ -214,9 +233,10 @@ async function saveErrorLog(
   invalidUnits: { code: string; reason: string }[],
   errorUnits: UnitError[],
   totalChecked: number,
-  validCount: number
+  validCount: number,
+  duplicates?: { code: string; count: number }[]
 ): Promise<void> {
-  const errorLog = {
+  const errorLog: any = {
     timestamp: new Date().toISOString(),
     summary: {
       totalChecked,
@@ -232,6 +252,16 @@ async function saveErrorLog(
       lastAttempt: u.lastAttempt
     }))
   };
+  
+  // Add duplicate information if present
+  if (duplicates && duplicates.length > 0) {
+    errorLog.duplicates = duplicates.map(d => ({
+      code: d.code,
+      occurrences: d.count,
+      note: 'This code appeared multiple times in the Excel file but was only processed once'
+    }));
+    errorLog.summary.duplicates = duplicates.length;
+  }
 
   await fs.mkdir(dataDir, { recursive: true });
   await fs.writeFile(
@@ -247,7 +277,7 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
   const autoRetry = config.autoRetry !== false;
 
   console.log('📖 Reading unit codes from Excel...');
-  const requestedCodes = await readUnitCodesFromExcel(config.inputExcel, config.inputColumn);
+  const { codes: requestedCodes, duplicates: duplicateCodes } = await readUnitCodesFromExcel(config.inputExcel, config.inputColumn);
   console.log(`✅ Found ${requestedCodes.length} unit codes\n`);
 
   const outputExcelPath = path.join(config.dataDir, config.outputExcel);
@@ -466,7 +496,8 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
     invalidUnits,
     Array.from(errorUnits.values()),
     allUnitsToProcess.length,
-    validUnits.length
+    validUnits.length,
+    duplicateCodes
   );
 
   if (validUnits.length === 0) {

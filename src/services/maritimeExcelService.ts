@@ -98,10 +98,11 @@ export class MaritimeExcelService {
       mappingCountLabel: 'Mapping Count',
       filterPrefixes: ['MARO', 'MARL'],
       assessmentColumns: [
+        'Learners workbook question',
         'Workbook Classroom Activity',
         'Workbook Practical assessment '
       ],
-      knowledgeColumns: [],
+      knowledgeColumns: ['Learners workbook question'],
       showCategories: true
     },
     {

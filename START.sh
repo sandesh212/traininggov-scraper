@@ -74,7 +74,7 @@ fi
 # Run the scraper
 echo "🚀 Starting scraper..."
 echo ""
-cd .config && npx tsx src/autoSync.ts && cd ..
+cd .config && npx tsx src/autoSync.ts
 
 echo ""
 echo "════════════════════════════════════════════════════════════"

@@ -577,12 +577,12 @@ export async function syncUnits(config: SyncConfig): Promise<SyncResult> {
 async function main() {
   const args = process.argv.slice(2);
 
-  // Default configuration
+  // Default configuration (paths relative to project root, not .config/)
   const config: SyncConfig = {
-    inputExcel: 'Units.xlsx',
+    inputExcel: '../Units.xlsx',
     inputColumn: '',
     outputExcel: 'UnitsData.xlsx',
-    dataDir: 'data',
+    dataDir: '../data',
     maxRetries: 3,
     retryDelay: 5000,
     autoRetry: true

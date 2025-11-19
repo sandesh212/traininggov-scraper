@@ -1,0 +1,180 @@
+{
+  "url": "https://training.gov.au/training/details/SFIPRO301/unitdetails",
+  "code": "SFIPRO301",
+  "title": "Monitor hygiene and sanitation requirements",
+  "status": "Current",
+  "release": "Release 1",
+  "elements": [
+    {
+      "element": "Elements",
+      "performanceCriteria": [
+        "Performance Criteria"
+      ]
+    },
+    {
+      "element": "1. Implement hygiene and sanitation requirements",
+      "performanceCriteria": [
+        "1.1 Communicate hygiene and sanitation regulatory and workplace requirements to other process workers",
+        "1.2 Ensure understanding of employer and employee responsibilities and obligations to achieve hygiene and sanitation compliance"
+      ]
+    },
+    {
+      "element": "2. Monitor hygiene and sanitation practices",
+      "performanceCriteria": [
+        "2.1 Observe workplace hygiene and sanitation practices to verify compliance with workplace and regulatory requirements",
+        "2.2 Report hygiene and sanitation practices requiring improvement as part of continuous improvement to relevant personnel",
+        "2.3 Evaluate impact of hygiene and sanitation monitoring on product and processing operations"
+      ]
+    },
+    {
+      "element": "3. Respond to hygiene and sanitation problems",
+      "performanceCriteria": [
+        "3.1 Investigate hygiene and sanitation issues and/or causes of contamination",
+        "3.2 Take corrective action to respond to hygiene and sanitation problems and/or eliminate contamination",
+        "3.3 Follow up on recommended action arising from the investigation to ensure reinforcement, and document outcomes according to workplace procedures"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessment of skills must take place under the following conditions:\nphysical conditions:skills must be demonstrated in seafood processing, wholesale or retail workplace or an environment that accurately represents workplace conditions\nresources, equipment and materials:resources on hygiene and sanitation control\nhygiene and sanitation monitoring recording system\nspecifications:workplace procedures for workplace hygiene and sanitation control\nrelationships:evidence of interactions with other workers.\nAssessors of this unit must satisfy the requirements for assessors in applicable vocational education and training legislation, frameworks and/or standards.",
+  "performanceEvidence": "An individual demonstrating competency must satisfy all of the elements and performance criteria in this unit.\n\nThere must be evidence that the individual has monitored workplace hygiene and sanitation requirements on at least one occasion, including:\n\n• communicating hygiene and sanitation requirements\n• inspecting hygiene and sanitation practices to ensure compliance with workplace and regulatory requirements\n• reporting on non-compliance\n• providing solutions for hygiene and sanitation problems.",
+  "knowledgeEvidence": "An individual must be able to demonstrate the knowledge required to perform the tasks outlined in the elements and performance criteria of this unit. This includes knowledge of:\n\n• regulatory and workplace hygiene and sanitation requirements\n• regulatory and commercial implications of inadequate control of hygiene and sanitation\n• employer and employee responsibilities and obligations regarding hygiene and sanitation\n• purpose of hygiene and sanitation monitoring relevant to seafood processing\n• workplace procedures to conduct a hygiene and sanitation investigation\n• practices used to eliminate contamination.",
+  "supersededBy": null,
+  "supersedes": null,
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-11-19T22:39:09.938Z"
+}

@@ -1,0 +1,179 @@
+{
+  "url": "https://training.gov.au/training/details/SISOSCB007/unitdetails",
+  "code": "SISOSCB007",
+  "title": "Inspect and fill SCUBA cylinders",
+  "status": "Current",
+  "release": "Release 2",
+  "elements": [
+    {
+      "element": "1.\tVisually inspect, SCUBA cylinders.",
+      "performanceCriteria": [
+        "1.1.\tVisually inspect cylinders prior to filling, according to organisational safety procedures and manufacturers' specifications.",
+        "1.2.\tIdentify any non-compliant cylinders, tag and isolate from use according to organisational procedures",
+        "1.3.\tRemove cylinder boot and mesh, visually inspect exterior of cylinders for dents, gouges and corrosion."
+      ]
+    },
+    {
+      "element": "2.\tFill SCUBA cylinders.",
+      "performanceCriteria": [
+        "2.1.\tOperate high pressure compressor according organisational safety procedures and manufacturers' specifications.",
+        "2.2.\tFill cylinders with air to correct capacity and pressure.",
+        "2.3.\tRefit valve and clean and dry areas.",
+        "2.4.\tComplete leak testing and documentation according to organisational requirements.",
+        "2.5.\tHandle, store and restrain cylinders according to organisational safety procedures.",
+        "2.6.\tTest organisation’s air purity regularly to ensure it meets standards."
+      ]
+    }
+  ],
+  "assessmentConditions": "Skills must be demonstrated in a SCUBA gas filling station.\nAssessment must ensure use of:\nSCUBA cylinders in different conditions, including those in poor condition\nreal workplace situations, or simulated activities, or case study scenarios that test aspects of this unit that relate to non-compliant or faulty cylinders\nair compressors and gauges\nair storage banks\nthe current Australian or international Standards for:Gas Cylinders\nFilling of Portable Gas Cylinders\ncylinder tags\ntemplate equipment fault reports\norganisational safety procedures for inspecting and filling SCUBA cylinders.\nAssessors must satisfy the Standards for Registered Training Organisations requirements for assessors.",
+  "performanceEvidence": "Evidence of the ability to complete tasks outlined in elements and performance criteria of this unit in the context of the job role, and:\n\n• visually inspect, verify condition and certification, and fill four SCUBA cylinders\n• complete all required documentation for the four inspections and fills\n• utilise options provided in Assessment Conditions to identify two non-compliant or faulty cylinders and complete required documentation\n• test the purity of organisation’s air supply on two occasions and complete required documentation\n• during all activities, consistently comply with organisational safety procedures.",
+  "knowledgeEvidence": "Demonstrated knowledge required to complete the tasks outlined in elements and performance criteria of this unit:\n\n• organisational safety procedures for inspecting and filling SCUBA cylinders\n• provisions and requirements of the following Australian or international Standards that relate to inspecting and filling SCUBA cylinders:\n  ◦ Gas Cylinders\n  ◦ Filling of Portable Gas Cylinders\n• issues that are checked prior to filling SCUBA cylinders:\n  ◦ currency of testing certification\n  ◦ condition of cylinder via visual inspection including exterior damage, corrosion and rust; deterioration of exterior paint\n• features, functions and operation of equipment used to fill SCUBA cylinders:\n  ◦ air compressors and gauges\n  ◦ air storage banks\n• manufacturers’ specifications for use of equipment\n• required pressures for SCUBA cylinders of different types and capacities\n• procedures for testing purity of organisation’s air supply\n• inclusions of organisational inspection documents.\n\n• Gas Cylinders\n• Filling of Portable Gas Cylinders\n\n• currency of testing certification\n• condition of cylinder via visual inspection including exterior damage, corrosion and rust; deterioration of exterior paint\n\n• air compressors and gauges\n• air storage banks",
+  "supersededBy": null,
+  "supersedes": {
+    "code": "SISOSCB007",
+    "url": "https://training.gov.au/training/details/SISOSCB007"
+  },
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Competency field",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-11-19T22:39:12.832Z"
+}

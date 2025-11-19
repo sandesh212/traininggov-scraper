@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
-package-lock.json
+.config/node_modules/
+.config/package-lock.json
 
 # Build output
 dist/

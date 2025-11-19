@@ -1,0 +1,175 @@
+{
+  "url": "https://training.gov.au/training/details/BSBHRM413/unitdetails",
+  "code": "BSBHRM413",
+  "title": "Support the learning and development of teams and individuals",
+  "status": "Current",
+  "release": "Release 1",
+  "elements": [
+    {
+      "element": "1. Contribute to needs development",
+      "performanceCriteria": [
+        "1.1 Collect information on performance of team members from relevant sources",
+        "1.2 Identify individual and team learning and development needs in line with organisational requirements",
+        "1.3 Confirm learning plans meet individual and group training and development needs",
+        "1.4 Provide opportunities to individuals to self-evaluate performance and identify areas for improvement"
+      ]
+    },
+    {
+      "element": "2. Support implementation of learning and development",
+      "performanceCriteria": [
+        "2.1 Develop collaborative learning plans to match skill needs of individuals and groups and match the competency standards relevant to the industry",
+        "2.2 Ensure learning delivery methods are relevant to the participants",
+        "2.3 Identify and coordinate workplace learning opportunities to facilitate individual and team achievement of competencies",
+        "2.4 Identify and manage resources and timelines relevant for learning activities according to organisational requirements"
+      ]
+    },
+    {
+      "element": "3. Monitor and evaluate workplace learning",
+      "performanceCriteria": [
+        "3.1 Monitor learning plans to improve the efficiency and effectiveness of learning",
+        "3.2 Seek feedback from individuals or teams to identify and implement improvements in future learning arrangements",
+        "3.3 Assess and record outcomes and performance of individuals and teams to determine the effectiveness of development programs and the extent of additional development support",
+        "3.4 Document and maintain records and reports of competency according to organisational requirements"
+      ]
+    }
+  ],
+  "assessmentConditions": "Skills in this unit must be demonstrated in a workplace or simulated environment where the conditions are typical of those in a working environment in this industry.\nThis includes access to:\nlearning and development plans, policies and procedures.\nAssessors of this unit must satisfy the requirements for assessors in applicable vocational education and training legislation, frameworks and/or standards.",
+  "performanceEvidence": "The candidate must demonstrate the ability to complete the tasks outlined in the elements, performance criteria and foundation skills of this unit, including evidence of the ability to:\n\nIn the course of the above, the candidate must:\n\n• contribute to, facilitate and monitor learning and development for at least one team and for at least one individual.\n\n• collect data on team and individual and team development needs\n• collaboratively develop learning plans to match skill needs of individuals and groups\n• coordinate learning opportunities\n• give and receive feedback during the implementation of learning plans\n• monitor and review workplace learning plan implementation plans.",
+  "knowledgeEvidence": "The candidate must be able to demonstrate knowledge to complete the tasks outlined in the elements, performance criteria and foundation skills of this unit, including knowledge of:\n\n• facilitation techniques to support team development and improvement\n• organisational policies, plans and procedures for developing teams\n• career paths and competency standards relevant to the industry\n• key sources of information relevant to inform development needs\n• key features of learning and development methods.",
+  "supersededBy": null,
+  "supersedes": {
+    "code": "BSBLED401",
+    "url": "https://training.gov.au/training/details/BSBLED401"
+  },
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-11-19T22:38:56.493Z"
+}

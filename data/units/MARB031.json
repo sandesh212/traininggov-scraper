@@ -1,0 +1,219 @@
+{
+  "url": "https://training.gov.au/training/details/MARB031/unitdetails",
+  "code": "MARB031",
+  "title": "Maintain marine internal combustion engines, propulsion plant and auxiliary systems",
+  "status": "Current",
+  "release": "Release 2",
+  "licensingOrRegulatoryInfo": "has been incorporated in accordance with Regulatory requirements. Assessment Requirements have been strengthened in accordance with Regulatory requirements.",
+  "elements": [
+    {
+      "element": "Plan maintenance activities",
+      "performanceCriteria": [
+        "1.1 Maintenance plan is accessed to determine maintenance requirements for engines, propulsion plant and auxiliary systems",
+        "1.2 Inspections are conducted and additional non-routine maintenance requirements are determined",
+        "1.3 Manufacturer specifications for machinery and equipment are obtained",
+        "1.4 Tasks are planned and sequenced in conjunction with others involved in or affected by maintenance work",
+        "1.5 Consumables and equipment are selected and checked for serviceability"
+      ]
+    },
+    {
+      "element": "Complete preventative maintenance",
+      "performanceCriteria": [
+        "2.1 Machinery and equipment are safely isolated according to work health and safety (WHS)/occupational health and safety (OHS) requirements and organisational practices",
+        "2.2 WHS/OHS risk control measures and procedures for carrying out work are followed",
+        "2.3 Work area is prepared",
+        "2.4 Preventative maintenance is carried out in compliance with technical specifications",
+        "2.5 Methods for dealing with unexpected situations are selected on the basis of safety and specified work outcomes",
+        "2.6 Maintenance work is checked to verify that it conforms to technical specifications and complies with survey requirements, as required"
+      ]
+    },
+    {
+      "element": "Complete breakdown maintenance",
+      "performanceCriteria": [
+        "3.1 Nature of breakdown is confirmed using maintenance records and or logbook entries related to reported breakdown",
+        "3.2 Restrictions are applied to operations, where necessary, and Master is informed",
+        "3.3 Machinery and equipment are safely isolated according to WHS/OHS requirements and organisational practices",
+        "3.4 Repair work is carried out according to technical specifications",
+        "3.5 Master is notified of completion of repair work and details are documented"
+      ]
+    },
+    {
+      "element": "Complete hull maintenance",
+      "performanceCriteria": [
+        "4.1 Checks of vessel hull, equipment and fittings are carried out according to maintenance schedules, survey requirements and vessel manufacturer instructions",
+        "4.2 Deterioration in vessel structure, equipment and fittings is identified",
+        "4.3 Checks on propeller, stern tube and rudder are carried out in accordance with organisational procedures, safety regulations and survey requirements",
+        "4.4 WHS/OHS risk control measures and procedures for carrying out work are followed",
+        "4.5 Work area is prepared",
+        "4.6 Maintenance work is checked to verify it conforms to technical specifications and complies with survey requirements, as required"
+      ]
+    },
+    {
+      "element": "Clean up and complete documentation",
+      "performanceCriteria": [
+        "5.1 Work area is cleared and cleaned",
+        "5.2 Materials are disposed of or recycled according to legislative and workplace requirements",
+        "5.3 Tools and equipment are cleaned, checked and stored according to workplace procedures",
+        "5.4 Machinery and equipment are returned to service and monitored for correct operation according to organisational practices",
+        "5.5 Maintenance report is completed according to workplace procedures"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessors must hold credentials specified within the Standards for Registered Training Organisations current at the time of assessment.\nAssessment must satisfy the Principles of Assessment and Rules of Evidence and all regulatory requirements included within the Standards for Registered Training current at the time of assessment.\nAssessment processes and techniques must be appropriate to the language, literacy and numeracy requirements of the work being performed and the needs of the candidate.\nPractical assessment must occur in a workplace, or realistic simulated workplace, under the normal range of workplace conditions.\nSimulations and scenarios may be used where situations cannot be provided in the workplace only rarely, in particular for situations relating to emergency procedures where assessment would be unsafe, impractical or may lead to environmental damage.\nResources for assessment must include access to:\napplicable documentation, such as legislation, regulations, codes of practice, workplace procedures and operational manuals, including manufacturer specifications and SDS/MSDS\na commercial vessel with inboard diesel propulsion power of greater than or equal to 150 kW or appropriate engine, propulsion plant and auxiliary systems ashore\ntools, equipment, machinery, materials and relevant personal protective equipment (PPE) currently used in industry.",
+  "performanceEvidence": "• applying safety requirements throughout the work sequence, including the use of personal protective equipment (PPE)\n• completing:\n  ◦ all work to specifications\n  ◦ basic user maintenance of marine internal combustion engine, propulsion plant and auxiliary systems to manufacturer specifications and survey requirements, so as to prevent pollution of the marine environment\n• completing maintenance records\n• developing effective planning documents\n• implementing safe and environmentally responsible work practices\n• lubricating\n• maintaining emergency equipment\n• overhauling pumps\n• performing breakdown maintenance in the event of failure of:\n  ◦ engine systems\n  ◦ auxiliary systems\n• planning maintenance activities according to technical, legislative, safety and procedural specifications\n• reading and interpreting:\n  ◦ manufacturer specifications\n  ◦ safety data sheets (SDS)/material safety data sheets (MSDS).\n\n• all work to specifications\n• basic user maintenance of marine internal combustion engine, propulsion plant and auxiliary systems to manufacturer specifications and survey requirements, so as to prevent pollution of the marine environment\n\n• engine systems\n• auxiliary systems\n\n• manufacturer specifications\n• safety data sheets (SDS)/material safety data sheets (MSDS).",
+  "knowledgeEvidence": "• basic hydraulic systems and user maintenance requirements\n• basic vessel construction\n• bearing types, materials, installation and lubrication\n• cleaning chemicals\n• common faults in:\n  ◦ steering gear\n  ◦ refrigeration systems\n• coolants\n• corrosion prevention\n• coupling types, fitting, keys and keyways\n• cross connections between bilge systems and seawater systems, including fire main\n• electro-hydraulic steering gear\n• emergency steering systems\n• engine:\n  ◦ construction\n  ◦ fault-finding techniques\n  ◦ fuel injection, timing and control equipment\n  ◦ performance and reasons for lack of performance\n  ◦ protection arrangements\n  ◦ routine/remedial maintenance\n• faults that can occur with firefighting equipment and systems\n• fire main system and components, including pumps, hoses and nozzles\n• fixed firefighting systems and associated remote shut-offs and closing of appliances\n• glands, packing and seals\n• heat exchanger, keel cooler and raw water cooling systems, including their construction and maintenance\n• maintenance of marine two- and four-stroke diesel and petrol engines\n• maintenance of watertight openings and hull fittings\n• marine gearbox faults and emergency operation\n• method of propulsion reversal including controllable pitch propeller construction\n• oil filter changing procedures\n• oil quality monitoring\n• oily water separator\n• planned maintenance\n• preparation for survey\n• process for carrying out checks of the vessel hull, equipment and fittings, including:\n  ◦ anodes\n  ◦ propeller damage\n  ◦ rudder\n  ◦ ship side valves\n  ◦ stern tube\n  ◦ water intakes\n  ◦ watertight hatches and openings\n  ◦ cleaning and or replacing filters\n• process for cleaning:\n  ◦ coolers\n  ◦ strainers\n• propeller types, fitting, keys and keyways, securing nuts and locking\n• pump capabilities and requirements for priming\n• refrigeration systems and components\n• relevant regulations and codes of practice relating to the maintenance of engineering equipment and systems, such as firefighting\n• routine and remedial maintenance of steering systems\n• rudder and stock bearing supports\n• rudder construction and rudder types\n• safe operation of hand and power tools\n• seawater circulating systems\n• shutting down machinery\n• statutory and organisational requirements for documentation relating to the maintenance of engineering equipment and systems, such as firefighting\n• storage of liquefied petroleum gas (LPG) cylinders\n• testing of LPG detectors\n• tiller arm attachment\n• types of:\n  ◦ deck machinery\n  ◦ pumps and safety devices\n• wet sump lubrication systems\n• WHS/OHS requirements.\n\n• steering gear\n• refrigeration systems\n\n• construction\n• fault-finding techniques\n• fuel injection, timing and control equipment\n• performance and reasons for lack of performance\n• protection arrangements\n• routine/remedial maintenance\n\n• anodes\n• propeller damage\n• rudder\n• ship side valves\n• stern tube\n• water intakes\n• watertight hatches and openings\n• cleaning and or replacing filters\n\n• coolers\n• strainers\n\n• deck machinery\n• pumps and safety devices",
+  "supersededBy": null,
+  "supersedes": {
+    "code": "MARB006",
+    "url": "https://training.gov.au/training/details/MARB006"
+  },
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Competency field",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Range of conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-11-19T22:38:43.315Z"
+}

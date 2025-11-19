@@ -1,0 +1,204 @@
+{
+  "url": "https://training.gov.au/training/details/MARC035/unitdetails",
+  "code": "MARC035",
+  "title": "Operate and maintain extra low and low voltage electrical systems and equipment",
+  "status": "Current",
+  "release": "Release 2",
+  "licensingOrRegulatoryInfo": "has been incorporated in accordance with Regulatory requirements. Assessment Requirements have been strengthened in accordance with Regulatory requirements.",
+  "elements": [
+    {
+      "element": "Operate electrical systems and equipment",
+      "performanceCriteria": [
+        "1.1 Routine pre-operational checks are carried out on electrical systems and equipment according to manufacturer specifications",
+        "1.2 Systems and equipment are operated according to manufacturer specifications",
+        "1.3 Faults are identified and appropriate action is taken to rectify them",
+        "1.4 Faults are reported and logged promptly and accurately to appropriate personnel"
+      ]
+    },
+    {
+      "element": "Carry out routine maintenance on electrical systems and equipment",
+      "performanceCriteria": [
+        "2.1 Tasks are planned and sequenced in conjunction with others involved in or affected by maintenance work",
+        "2.2 Tools and equipment are selected and checked for serviceability",
+        "2.3 Components to be maintained are isolated",
+        "2.4 Systems are tested and test results are compared with manufacturer specifications",
+        "2.5 Maintenance tasks are carried out to specifications",
+        "2.6 Unserviceable components are tagged according to organisational procedures and appropriate personnel are notified"
+      ]
+    },
+    {
+      "element": "Isolate faulty components for repair",
+      "performanceCriteria": [
+        "3.1 Faulty items or components are isolated according to workplace procedures",
+        "3.2 Serviceable items are fitted according to manufacturer specifications",
+        "3.3 Operational checks are carried out on equipment or system to ensure compliance with manufacturer specifications"
+      ]
+    },
+    {
+      "element": "Clean up and complete documentation",
+      "performanceCriteria": [
+        "4.1 Work area is cleared and cleaned",
+        "4.2 Materials are disposed of or recycled according to legislative and workplace requirements",
+        "4.3 Tools and equipment are cleaned, checked and stored according to workplace procedures",
+        "4.4 Maintenance report is completed according to workplace procedures"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessors must hold credentials specified within the Standards for Registered Training Organisations current at the time of assessment.\nAssessment must satisfy the Principles of Assessment and Rules of Evidence and all regulatory requirements included within the Standards for Registered Training current at the time of assessment.\nAssessment processes and techniques must be appropriate to the language, literacy and numeracy requirements of the work being performed and the needs of the candidate.\nPractical assessment must occur in a workplace, or realistic simulated workplace, under the normal range of workplace conditions.\nSimulations and scenarios may be used where situations cannot be provided in the workplace or may occur only rarely, in particular for situations relating to emergency procedures and adverse weather conditions where assessment would be unsafe, impractical or may lead to environmental damage.\nResources for assessment must include access to:\napplicable documentation, such as legislation, regulations, codes of practice, workplace procedures and operational manuals\na commercial vessel with inboard diesel propulsion power of greater than or equal to 150 kW or appropriate engine, propulsion plant, and auxiliary equipment with low and extra low voltage (ELV) electrical systems ashore\ntools, equipment, machinery, materials and relevant PPE currently used in industry.",
+  "performanceEvidence": "• completing maintenance or fault reports in accordance with vessel workplace procedures\n• connecting and disconnecting shore power including:\n  ◦ single phase\n  ◦ three phase\n  ◦ changing incoming phase rotation using on-board switching equipment\n• implementing safe and environmentally responsible work practices in testing and maintenance activities including the use of personal protective equipment (PPE)\n• locating, interpreting and applying manufacturer specifications for electrical systems and equipment\n• operating electrical systems and conducting operator preventive maintenance according to manufacturer recommendations, regulations and workplace procedures to ensure safe operation\n• recognising and rectifying electrical system faults and, where necessary, taking steps to make them immediately safe, including:\n  ◦ battery faults\n  ◦ failure of alternators\n  ◦ failure of starter motors\n  ◦ performing isolation, lock out or tag out procedures\n  ◦ replacing fuses\n  ◦ testing battery voltage and specific gravity\n  ◦ testing charging system voltage output\n  ◦ topping up battery electrolyte levels\n• selecting and using appropriate processes, tools and equipment.\n\n• single phase\n• three phase\n• changing incoming phase rotation using on-board switching equipment\n\n• battery faults\n• failure of alternators\n• failure of starter motors\n• performing isolation, lock out or tag out procedures\n• replacing fuses\n• testing battery voltage and specific gravity\n• testing charging system voltage output\n• topping up battery electrolyte levels",
+  "knowledgeEvidence": "• basic care and fault recognition of electrical systems and equipment\n• batteries:\n  ◦ care and maintenance\n  ◦ hazards\n  ◦ methods of connecting batteries\n  ◦ types\n• charging systems:\n  ◦ alarms or indicators\n  ◦ regulators\n• extra low and low voltage electrical systems including:\n  ◦ basic care\n  ◦ extra low voltage (ELV) systems are those not exceeding 50 Volts alternating current (AC) or 120 Volts direct current (DC)\n  ◦ low voltage systems are those not exceeding 1,000 Volts AC or 1,500 Volts DC\n  ◦ motors and common equipment\n  ◦ relationship between Voltage, Amperage and Power\n  ◦ switchboards and cables\n• how to recognise and rectify electrical system faults and, where necessary, steps to make them immediately safe, including:\n  ◦ battery faults\n  ◦ failure of alternators\n  ◦ failure of starter motors\n  ◦ faults with shore power connections including phase rotations using on-board switching equipment\n  ◦ blown fuses\n  ◦ tripping circuit breakers\n• protective devices on switchboards including:\n  ◦ selection of correct capacity\n  ◦ use of fuses and circuit breakers\n• relevant state/territory training and qualification requirements for carrying out installation, maintenance and/or repair of electrical systems and equipment\n• reporting and recording of faults and maintenance workplace procedures\n• shore power connection includes:\n  ◦ single phase\n  ◦ three phase\n  ◦ changing incoming phase rotation using on-board switching equipment\n• starter motors, alternators and associated equipment:\n  ◦ maintenance\n  ◦ operation\n• work health and safety (WHS)/occupational health and safety (OHS) requirements and work practices.\n\n• care and maintenance\n• hazards\n• methods of connecting batteries\n• types\n\n• alarms or indicators\n• regulators\n\n• basic care\n• extra low voltage (ELV) systems are those not exceeding 50 Volts alternating current (AC) or 120 Volts direct current (DC)\n• low voltage systems are those not exceeding 1,000 Volts AC or 1,500 Volts DC\n• motors and common equipment\n• relationship between Voltage, Amperage and Power\n• switchboards and cables\n\n• battery faults\n• failure of alternators\n• failure of starter motors\n• faults with shore power connections including phase rotations using on-board switching equipment\n• blown fuses\n• tripping circuit breakers\n\n• selection of correct capacity\n• use of fuses and circuit breakers\n\n• single phase\n• three phase\n• changing incoming phase rotation using on-board switching equipment\n\n• maintenance\n• operation",
+  "supersededBy": null,
+  "supersedes": {
+    "code": "MARC003",
+    "url": "https://training.gov.au/training/details/MARC003"
+  },
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Competency field",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Range of conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-11-19T22:38:44.996Z"
+}

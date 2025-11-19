@@ -1,0 +1,192 @@
+{
+  "url": "https://training.gov.au/training/details/MARA024/unitdetails",
+  "code": "MARA024",
+  "title": "Manage vessel stability",
+  "status": "Current",
+  "release": "Release 2",
+  "licensingOrRegulatoryInfo": "Legislative and regulatory requirements are applicable to this unit. This unit is one of the requirements to obtain Australian Maritime Safety Authority (AMSA) certification as a Master up to 45 metres Near Coastal and Marine Engine Driver Grade 1 Near Coastal as specified in Marine Order 505. Seafarers seeking certification should check with AMSA.",
+  "elements": [
+    {
+      "element": "Calculate stability",
+      "performanceCriteria": [
+        "1.1 Vessel stability data book is made available and checked for endorsement",
+        "1.2 Data is interpreted to determine safety parameters for vessel",
+        "1.3 Stability is accurately calculated using data extracted from vessel stability data book",
+        "1.4 Stability calculations are checked to ensure they correlate with data set out in vessel stability book",
+        "1.5 Miscalculations or unsafe conditions are recognised and recalculated or checked",
+        "1.6 Calculated stability data is recorded using appropriate units and correct number of significant figures"
+      ]
+    },
+    {
+      "element": "Control vessel stress and stability",
+      "performanceCriteria": [
+        "2.1 Information from vessel stability data is used to determine loading limits and displacement from draft",
+        "2.2 Vessel weight distribution is managed to maintain stability condition within safe limits at all times and regulatory requirements are complied with under all conditions of loading",
+        "2.3 Relevant stability information is correctly communicated to others, as required",
+        "2.4 Stability conditions of vessel are managed in adverse weather conditions",
+        "2.5 Emergencies that may jeopardise vessel stability are recognised and appropriate actions taken"
+      ]
+    },
+    {
+      "element": "Maintain records of stability management",
+      "performanceCriteria": [
+        "3.1 Data and information related to stability management is accurately recorded",
+        "3.2 Data and information related to stability management is filed and stored according to organisational procedures"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessors must satisfy applicable regulatory requirements, which include requirements in the Standards for Registered Training Organisations current at the time of assessment.\nAs a minimum, assessment must satisfy applicable regulatory requirements, which include requirements in the Standards for Registered Training Organisations current at the time of assessment.\nAssessment processes and techniques must be appropriate to the language, literacy and numeracy requirements of the work being performed and the needs of the candidate.\nPractical assessment must occur in a workplace, or realistic simulated workplace, under the normal range of workplace conditions.\nSimulations and scenarios may be used where situations cannot be provided in the workplace or may occur only rarely, in particular for situations relating to emergency procedures and adverse weather conditions where assessment would be unsafe, impractical or may lead to environmental damage.\nResources for assessment must include access to:\napplicable documentation, such as legislation, regulations, codes of practice, safety management system (SMS), vessel stability books, workplace procedures and operational manuals\ntools, equipment, machinery, materials and personal protective equipment (PPE) currently used in industry.",
+  "performanceEvidence": "• carrying out basic calculations associated with maintaining vessel stability which must include:\n  ◦ dock water and freshwater allowance\n  ◦ draft\n  ◦ final height of the centre of gravity (CG) above the keel of a vessel\n  ◦ final position of the longitudinal centre of gravity (LCG)\n  ◦ free surface effect and vertical distance between keel and CG adjusted for free surface effect (CGf)\n  ◦ metacentric height (GM) and GM adjusted for free surface effect (GMf)\n  ◦ righting moments\n  ◦ trim\n• checking calculations to ensure correlation against stability book data\n• maintaining stability management record keeping in accordance with organisational procedures\n• managing loading and weight distribution of vessel to ensure assigned load line conditions are not exceeded.\n\n• dock water and freshwater allowance\n• draft\n• final height of the centre of gravity (CG) above the keel of a vessel\n• final position of the longitudinal centre of gravity (LCG)\n• free surface effect and vertical distance between keel and CG adjusted for free surface effect (CGf)\n• metacentric height (GM) and GM adjusted for free surface effect (GMf)\n• righting moments\n• trim",
+  "knowledgeEvidence": "• bilging and permeability\n• calculations associated with vessel stability including:\n  ◦ centroids and CG\n  ◦ change of draught and trim (MCT)\n  ◦ density and specific gravity\n  ◦ dock water and freshwater allowance\n  ◦ draft calculations\n  ◦ free surface effect and vertical distance between keel and CG adjusted for free surface effect (CGf)\n  ◦ forces and moments calculations\n  ◦ longitudinal centre of gravity (LCG)\n  ◦ metacentric height (GM) and GM adjusted for free surface effect (GMf)\n  ◦ righting moments\n  ◦ stress calculations\n  ◦ tonnes per centimetre (TPC) immersion\n  ◦ trim calculations including use of trim and stress tables\n• conditions of stable, neutral and unstable equilibrium and effects of disturbing vessel from upright\n• construction features and stress characteristics for vessels\n• effects of free surface of liquids\n• emergencies including:\n  ◦ adverse weather and water conditions\n  ◦ any other emergency identified by risk assessment that may affect stability\n  ◦ cargo shift\n  ◦ damaged hull\n  ◦ flooding of cargo spaces\n• factors that affect the rolling period of vessel\n• loading and discharging weights\n• loading limits including:\n  ◦ not exceeding allowable passenger carrying capacity and distribution\n  ◦ not exceeding cargo carrying capacity of the vessel\n  ◦ the effect of fuel, freshwater and ballast on cargo carrying capacity\n• maintenance of stability during firefighting operations\n• principal stresses that act on the structure of a vessel\n• principles of vessel stability\n• problems affecting vessel stability\n• relationship between light displacement, loaded displacement and deadweight tonnage\n• stability curves\n• stability management record management including:\n  ◦ information contained in stability data books\n• stability of vessel in a range of conditions\n• stability terms and definitions\n• steps involved in bringing an unstable vessel to a stable condition\n• transverse and longitudinal dynamics\n• work health and safety (WHS)/occupational health and safety (OHS) requirements and work practices.\n\n• centroids and CG\n• change of draught and trim (MCT)\n• density and specific gravity\n• dock water and freshwater allowance\n• draft calculations\n• free surface effect and vertical distance between keel and CG adjusted for free surface effect (CGf)\n• forces and moments calculations\n• longitudinal centre of gravity (LCG)\n• metacentric height (GM) and GM adjusted for free surface effect (GMf)\n• righting moments\n• stress calculations\n• tonnes per centimetre (TPC) immersion\n• trim calculations including use of trim and stress tables\n\n• adverse weather and water conditions\n• any other emergency identified by risk assessment that may affect stability\n• cargo shift\n• damaged hull\n• flooding of cargo spaces\n\n• not exceeding allowable passenger carrying capacity and distribution\n• not exceeding cargo carrying capacity of the vessel\n• the effect of fuel, freshwater and ballast on cargo carrying capacity\n\n• information contained in stability data books",
+  "supersededBy": null,
+  "supersedes": null,
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Competency field",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Range of conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-11-19T22:38:42.246Z"
+}

@@ -1,0 +1,212 @@
+{
+  "url": "https://training.gov.au/training/details/MARK013/unitdetails",
+  "code": "MARK013",
+  "title": "Manoeuvre a vessel up to 100 metres",
+  "status": "Current",
+  "release": "Release 1",
+  "licensingOrRegulatoryInfo": "Legislative and regulatory requirements are applicable to this unit. This unit is one of the requirements to obtain Australian Maritime Safety Authority (AMSA) certification as a Master of a commercial vessel up to 100 metres in length as specified in Marine Order 505. Seafarers seeking certification should check with AMSA.",
+  "elements": [
+    {
+      "element": "Manoeuvre vessel in normal conditions",
+      "performanceCriteria": [
+        "1.1 Features of vessel that relate to its handling characteristics are recognised",
+        "1.2 Adequate resources are organised prior to and during operations",
+        "1.3 Details of manoeuvres are communicated to relevant personnel clearly and concisely using standard maritime vocabulary",
+        "1.4 Situational awareness is maintained to ensure safe manoeuvres",
+        "1.5 Manoeuvres are completed in relevant conditions of tide and wind to meet passage requirements",
+        "1.6 Propulsion equipment is used and monitored to assist in completing manoeuvres safely",
+        "1.7 Appropriate alterations to vessel heading and power are made in response to operational environment",
+        "1.8 Safe operating limits of propulsion and steering systems are not exceeded"
+      ]
+    },
+    {
+      "element": "Manoeuvre vessel in adverse weather conditions",
+      "performanceCriteria": [
+        "2.1 Nature of adverse weather conditions is identified and implications for vessel operations are evaluated",
+        "2.2 Preparations are made and required precautions are taken to minimise risk and damage to vessel, personnel and time loss on passage",
+        "2.3 Manoeuvres are adjusted to allow for weather and sea conditions, and to keep vessel in safe water",
+        "2.4 Propulsion equipment is used and monitored to assist in completing actions safely",
+        "2.5 Heading is maintained within acceptable limits",
+        "2.6 Appropriate allowance is made for effects of deadweight, draft, trim, speed and underwater keel clearances during turning circles and stopping distance",
+        "2.7 Safe operating limits of propulsion and steering equipment are not exceeded",
+        "2.8 Situational awareness is maintained at all times to review actions and ensure safety of vessel"
+      ]
+    },
+    {
+      "element": "Manoeuvre vessel in emergencies",
+      "performanceCriteria": [
+        "3.1 Nature of emergency is established and required action is determined",
+        "3.2 Risks to vessel and safety of persons onboard are assessed and safety of required action is confirmed",
+        "3.3 Details of action are communicated to relevant personnel clearly and concisely using standard maritime vocabulary",
+        "3.4 Appropriate manoeuvres are made during emergency to maintain safety of vessel and those onboard, and any other vessels or persons involved",
+        "3.5 Propulsion equipment is used and monitored to assist in completing actions safely",
+        "3.6 Safe operating limits of propulsion and steering equipment are not exceeded",
+        "3.7 Special handling techniques are correctly applied during launching of boats or life rafts and rescues of persons overboard"
+      ]
+    },
+    {
+      "element": "Tow and be towed",
+      "performanceCriteria": [
+        "4.1 Preparations for towing are safely made according to established nautical practice",
+        "4.2 Correct towing procedures and precautions are applied when towing and being towed"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessors must hold credentials specified within the Standards for Registered Training Organisations current at the time of assessment.\nAssessment must satisfy the Principles of Assessment and Rules of Evidence and all regulatory requirements included within the Standards for Registered Training Organisations current at the time of assessment.\nAssessment processes and techniques must be appropriate to the language, literacy and numeracy requirements of the work being performed and the needs of the candidate.\nPractical assessment must occur in a workplace, or realistic simulated workplace, under the normal range of workplace conditions.\nSimulations and scenarios may be used where situations cannot be provided in the workplace or may occur only rarely, in particular for situations relating to emergency procedures and adverse weather conditions where assessment would be unsafe, impractical or may lead to environmental damage.\nResources for assessment must include access to:\na commercial vessel greater than or equal to 12 metres in length\napplicable documentation, such as legislation, regulations, codes of practice, workplace procedures and operational manuals\ntools, equipment, machinery, materials and personal protective equipment (PPE) currently used in industry.",
+  "performanceEvidence": "• anchoring a vessel\n• determining required actions for a range of emergency situations\n• handling a disabled or partially disabled vessel\n• issuing helm and engine orders\n• maintaining situational awareness\n• manoeuvring a vessel in normal and emergency situations\n• manoeuvring a vessel through:\n  ◦ anchor work\n  ◦ astern movements\n  ◦ berthing and leaving a berth\n  ◦ coming to and leaving a mooring\n  ◦ person overboard\n  ◦ positioning vessel to safely launch boats or life rafts in bad weather\n  ◦ steering astern through an ‘s’ configuration\n  ◦ turn short around\n  ◦ turning a vessel across the tide across the wind\n• manoeuvring a vessel to embark or disembark a pilot\n• manoeuvring in shallow water\n• preparing for towing, including:\n  ◦ ensuring appropriate lights and shapes for the tow are available and in working order\n  ◦ ensuring means of communication between the two vessels is available\n  ◦ ensuring tow line is of sufficient length\n  ◦ ensuring tow ropes are in good condition and of adequate strength for proposed tow\n  ◦ making appropriate reports to authorities\n  ◦ making provision for rapid slipping of tow in emergency situations\n  ◦ making tow fast to towing vessel to ensure steerage is maintained\n  ◦ preparing messenger ropes for passing tow lines.\n\n• anchor work\n• astern movements\n• berthing and leaving a berth\n• coming to and leaving a mooring\n• person overboard\n• positioning vessel to safely launch boats or life rafts in bad weather\n• steering astern through an ‘s’ configuration\n• turn short around\n• turning a vessel across the tide across the wind\n\n• ensuring appropriate lights and shapes for the tow are available and in working order\n• ensuring means of communication between the two vessels is available\n• ensuring tow line is of sufficient length\n• ensuring tow ropes are in good condition and of adequate strength for proposed tow\n• making appropriate reports to authorities\n• making provision for rapid slipping of tow in emergency situations\n• making tow fast to towing vessel to ensure steerage is maintained\n• preparing messenger ropes for passing tow lines.",
+  "knowledgeEvidence": "• Convention on the International Regulations for Preventing Collisions at Sea (COLREG - Preventing collisions at sea) including:\n  ◦ effects of deadweight, draught, trim, speed, under keel clearance, tide and current on vessel’s stopping distance and rate of turn\n  ◦ interaction with passing vessels, squat, shallow water and banks effect\n  ◦ manoeuvres assisting a vessel or aircraft in distress\n  ◦ radio communications\n• effects of displacement and planning hulls\n• effects of inboard propulsion units\n• effects of rudders and propellers\n• factors that could adversely affect vessel safety during operations\n• features of a vessel that relate to its handling characteristics\n• launching boats or life rafts\n• lessening drift and use of oil\n• manoeuvres to:\n  ◦ beach and re-float the vessel\n  ◦ berth in a pen\n  ◦ crossing a bar\n  ◦ embarking and disembarking a pilot\n  ◦ means of keeping a vessel out of a trough\n  ◦ take on board survivors from lifeboats and life rafts\n• nature of emergencies, including:\n  ◦ collision\n  ◦ damage to vessel\n  ◦ disabled or partially disabled vessel\n  ◦ fire\n  ◦ grounding\n  ◦ loss of steering gear\n  ◦ person overboard\n• precautions in manoeuvring or launching boats or life rafts in bad weather\n• procedures for towing and being towed\n• requirements for entering, departing and crossing a traffic separation scheme\n• use of a sea anchor\n• vessel in adverse weather conditions, including:\n  ◦ bad weather\n  ◦ fog and restricted visibility\n  ◦ following and quartering seas\n  ◦ heavy swell and surf\n  ◦ wind and sea conditions that may affect safety of vessel\n• work health and safety (WHS)/occupational health and safety (OHS) requirements and work practices.\n\n• effects of deadweight, draught, trim, speed, under keel clearance, tide and current on vessel’s stopping distance and rate of turn\n• interaction with passing vessels, squat, shallow water and banks effect\n• manoeuvres assisting a vessel or aircraft in distress\n• radio communications\n\n• beach and re-float the vessel\n• berth in a pen\n• crossing a bar\n• embarking and disembarking a pilot\n• means of keeping a vessel out of a trough\n• take on board survivors from lifeboats and life rafts\n\n• collision\n• damage to vessel\n• disabled or partially disabled vessel\n• fire\n• grounding\n• loss of steering gear\n• person overboard\n\n• bad weather\n• fog and restricted visibility\n• following and quartering seas\n• heavy swell and surf\n• wind and sea conditions that may affect safety of vessel",
+  "supersededBy": null,
+  "supersedes": {
+    "code": "MARK009",
+    "url": "https://training.gov.au/training/details/MARK009"
+  },
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Competency field",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Range of conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-11-19T22:38:52.888Z"
+}

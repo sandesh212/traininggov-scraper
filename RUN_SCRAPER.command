@@ -1,4 +1,5 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-osascript -e 'tell application "Terminal" to do script "cd \"'$(pwd)'\" && ./START.sh"'
+# Run directly in current terminal without opening new windows
+./START.sh

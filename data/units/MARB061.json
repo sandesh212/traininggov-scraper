@@ -1,0 +1,207 @@
+{
+  "url": "https://training.gov.au/training/details/MARB061/unitdetails",
+  "code": "MARB061",
+  "title": "Plan and supervise routine maintenance on a vessel up to 100 metres",
+  "status": "Current",
+  "release": "Release 1",
+  "licensingOrRegulatoryInfo": "Legislative and regulatory requirements are applicable to this unit. This unit is one of the requirements to obtain Australian Maritime Safety Authority (AMSA) certification as a Master up to 45 metres Near Coastal as specified in Marine Order 505. Seafarers seeking certification should check with AMSA.",
+  "elements": [
+    {
+      "element": "Develop maintenance program",
+      "performanceCriteria": [
+        "1.1 Planned maintenance system is accessed to establish maintenance requirements for vessel",
+        "1.2 Maintenance program for vessel is developed to meet requirements of planned maintenance system",
+        "1.3 Maintenance schedules and budgets are identified",
+        "1.4 Suggestions that support effective implementation of maintenance program are offered according to organisational procedures",
+        "1.5 Strategies to minimise impact of maintenance activities on vessel operations are identified"
+      ]
+    },
+    {
+      "element": "Implement maintenance program",
+      "performanceCriteria": [
+        "2.1 Routine maintenance activities are proposed and prioritised in conjunction with others involved in or affected by maintenance work",
+        "2.2 Routine maintenance activities are allocated within scheduled timeframes and budgets according to organisational procedures",
+        "2.3 Vessel operations are maintained, where possible, without interruption",
+        "2.4 Safety of crew is maintained at all times according to relevant legislation and organisational procedures",
+        "2.5 Requests for assistance from crew to complete maintenance activities are responded to promptly"
+      ]
+    },
+    {
+      "element": "Identify failed or unsafe machinery and equipment",
+      "performanceCriteria": [
+        "3.1 Faulty machinery and equipment are identified and clear and noticeable warning signs are erected according to organisational procedures",
+        "3.2 Failed or unsafe machinery and equipment are assessed according to organisational procedures",
+        "3.3 Repairs are allocated to appropriate crew members according to organisational procedures",
+        "3.4 Unsafe machinery and equipment which cannot be repaired are promptly tagged and isolated according to organisational procedures",
+        "3.5 Unsafe machinery and equipment are promptly reported according to organisational procedures",
+        "3.6 Reports on all repair work undertaken are completed according to organisational procedures"
+      ]
+    },
+    {
+      "element": "Monitor supplies",
+      "performanceCriteria": [
+        "4.1 Supply and stock levels are maintained to ensure ongoing availability",
+        "4.2 Management of supplies is undertaken according to organisational procedures",
+        "4.3 Supply and stock levels are reconciled and any discrepancies are rectified or reported",
+        "4.4 Supply records are maintained according to organisational procedures"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessors must hold credentials specified within the Standards for Registered Training Organisations current at the time of assessment.\nAssessment must satisfy the Principles of Assessment and Rules of Evidence and all regulatory requirements included within the Standards for Registered Training current at the time of assessment.\nAssessment processes and techniques must be appropriate to the language, literacy and numeracy requirements of the work being performed and the needs of the candidate.\nPractical assessment must occur in a workplace, or realistic simulated workplace, under the normal range of workplace conditions.\nSimulations and scenarios may be used where situations cannot be provided in the workplace or may occur only rarely, in particular for situations relating to emergency procedures and adverse weather conditions where assessment would be unsafe, impractical or may lead to environmental damage.\nResources for assessment must include access to:\na commercial vessel greater than or equal to 12 metres in length\napplicable documentation, such as legislation, regulations, codes of practice, safety management system (SMS), workplace procedures and operational manuals.",
+  "performanceEvidence": "• actioning planned maintenance system, including:\n  ◦ liaising with internal and external suppliers, authorities and agencies\n  ◦ preparing reports on outcomes of inspection and maintenance activities\n  ◦ taking appropriate precautions to prevent pollution of the marine environment\n  ◦ using and interpreting vessel, equipment and machinery specifications, drawings, operational manuals and diagrams\n• developing a maintenance program having regard to:\n  ◦ owner’s requirements\n  ◦ periodic survey requirements\n  ◦ programmed maintenance requirements of hull and machinery\n  ◦ relevant safety data sheets (SDS)/material safety data sheets (MSDS)\n  ◦ routine maintenance as contained in manufacturer instruction manuals and drawings\n  ◦ safety and environmental policy and requirements\n• initiating timely action in response to defects or damage.\n\n• liaising with internal and external suppliers, authorities and agencies\n• preparing reports on outcomes of inspection and maintenance activities\n• taking appropriate precautions to prevent pollution of the marine environment\n• using and interpreting vessel, equipment and machinery specifications, drawings, operational manuals and diagrams\n\n• owner’s requirements\n• periodic survey requirements\n• programmed maintenance requirements of hull and machinery\n• relevant safety data sheets (SDS)/material safety data sheets (MSDS)\n• routine maintenance as contained in manufacturer instruction manuals and drawings\n• safety and environmental policy and requirements",
+  "knowledgeEvidence": "• elements of ship structure crucial to the safety of the ship\n• fundamental principles of vessel construction\n• maintenance records that must be maintained on vessel to meet organisational and regulatory requirements\n• managing maintenance of the vessel\n• means for control of corrosion of marine surfaces and structures\n• monitoring, selection and use of supplies involved in maintenance of vessel\n• planned maintenance system, including:\n  ◦ continuous improvement and review procedures\n  ◦ document control procedures\n  ◦ provision of safe practices in vessel operation and a safe working environment\n  ◦ reference to applicable codes, guidelines and standards\n  ◦ systems for recording completed maintenance schedules, including identification of defective equipment and rectification of defects\n• principal structural components\n• procedures for initiation and coordination of repair and/or replacement procedures onboard vessel\n• relevant laws and regulations, including work health and safety (WHS)/occupational health and safety (OHS) and pollution control legislation\n• routine maintenance activities\n• slipping and docking procedures suitable for various types of hull forms\n• typical problems related to maintenance of vessels and appropriate actions and solutions.\n\n• continuous improvement and review procedures\n• document control procedures\n• provision of safe practices in vessel operation and a safe working environment\n• reference to applicable codes, guidelines and standards\n• systems for recording completed maintenance schedules, including identification of defective equipment and rectification of defects",
+  "supersededBy": null,
+  "supersedes": {
+    "code": "MARB046",
+    "url": "https://training.gov.au/training/details/MARB046"
+  },
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Competency field",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Range of conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-11-19T22:38:44.384Z"
+}

@@ -1,17 +1,19 @@
 {
-  "timestamp": "2025-11-19T00:18:32.334Z",
+  "timestamp": "2025-11-19T22:38:41.539Z",
   "summary": {
-    "totalChecked": 132,
+    "totalChecked": 131,
     "valid": 131,
-    "invalid": 1,
-    "errors": 0
+    "invalid": 0,
+    "errors": 0,
+    "duplicates": 1
   },
-  "invalidUnits": [
+  "invalidUnits": [],
+  "errorUnits": [],
+  "duplicates": [
     {
-      "code": "CHC14015",
-      "reason": "Unit does not exist (404 - tried variations)",
-      "permanent": true
+      "code": "SFIFSH301",
+      "occurrences": 2,
+      "note": "This code appeared multiple times in the Excel file but was only processed once"
     }
-  ],
-  "errorUnits": []
+  ]
 }

@@ -1,0 +1,181 @@
+{
+  "url": "https://training.gov.au/training/details/SFIAQU217/unitdetails",
+  "code": "SFIAQU217",
+  "title": "Feed stock",
+  "status": "Current",
+  "release": "Release 1",
+  "elements": [
+    {
+      "element": "Elements",
+      "performanceCriteria": [
+        "Performance Criteria"
+      ]
+    },
+    {
+      "element": "1. Prepare for feeding",
+      "performanceCriteria": [
+        "1.1 Confirm the feeding schedule and feed type and quantity with supervisor",
+        "1.2 Prepare feeding equipment or technology, checking serviceability and using personal protective equipment requirements, and calibrate feeding equipment if required",
+        "1.3 Follow the collection and loading requirements for feeding equipment"
+      ]
+    },
+    {
+      "element": "2. Carry out feeding",
+      "performanceCriteria": [
+        "2.1 Follow feeding schedule to distribute feed either by hand or mechanical means using safe work practices",
+        "2.2 Distribute the required amount of food manually, mechanically or via the use of automated feeding technology until response slows down for satiation feed",
+        "2.3 Observe and record stock behaviour and environmental conditions"
+      ]
+    },
+    {
+      "element": "3. Complete post-feeding activities",
+      "performanceCriteria": [
+        "3.1 Clean work area according to workplace procedures",
+        "3.2 Check and store equipment, reporting any identified repair requirements to supervisor",
+        "3.3 Record relevant data and observations and report any abnormal records to supervisor"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessment of the skills in this unit of competency must take place under the following conditions:\nphysical conditions:skills must be demonstrated in an aquaculture workplace setting or an environment that accurately represents workplace conditions\nresources, equipment and materials:feeding equipment appropriate for stock and workplace\nstock to feed\nfeed for stock\nspecifications:feeding schedule and workplace procedures for feeding stock\nrelationship:supervisor.\nAssessors of this unit must satisfy the requirements for assessors in applicable vocational education and training legislation, frameworks and/or standards.",
+  "performanceEvidence": "An individual demonstrating competency must satisfy all of the elements and performance criteria in this unit.\n\nThere must be evidence that the individual has conducted stock feeding activities for aquaculture on at least one occasion, including:\n\n• communicated and reported on feeding activities with supervisor\n• prepared and loaded to feed by hand or prepared to use manual, mechanical and/or automated feeding equipment with correct quantity of feed\n• used the appropriate feeding techniques for stock\n• completed accurate records on stock and feeding observations\n• cleaned up work area.",
+  "knowledgeEvidence": "An individual must be able to demonstrate the knowledge required to perform the tasks outlined in the elements and performance criteria of this unit. This includes knowledge of:\n\n• feeding techniques:\n  ◦ remote feeding\n  ◦ by hand\n• basic characteristics of normal and abnormal stock feeding behaviour\n• effects of water and environmental conditions on stock feeding behaviour\n• feeding equipment or technology types, handling requirements and operating methods\n• storage requirements to maintain quality of feed\n• types and quantities of feed required for workplace stock\n• health and safety practices and biosecurity measures used when feeding stock.\n\n• remote feeding\n• by hand",
+  "supersededBy": null,
+  "supersedes": null,
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-11-19T22:39:01.217Z"
+}

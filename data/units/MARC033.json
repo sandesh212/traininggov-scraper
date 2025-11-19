@@ -1,0 +1,222 @@
+{
+  "url": "https://training.gov.au/training/details/MARC033/unitdetails",
+  "code": "MARC033",
+  "title": "Complete engine room tasks",
+  "status": "Current",
+  "release": "Release 2",
+  "licensingOrRegulatoryInfo": "has been incorporated in accordance with Regulatory requirements. Assessment Requirements have been strengthened in accordance with Regulatory requirements.",
+  "elements": [
+    {
+      "element": "Plan tasks",
+      "performanceCriteria": [
+        "1.1 Work plan is developed and sequenced in conjunction with others involved in or affected by work plan, according to organisational procedures",
+        "1.2 Timelines, jobs and work priorities are confirmed with Master and other relevant authorities, as required"
+      ]
+    },
+    {
+      "element": "Conduct refuelling operations",
+      "performanceCriteria": [
+        "2.1 Tank levels are correctly measured and reported before and after fuelling operations",
+        "2.2 Fuel capacity is calculated and recorded",
+        "2.3 Tools and equipment are selected and checked for serviceability",
+        "2.4 Safety boundary and signage for refuelling operation are accessed and used",
+        "2.5 Fire and spill prevention equipment is correctly deployed",
+        "2.6 Personal protective equipment (PPE) is accessed and used",
+        "2.7 Refuelling operations are performed safely and effective communication is maintained with relevant personnel to ensure safety and integrity of vessel and crew",
+        "2.8 Appropriate action is taken to handle incidents arising during fuelling operations according to organisational procedures and regulatory requirements"
+      ]
+    },
+    {
+      "element": "Maintain stock and consumables",
+      "performanceCriteria": [
+        "3.1 Stock levels and consumables are monitored and maintained at required levels",
+        "3.2 Stock and consumables are reordered as required",
+        "3.3 Records of stock inventories and consumables are maintained and discrepancies are identified"
+      ]
+    },
+    {
+      "element": "Perform general housekeeping tasks",
+      "performanceCriteria": [
+        "4.1 Housekeeping tasks are clarified against work plan",
+        "4.2 Appropriate equipment for specific tasks is determined, prepared and used",
+        "4.3 Housekeeping tasks are performed and assessed against task requirements",
+        "4.4 Procedures for handling, storing and disposing of cleaning liquids are implemented according to regulatory requirements"
+      ]
+    },
+    {
+      "element": "Stow and manage flammable and explosive materials",
+      "performanceCriteria": [
+        "5.1 Hazards related to flammable and explosive materials are identified",
+        "5.2 Suitability of stowage areas is verified against regulatory requirements and organisational procedures",
+        "5.3 Procedures for safe handling and stowage of flammable and explosive materials are implemented according to regulatory requirements and organisational practices"
+      ]
+    },
+    {
+      "element": "Prepare simple reports",
+      "performanceCriteria": [
+        "6.1 Requirements for simple reports are identified",
+        "6.2 Information is prepared according to organisational procedures",
+        "6.3 Calculations for fuel consumption and voyage duration are completed",
+        "6.4 Information is assessed for accuracy, currency and relevance for inclusion in report",
+        "6.5 Report is written using appropriate terminology"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessors must hold credentials specified within the Standards for Registered Training Organisations current at the time of assessment.\nAssessment must satisfy the Principles of Assessment and Rules of Evidence and all regulatory requirements included within the Standards for Registered Training current at the time of assessment.\nAssessment processes and techniques must be appropriate to the language, literacy and numeracy requirements of the work being performed and the needs of the candidate.\nPractical assessment must occur in a workplace, or realistic simulated workplace, under the normal range of workplace conditions.\nSimulations and scenarios may be used where situations cannot be provided in the workplace or may occur only rarely, in particular for situations relating to emergency procedures and adverse weather conditions where assessment would be unsafe, impractical or may lead to environmental damage.\nResources for assessment must include access to:\napplicable documentation, such as legislation, regulations, codes of practice, safety management systems (SMS), workplace procedures, operational manuals and SDS/MSDS\na commercial vessel with inboard diesel propulsion power of greater than or equal to 150 kW or appropriate engine, propulsion plant and auxiliary systems ashore\ntools, equipment, machinery, materials and relevant personal protective equipment (PPE) that are currently used in industry.",
+  "performanceEvidence": "• applying work health and safety (WHS)/occupational health and safety (OHS) practices, including hazard identification, risk assessment and risk control options\n• carrying out housekeeping tasks, including:\n  ◦ correct disposal of waste\n  ◦ pumping of bilges\n  ◦ removal or lashing of loose items\n• completing all work to specifications\n• converting:\n  ◦ fractions to decimals\n  ◦ units to multiples of base units\n• keeping running and maintenance logs\n• performing calculations involving:\n  ◦ consumption of fuel and lubricating oil, hourly fuel consumption, theoretical steaming times and distances\n  ◦ volume and capacity of regular shaped tanks\n• sequencing tasks\n• writing simple reports.\n\n• correct disposal of waste\n• pumping of bilges\n• removal or lashing of loose items\n\n• fractions to decimals\n• units to multiples of base units\n\n• consumption of fuel and lubricating oil, hourly fuel consumption, theoretical steaming times and distances\n• volume and capacity of regular shaped tanks",
+  "knowledgeEvidence": "• appropriate actions to address the following incidents during refuelling operations:\n  ◦ fire\n  ◦ spillage on board\n  ◦ spillage over the side\n• common International System of Units (SI units), such as kilogram, tonne, litre and metre\n• correct storage and use of:\n  ◦ chemicals\n  ◦ equipment\n  ◦ tools\n• hazards related to flammable and explosive materials, including:\n  ◦ battery generated gases\n  ◦ chemicals\n  ◦ fuels\n  ◦ liquefied petroleum gas (LPG)\n  ◦ lubricating oils\n  ◦ oil soaked rags (spontaneous combustion)\n• principles of simple report writing\n• procedures and requirements for cleaning and housekeeping\n• procedures for monitoring and maintaining levels, and re-ordering of, stock and consumables\n• relevant parts of legislation, regulations, codes of practice\n• WHS/OHS procedures and practices including:\n  ◦ hazard identification, risk assessment and risk control measures\n  ◦ identification of hazardous goods\n  ◦ safe handling and stowage of flammable and explosive materials\n  ◦ safety data sheets (SDS)/material safety data sheets (MSDS).\n\n• fire\n• spillage on board\n• spillage over the side\n\n• chemicals\n• equipment\n• tools\n\n• battery generated gases\n• chemicals\n• fuels\n• liquefied petroleum gas (LPG)\n• lubricating oils\n• oil soaked rags (spontaneous combustion)\n\n• hazard identification, risk assessment and risk control measures\n• identification of hazardous goods\n• safe handling and stowage of flammable and explosive materials\n• safety data sheets (SDS)/material safety data sheets (MSDS).",
+  "supersededBy": null,
+  "supersedes": {
+    "code": "MARC001",
+    "url": "https://training.gov.au/training/details/MARC001"
+  },
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Competency field",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Range of conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-11-19T22:38:45.163Z"
+}

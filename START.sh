@@ -10,6 +10,18 @@ echo "║  Training.gov.au Unit Scraper - Auto Setup & Run          ║"
 echo "╚════════════════════════════════════════════════════════════╝"
 echo ""
 
+# Check internet connectivity
+echo "🌐 Checking internet connection..."
+if ! ping -c 1 -W 2 training.gov.au &> /dev/null && ! ping -c 1 -W 2 8.8.8.8 &> /dev/null; then
+    echo "❌ ERROR: No internet connection detected!"
+    echo "   Please check your network connection and try again."
+    echo ""
+    read -p "Press any key to exit..."
+    exit 1
+fi
+echo "✅ Internet connection OK"
+echo ""
+
 # Check if node is installed
 if ! command -v node &> /dev/null; then
     echo "❌ ERROR: Node.js is not installed!"
@@ -36,11 +48,11 @@ echo "✅ Found Units.xlsx"
 echo ""
 
 # Auto-install dependencies if needed
-if [ ! -d "node_modules" ]; then
+if [ ! -d ".config/node_modules" ]; then
     echo "📦 Installing dependencies (first time only)..."
     echo "   This may take 1-2 minutes..."
     echo ""
-    npm install --silent
+    cd .config && npm install --silent && cd ..
     if [ $? -ne 0 ]; then
         echo "❌ Failed to install dependencies!"
         echo "   Please check your internet connection and try again."
@@ -62,7 +74,7 @@ fi
 # Run the scraper
 echo "🚀 Starting scraper..."
 echo ""
-npx tsx src/autoSync.ts
+cd .config && npx tsx src/autoSync.ts && cd ..
 
 echo ""
 echo "════════════════════════════════════════════════════════════"

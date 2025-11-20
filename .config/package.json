@@ -10,6 +10,7 @@
     "dev": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "npx tsx src/autoSync.ts",
+    "auto": "npx tsx src/autoValidate.ts",
     "analyze": "npx tsx src/analyzeSamples.ts",
     "validate": "npx tsx src/validateAssessment.ts",
     "batch-validate": "npx tsx src/batchValidate.ts",

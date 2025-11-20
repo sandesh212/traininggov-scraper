@@ -37,10 +37,7 @@
   "performanceEvidence": "• applying safety and hazard control procedures when disposing of waste and garbage\n• applying work health and safety (WHS)/occupational health and safety (OHS) practices, including hazard identification, risk assessment and risk control options\n• preparing and keeping clear and concise environmental records\n• recognising procedures and following instructions for environmental work practices\n• reporting environmental hazards and risks in a timely way.",
   "knowledgeEvidence": "• environmental and resource hazards and risks associated with the maritime industry\n• environmental laws, regulations and standards relevant to work in the maritime industry, including:\n  ◦ Commonwealth, state and territory legislation\n  ◦ International Convention for the Prevention of Pollution from Ships (MARPOL)\n• means of minimising environmental damage, including:\n  ◦ increasing the use of renewable, recyclable, re-usable and recoverable resources\n• potential environmental threats, including:\n  ◦ anchoring\n  ◦ noise\n  ◦ wash from propellers\n• procedures and processes that support environmentally sustainable principles in the workplace, including:\n  ◦ avoiding or minimising environmental risks\n  ◦ documented policies and procedures, including:\n    ◦ emergency procedures\n    ◦ environmental data recording and reporting procedures\n    ◦ hazard and incident reporting and recording procedures\n    ◦ procedures for stowage of garbage on board\n  ◦ environmental hazard and risk identification\n  ◦ environmental management system\n  ◦ environmental monitoring\n  ◦ improving environmental performance\n  ◦ signs and labels\n  ◦ waste minimisation and segregation\n  ◦ work plans\n• procedures for reporting environmental hazards and risks\n• procedures for use and stowage of hazardous chemicals on board\n• requirements for waste management and control systems under the MARPOL Convention\n• types and application of waste compactors and crushers suitable for use on board a vessel\n• use of oil spill equipment and its limitations\n• WHS/OHS practices, including hazard identification, risk assessment and risk control options.\n\n• Commonwealth, state and territory legislation\n• International Convention for the Prevention of Pollution from Ships (MARPOL)\n\n• increasing the use of renewable, recyclable, re-usable and recoverable resources\n\n• anchoring\n• noise\n• wash from propellers\n\n• avoiding or minimising environmental risks\n• documented policies and procedures, including:\n  ◦ emergency procedures\n  ◦ environmental data recording and reporting procedures\n  ◦ hazard and incident reporting and recording procedures\n  ◦ procedures for stowage of garbage on board\n• environmental hazard and risk identification\n• environmental management system\n• environmental monitoring\n• improving environmental performance\n• signs and labels\n• waste minimisation and segregation\n• work plans\n\n• emergency procedures\n• environmental data recording and reporting procedures\n• hazard and incident reporting and recording procedures\n• procedures for stowage of garbage on board",
   "supersededBy": null,
-  "supersedes": {
-    "code": "MARJ001",
-    "url": "https://training.gov.au/training/details/MARJ001"
-  },
+  "supersedes": null,
   "sections": [
     {
       "heading": "Unit of competency",
@@ -189,5 +186,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-20T02:15:09.568Z"
+  "lastFetchedAt": "2025-11-20T02:31:11.848Z"
 }

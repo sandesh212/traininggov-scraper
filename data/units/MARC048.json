@@ -60,7 +60,10 @@
   "performanceEvidence": "• collecting, organising and understanding information related to vessel resource and logistic requirements\n• communicating ideas and information to enable input from crew and understanding by crew of plans developed\n• completing a review of, and updating the process for, vessel operations\n• developing effective action plan that have regard to:\n  ◦ cargo plan\n  ◦ dry-docking and slipping operations\n  ◦ planned maintenance system\n  ◦ safety management plan\n  ◦ voyage planning\n• developing operational targets, including:\n  ◦ completion of survey and docking operations and routine maintenance\n  ◦ key performance indicators (KPIs)\n  ◦ optimal fuel usage\n  ◦ passage planning to achieve safe and efficient routing\n• liaising with other crew members on a range of operational issues and challenges\n• monitoring and responding to compliance issues and measuring progress against agreed objectives\n• planning and organising activities, including consulting with crew to determine resource and logistics requirements, and developing, implementing and reviewing operational plans\n• undertaking a job safety analysis (JSA) for working in areas of high risk\n• using information gathering techniques to determine crew requirements and developing strategies to address these.\n\n• cargo plan\n• dry-docking and slipping operations\n• planned maintenance system\n• safety management plan\n• voyage planning\n\n• completion of survey and docking operations and routine maintenance\n• key performance indicators (KPIs)\n• optimal fuel usage\n• passage planning to achieve safe and efficient routing",
   "knowledgeEvidence": "• analytical tools\n• budgets and estimation of material requirements\n• decision-making models and techniques\n• information gathering strategies\n• logistics and procurement management techniques\n• operational plan development, including:\n  ◦ docking and repair plans\n  ◦ managing confined space entry\n  ◦ passage planning\n  ◦ periodic survey requirements\n• resource availability\n• work health and safety (WHS)/occupational health and safety (OHS) and environmental issues.\n\n• docking and repair plans\n• managing confined space entry\n• passage planning\n• periodic survey requirements",
   "supersededBy": null,
-  "supersedes": null,
+  "supersedes": {
+    "code": "MARC012",
+    "url": "https://training.gov.au/training/details/MARC012"
+  },
   "sections": [
     {
       "heading": "Unit of competency",
@@ -209,5 +212,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-20T02:15:05.368Z"
+  "lastFetchedAt": "2025-11-20T02:31:08.151Z"
 }

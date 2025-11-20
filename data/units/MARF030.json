@@ -55,10 +55,7 @@
   "performanceEvidence": "• applying appropriate handling strategies to manoeuvre survival craft in rough weather and sea conditions\n• boarding a life raft unassisted while wearing a lifejacket and assisting others to board\n• collecting, managing and interpreting information on the use of lifesaving equipment\n• communicating with other crew members\n• determining type and extent of emergency\n• jumping safely from a height into the water while wearing a lifejacket and according to established survival practice\n• operating survival radio equipment\n• participating in training, musters and emergency drills\n• reading and interpreting instructions for emergency procedures and for use of lifesaving and survival equipment\n• recognising and interpreting muster signals\n• righting an inverted life raft unassisted while wearing a lifejacket according to established survival practice\n• swimming while wearing a lifejacket and floating without a lifejacket according to established survival practice\n• using a rescue quoit to assist a person to the life raft\n• using paddles to manoeuvre survival craft\n• using survival equipment.",
   "knowledgeEvidence": "• actions to be taken in emergency situations\n• calculations required to ration food and water\n• emergency muster and abandon vessel signals\n• equipment found in survival craft, its function and procedures for correct operation\n• established survival practice\n• first aid treatment techniques relevant for a survival craft\n• how to launch survival craft\n• importance of being ready for shipboard emergencies\n• International Convention for the Safety of Life at Sea (SOLAS) regulations\n• location of survival equipment on vessel\n• maintenance of lifesaving appliances\n• means of activating gas release line to inflate life raft\n• procedures for abandoning vessel including use of:\n  ◦ inflatable life raft\n  ◦ life buoys\n  ◦ life jackets\n• relevant maritime regulations relating to required survival equipment on a vessel\n• relevant work health and safety (WHS)/occupational health and safety (OHS) legislation and policies\n• search and rescue transponders (SARTs)\n• steps to be taken after collision, grounding or other marine incident and resulting hull damage\n• survival at sea techniques\n• survival craft:\n  ◦ characteristics of different types of survival craft\n  ◦ construction\n• technique used to deploy a sea anchor or drogue from the survival craft\n• techniques for using survival equipment\n• threats to survival on vessel abandonment and appropriate strategies for countering these threats\n• time required to make distress calls safely\n• use and purpose of personal protective equipment (PPE)\n• use of distress signals, including flares and penalty for misuse.\n\n• inflatable life raft\n• life buoys\n• life jackets\n\n• characteristics of different types of survival craft\n• construction",
   "supersededBy": null,
-  "supersedes": {
-    "code": "MARF005",
-    "url": "https://training.gov.au/training/details/MARF005"
-  },
+  "supersedes": null,
   "sections": [
     {
       "heading": "Unit of competency",
@@ -207,5 +204,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-20T02:15:07.628Z"
+  "lastFetchedAt": "2025-11-20T02:31:09.488Z"
 }

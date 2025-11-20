@@ -43,10 +43,7 @@
   "performanceEvidence": "The candidate must demonstrate the ability to complete the tasks outlined in the elements, performance criteria and foundation skills of this unit, including evidence of the ability to apply organisational policies, procedures and processes to:\n\n• treat at least three risks by:\n  ◦ identifying different types of organisational risks\n  ◦ consulting with stakeholders to analyse and evaluate risks\n  ◦ implementing control measures\n  ◦ referring risks that are beyond own area of responsibility to others\n  ◦ maintaining risk management documentation.\n\n• identifying different types of organisational risks\n• consulting with stakeholders to analyse and evaluate risks\n• implementing control measures\n• referring risks that are beyond own area of responsibility to others\n• maintaining risk management documentation.",
   "knowledgeEvidence": "The candidate must be able to demonstrate knowledge to complete the tasks outlined in the elements, performance criteria and foundation skills of this unit, including knowledge of:\n\n• legislative and regulatory context of the organisation in relation to risk management\n• techniques for identifying and evaluating risks\n• organisational policies and procedures for risk management\n• areas where risks are commonly identified in an organisation\n• risks beyond scope of individual responsibility to be referred to relevant organisational personnel\n• purpose and key elements of current risk management standards.",
   "supersededBy": null,
-  "supersedes": {
-    "code": "BSBRSK401",
-    "url": "https://training.gov.au/training/details/BSBRSK401"
-  },
+  "supersedes": null,
   "sections": [
     {
       "heading": "Unit of competency",
@@ -177,5 +174,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-20T02:15:15.129Z"
+  "lastFetchedAt": "2025-11-20T02:31:17.430Z"
 }

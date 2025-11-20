@@ -42,10 +42,7 @@
   "performanceEvidence": "An individual demonstrating competency must satisfy all of the elements and performance criteria in this unit.\n\nThere must be evidence that the individual has, on at least one occasion, applied control measures in response to a common disease outbreak affecting aquatic stock, including:\n\n• identified and reported to supervisor about the disease outbreak\n• assessed risk factors and selected and used the appropriate personal protective equipment\n• selected the appropriate control method for the disease\n• applied the appropriate disposal methods for dead or moribund stock\n• maintained accurate records of disease observations and treatments\n• maintained hygienic work area and equipment after disease control.",
   "knowledgeEvidence": "An individual must be able to demonstrate the knowledge required to perform the tasks outlined in the elements and performance criteria of this unit. This includes knowledge of:\n\n• hazard identification and risk assessment for the control of diseases\n• features of normal and abnormal stock behaviour relevant to disease\n• characteristics, signs and symptoms of disease outbreak of cultured or held stock\n• common types and environmental causes of diseases\n• lifecycles of common diseases\n• methods for prevention, control and treatment of outbreaks of diseases:\n  ◦ cleaning and sterilising equipment\n  ◦ quarantining equipment and stock\n  ◦ chemical and non-chemical control measures\n  ◦ withholding periods of various common treatment programs\n• legislative, regulatory and biosecurity requirements associated with controlling diseases\n• health and safety requirements associated with controlling diseases\n• conditions that may cause the outbreak of diseases.\n\n• cleaning and sterilising equipment\n• quarantining equipment and stock\n• chemical and non-chemical control measures\n• withholding periods of various common treatment programs",
   "supersededBy": null,
-  "supersedes": {
-    "code": "SFIAQU311",
-    "url": "https://training.gov.au/training/details/SFIAQU311"
-  },
+  "supersedes": null,
   "sections": [
     {
       "heading": "Unit of competency",
@@ -182,5 +179,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-20T02:15:21.550Z"
+  "lastFetchedAt": "2025-11-20T02:31:23.314Z"
 }

@@ -39,10 +39,7 @@
   "performanceEvidence": "• applying work health and safety (WHS)/occupational health and safety (OHS) and pollution control, legislation and policies\n• connecting and disconnecting shore supply\n• locating, interpreting and applying manufacturer specifications for electrical systems and equipment\n• managing electrical supply to accommodate load demand\n• operating and monitoring alternating current (AC) and direct current (DC) electrical systems according to manufacturer recommendations, regulations and vessel operating procedures to ensure safe operation\n• operating electrical systems and equipment\n• performing isolation, lock out and tag out procedures\n• recognising and rectifying operational faults.",
   "knowledgeEvidence": "• basic care of electrical systems and equipment in general - fault recognition\n• batteries:\n  ◦ care\n  ◦ hazards\n  ◦ types\n• charging systems:\n  ◦ alarms or indicators\n  ◦ regulators\n• connecting batteries in series and parallel\n• emergency supply and regulatory requirements\n• fault identification, location and safety implications\n• managing low voltage electrical supply to accommodate load demand, including:\n  ◦ changing electrical supply to a larger alternator/generator\n  ◦ connecting further alternators/generator in parallel\n• operation of fuses and circuit breakers\n• operation of protection devices on the switchboard including:\n  ◦ earth indicating devices\n• operation of starter motors, alternators and associated equipment\n• personal safety\n• process for recognising and rectifying operational faults, including:\n  ◦ activation of protection devices on the switchboard\n  ◦ battery faults\n  ◦ blown fuses and open circuit breakers\n  ◦ earth faults\n  ◦ failure of alternators to produce voltage\n  ◦ failure of starter motors\n  ◦ faults with shore power connections including phase rotations\n• process for recognising non-essential electrical systems be isolated.\n• process for requesting non-essential electrical systems be isolated\n• shore power connection\n• single and three-phase power\n• uses of fuses and circuit breakers and selection of correct capacity\n• WHS/OHS requirements and work practices.\n\n• care\n• hazards\n• types\n\n• alarms or indicators\n• regulators\n\n• changing electrical supply to a larger alternator/generator\n• connecting further alternators/generator in parallel\n\n• earth indicating devices\n\n• activation of protection devices on the switchboard\n• battery faults\n• blown fuses and open circuit breakers\n• earth faults\n• failure of alternators to produce voltage\n• failure of starter motors\n• faults with shore power connections including phase rotations",
   "supersededBy": null,
-  "supersedes": {
-    "code": "MARC010",
-    "url": "https://training.gov.au/training/details/MARC010"
-  },
+  "supersedes": null,
   "sections": [
     {
       "heading": "Unit of competency",
@@ -191,5 +188,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-20T02:15:04.712Z"
+  "lastFetchedAt": "2025-11-20T02:31:07.552Z"
 }

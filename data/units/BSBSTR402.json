@@ -38,10 +38,7 @@
   "performanceEvidence": "The candidate must demonstrate the ability to complete the tasks outlined in the elements, performance criteria and foundation skills of this unit, including evidence of the ability to:\n\nIn the course of the above, the candidate must:\n\n• implement at least one continuous improvement system or process in an organisation or work area.\n\n• provide support to enable individuals and teams to participate in decisions, take responsibility, show initiative and implement improvement processes\n• communicate effectively to support the implementation of improvements and improvement system and processes\n• implement, monitor and update improvement plans, processes and procedures to improve performance\n• document performance to identify further opportunities for improvement\n• manage records and reports in the systems and procedures of the organisation.",
   "knowledgeEvidence": "The candidate must be able to demonstrate knowledge to complete the tasks outlined in the elements, performance criteria and foundation skills of this unit, including knowledge of:\n\n• continuous improvement systems and processes\n• coaching and mentoring needs to support continuous improvement\n• change management techniques that support continuous improvement and initiative\n• organisation’s systems and data used for benchmarking and monitoring performance for continuous improvement.",
   "supersededBy": null,
-  "supersedes": {
-    "code": "BSBMGT406",
-    "url": "https://training.gov.au/training/details/BSBMGT406"
-  },
+  "supersedes": null,
   "sections": [
     {
       "heading": "Unit of competency",
@@ -172,5 +169,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-20T02:15:16.152Z"
+  "lastFetchedAt": "2025-11-20T02:31:18.159Z"
 }

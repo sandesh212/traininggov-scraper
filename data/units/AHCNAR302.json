@@ -58,10 +58,7 @@
   "assessmentConditions": "Assessors must satisfy current standards for RTOs.",
   "performanceEvidence": "The candidate must be assessed on their ability to integrate and apply the performance requirements of this unit in a workplace setting. Performance must be demonstrated consistently over time and in a suitable range of contexts.\n\nThe candidate must provide evidence that they can:\n\n• collect and preserve biological samples as part of a monitoring program according to enterprise procedures\n• establish the sampling purpose and requirements\n• plan the collection\n• prepare equipment and facilities to take biological samples\n• carry out biological sampling as part of a monitoring program and according to enterprise procedures\n• preserve and record samples as part of a monitoring program and forward for testing if required according to enterprise procedures\n• record sampling data and observations according to enterprise procedures\n• report outcomes of collection according to enterprise procedures and monitoring program\n• apply work health and safety practices in the context of own work\n• apply biosecurity measures in the context of own work\n• apply appropriate sustainability practices in the context of own work",
   "knowledgeEvidence": "The candidate must demonstrate knowledge of:\n\n• types of biological samples that may be included in the plan, including water, animal, plant samples\n• industry biological sampling and preserving guidelines and protocols\n• field procedures for biological sampling and preservation\n• collecting equipment and methods\n• preservation equipment and processes\n• fauna and flora recognition relevant to sampling activities\n• own role in complying with relevant environmental legislation",
-  "supersededBy": {
-    "code": "AHCECR302",
-    "url": "https://training.gov.au/training/details/AHCECR302"
-  },
+  "supersededBy": null,
   "supersedes": null,
   "sections": [
     {
@@ -205,5 +202,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-20T02:15:13.872Z"
+  "lastFetchedAt": "2025-11-20T02:31:15.629Z"
 }

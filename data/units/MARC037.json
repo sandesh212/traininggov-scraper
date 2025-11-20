@@ -48,10 +48,7 @@
   "performanceEvidence": "• applying work health and safety (WHS)/occupational health and safety (OHS) requirements and work practices\n• conducting pre-start checks, including checking:\n  ◦ cooling system\n  ◦ fuel\n  ◦ lubricating oil\n  ◦ motor attachment points\n  ◦ water depth\n• conducting shutdown checks on inboard and outboard motors, and tagging out and reporting faults\n• estimating fuel consumption\n• reading and interpreting company standard operating procedures (SOPs) about operating inboard and outboard engines\n• storing inboard or outboard motors\n• using inboard and outboard motor steering system.\n\n• cooling system\n• fuel\n• lubricating oil\n• motor attachment points\n• water depth",
   "knowledgeEvidence": "• battery connection and hazards\n• International Convention for the Prevention of Pollution from Ships (MARPOL) requirements as it applies to operating inboard and outboard motors\n• motor:\n  ◦ cooling systems\n  ◦ fuel systems\n  ◦ lubricating systems\n• risks associated with portable fuel tanks\n• standard procedures to tag out and report faults\n• starting motors\n• troubleshooting techniques\n• WHS/OHS requirements and work practices.\n\n• cooling systems\n• fuel systems\n• lubricating systems",
   "supersededBy": null,
-  "supersedes": {
-    "code": "MARC005",
-    "url": "https://training.gov.au/training/details/MARC005"
-  },
+  "supersedes": null,
   "sections": [
     {
       "heading": "Unit of competency",
@@ -200,5 +197,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-20T02:15:03.064Z"
+  "lastFetchedAt": "2025-11-20T02:31:05.551Z"
 }

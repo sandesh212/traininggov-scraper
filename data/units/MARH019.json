@@ -37,10 +37,7 @@
   "performanceEvidence": "• ensuring currency of relevant reference material\n• observing, interpreting and forecasting weather and oceanographic conditions\n• reading, interpreting and applying weather and oceanographic information\n• recognising problems that may occur when interpreting weather and oceanographic information\n• selecting and using shipboard instruments to assist in forecasting weather and oceanographic conditions, including:\n  ◦ anemometers\n  ◦ barometers\n  ◦ equipment for receiving weather maps and forecasts\n  ◦ wet and dry bulb thermometers\n• using tide tables to calculate height of tide.\n\n• anemometers\n• barometers\n• equipment for receiving weather maps and forecasts\n• wet and dry bulb thermometers",
   "knowledgeEvidence": "• actions to be taken in potentially dangerous conditions, including:\n  ◦ avoiding extreme adverse weather conditions\n  ◦ avoiding storm centres and dangerous quadrants by adjusting course and speed\n  ◦ properly securing all vessel equipment\n• basic principles for making meteorological and oceanographic measurements\n• effects on navigation and vessel handling of wind, currents and bottom topography\n• heat exchange process\n• ocean and weather conditions, including:\n  ◦ air masses and fronts\n  ◦ cloud classifications\n  ◦ cyclones, storms and gales\n  ◦ ocean currents\n  ◦ pressure systems and cold fronts\n  ◦ sea state\n  ◦ synoptic chart analysis\n  ◦ tide prediction\n  ◦ tropical meteorology\n• principles and procedures of weather forecasting using information obtained from observations, charts, satellite images, reports and instruments\n• sources of weather and oceanographic information, and methods for their interpretation\n• topographical effects on wind flow\n• typical problems in forecasting weather and oceanographic conditions\n• vertical division of the atmosphere\n• work health and safety (WHS)/occupational health and safety (OHS) requirements and work practices.\n\n• avoiding extreme adverse weather conditions\n• avoiding storm centres and dangerous quadrants by adjusting course and speed\n• properly securing all vessel equipment\n\n• air masses and fronts\n• cloud classifications\n• cyclones, storms and gales\n• ocean currents\n• pressure systems and cold fronts\n• sea state\n• synoptic chart analysis\n• tide prediction\n• tropical meteorology",
   "supersededBy": null,
-  "supersedes": {
-    "code": "MARH006",
-    "url": "https://training.gov.au/training/details/MARH006"
-  },
+  "supersedes": null,
   "sections": [
     {
       "heading": "Unit of competency",
@@ -189,5 +186,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-19T22:38:50.348Z"
+  "lastFetchedAt": "2025-11-19T23:45:05.568Z"
 }

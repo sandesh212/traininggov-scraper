@@ -38,7 +38,10 @@
   "performanceEvidence": "• applying work health and safety (WHS)/occupational health and safety (OHS) practices, including hazard identification, risk assessment and risk control measures\n• carrying out maintenance tasks including:\n  ◦ examining anchors and cables\n  ◦ inspecting:\n    ◦ anodes\n    ◦ hull fittings\n    ◦ propeller, shafts and seals\n    ◦ rudder, rudder stock and seals\n    ◦ watertight and weather tight hatches\n• explaining procedures and techniques for hull maintenance according to regulations and vessel operating procedures\n• implementing safe and environmentally responsible work practices\n• planning and preparing for maintenance\n• reading, interpreting and complying with:\n  ◦ manufacturer instructions, including all WHS/OHS requirements\n  ◦ operating and service manuals for maintenance of vessel hull\n  ◦ safety data sheets (SDS)/material safety data sheets (MSDS)\n• recognising faulty equipment and taking appropriate actions according to organisational procedures\n• recognising hull damage and deterioration and taking appropriate actions according to organisational procedures\n• selecting and using correct tools and equipment for maintenance task.\n\n• examining anchors and cables\n• inspecting:\n  ◦ anodes\n  ◦ hull fittings\n  ◦ propeller, shafts and seals\n  ◦ rudder, rudder stock and seals\n  ◦ watertight and weather tight hatches\n\n• anodes\n• hull fittings\n• propeller, shafts and seals\n• rudder, rudder stock and seals\n• watertight and weather tight hatches\n\n• manufacturer instructions, including all WHS/OHS requirements\n• operating and service manuals for maintenance of vessel hull\n• safety data sheets (SDS)/material safety data sheets (MSDS)",
   "knowledgeEvidence": "• component parts, operation and routine maintenance requirements of vessel, equipment and fittings\n• differences in vessels, hull structures and equipment\n• functions of underwater equipment\n• nature and causes of corrosion of marine surfaces and structures, and available methods for its control\n• organisational procedures for maintenance\n• principles and procedures of lubrication as they relate to underwater vessel equipment and fittings\n• procedures for:\n  ◦ checking and inspecting vessel hull as part of routine maintenance program\n  ◦ initiating and coordinating repair and or replacement of underwater equipment and fittings\n• process and requirements for hull maintenance\n• types, characteristics and functions of equipment or tools used in maintenance\n• use of sacrificial anodes\n• WHS/OHS procedures and practices including:\n  ◦ hazard identification, risk assessment and risk control measures\n  ◦ hazards of working in confined spaces\n  ◦ maintenance hazards and associated problems.\n\n• checking and inspecting vessel hull as part of routine maintenance program\n• initiating and coordinating repair and or replacement of underwater equipment and fittings\n\n• hazard identification, risk assessment and risk control measures\n• hazards of working in confined spaces\n• maintenance hazards and associated problems.",
   "supersededBy": null,
-  "supersedes": null,
+  "supersedes": {
+    "code": "MARC002",
+    "url": "https://training.gov.au/training/details/MARC002"
+  },
   "sections": [
     {
       "heading": "Unit of competency",
@@ -187,5 +190,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-19T22:38:44.797Z"
+  "lastFetchedAt": "2025-11-19T23:45:00.538Z"
 }

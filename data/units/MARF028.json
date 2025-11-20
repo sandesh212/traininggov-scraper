@@ -39,10 +39,7 @@
   "performanceEvidence": "• applying extinguishing media to a fire, including:\n  ◦ dry chemical powder\n  ◦ water\n• applying work health and safety (WHS)/occupational health and safety (OHS) requirements and work practices\n• communicating and working collaboratively as a member of a team in a firefighting operation\n• conducting effective boundary cooling\n• correctly using vessel closure and shutdown systems\n• identifying fire hazards and risks\n• using a fire blanket to extinguish a fire\n• using fire hose lines (jet spray to fog stream).\n\n• dry chemical powder\n• water",
   "knowledgeEvidence": "• chemistry of fire and its relationship to flash point, vapour density, auto ignition temperature and spontaneous combustion\n• classes of fire applicable to Australian and New Zealand Standards, including:\n  ◦ A – Carbonaceous solids\n  ◦ B – Flammable liquids\n  ◦ C – Flammable gases\n  ◦ E – Electrically energised equipment\n  ◦ F – Cooking fats or oils\n• detection and suppression systems, including fixed firefighting systems\n• extinguishing media, and their use, including:\n  ◦ extinguishing powders\n  ◦ firefighting foams\n  ◦ gaseous extinguishing agents\n  ◦ water\n• fire alarms and signals during on-board fire emergency\n• fire hazards and risks, including:\n  ◦ cargo\n  ◦ clothing\n  ◦ cooking oils\n  ◦ cordage\n  ◦ electrical arcing\n  ◦ fuels and lubricants\n  ◦ furnishings\n  ◦ paints\n  ◦ poor housekeeping\n  ◦ poor work practices\n  ◦ smoking\n  ◦ spontaneous combustion\n• fire pumps\n• firefighting tactics, techniques and procedures, including team dynamics\n• hazards and threats to life or health during on-board firefighting operations\n• international shore connections\n• methods of heat transfer\n• on-board fire emergency response organisation and procedures\n• portable fire extinguishers – colour codes and suitability for class of fire\n• principles and methods of extinguishment of each class of fire\n• principles underlying spread of fire on a vessel\n• procedure for restoring equipment to operational condition including:\n  ◦ cleaning\n  ◦ re-stowing\n• types of fire detection, firefighting equipment and systems used on vessels, their features, principles of operation, procedures for their use and problems that can occur\n• using a fire bucket\n• ventilation procedures\n• vessel construction as it relates to fire prevention or protection\n• WHS/OHS requirements and safe work practices.\n\n• A – Carbonaceous solids\n• B – Flammable liquids\n• C – Flammable gases\n• E – Electrically energised equipment\n• F – Cooking fats or oils\n\n• extinguishing powders\n• firefighting foams\n• gaseous extinguishing agents\n• water\n\n• cargo\n• clothing\n• cooking oils\n• cordage\n• electrical arcing\n• fuels and lubricants\n• furnishings\n• paints\n• poor housekeeping\n• poor work practices\n• smoking\n• spontaneous combustion\n\n• cleaning\n• re-stowing",
   "supersededBy": null,
-  "supersedes": {
-    "code": "MARF002",
-    "url": "https://training.gov.au/training/details/MARF002"
-  },
+  "supersedes": null,
   "sections": [
     {
       "heading": "Unit of competency",
@@ -191,5 +188,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-19T22:38:48.757Z"
+  "lastFetchedAt": "2025-11-19T23:45:04.039Z"
 }

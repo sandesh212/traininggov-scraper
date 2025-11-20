@@ -49,10 +49,6 @@
         "4.2 Check and store tools and equipment, reporting any identified repair requirements to supervisor",
         "4.3 Record relevant data and observations, and report any abnormal records to supervisor"
       ]
-    },
-    {
-      "element": "MappingSupersedes and is equivalent to  SFIAQUA219B  Operate and maintain high technology water treatment components",
-      "performanceCriteria": []
     }
   ],
   "assessmentConditions": "Assessment of the skills in this unit of competency must take place under the following conditions:\nphysical conditions:skills must be demonstrated in an aquaculture workplace setting or an environment that accurately represents workplace conditions\nresources, equipment and materials:basic tools and equipment to complete repairs and maintenance\nequipment to operate the system and maintain water quality\npersonal protective equipment\nrecirculating aquaculture system (RAS) with high technology components\nspare parts and repair materials\nwater monitoring equipment\ndata or recording sheets\nspecifications:specific instructions, work plan or schedule and workplace procedures for operating and maintaining high technology water treatment components\nrelationships:evidence of interactions with supervisor.\nAssessors of this unit must satisfy the requirements for assessors in applicable vocational education and training legislation, frameworks and/or standards.",
@@ -196,5 +192,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-19T22:39:00.619Z"
+  "lastFetchedAt": "2025-11-19T23:45:15.769Z"
 }

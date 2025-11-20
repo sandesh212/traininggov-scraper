@@ -53,10 +53,7 @@
   "assessmentConditions": "Assessors must satisfy current standards for RTOs.",
   "performanceEvidence": "The candidate must be assessed on their ability to integrate and apply the performance requirements of this unit in a workplace setting. Performance must be demonstrated consistently over time and in a suitable range of contexts.\n\nThe candidate must provide evidence that they can:\n\n• supervise and instruct staff to achieve work activities\n• delegate and allocate tasks\n• assess and evaluate staff capability\n• identify and provide training requirements\n• plan timesheets and timetables to meet deadlines\n• demonstrate safe workplace and environmentally responsible practices\n• solve staffing and resourcing problems\n• evaluate performance, provide feedback and prepare reports and performance appraisals\n• promote and maintain effective relationships between staff\n• monitor productivity and maintain staff records as required\n• use industry standard terminology.",
   "knowledgeEvidence": "The candidate must demonstrate knowledge of:\n\n• enterprise personnel processes\n• enterprise organisational structure and responsibilities\n• techniques for building trust and relationships\n• principles of team work and negotiation\n• leadership for the work team\n• performance appraisal systems and procedures\n• principles of time management\n• conflict management techniques\n• enterprise training requirements and processes\n• relevant State and Territory legislation, regulations and Codes of Practice with regard to work health and safety, environmental protection and employment\n• work health and safety hazard identification, risk assessment and development of risk controls.",
-  "supersededBy": {
-    "code": "AHCWRK409",
-    "url": "https://training.gov.au/training/details/AHCWRK409"
-  },
+  "supersededBy": null,
   "supersedes": null,
   "sections": [
     {
@@ -194,5 +191,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-19T22:38:55.849Z"
+  "lastFetchedAt": "2025-11-19T23:45:10.771Z"
 }

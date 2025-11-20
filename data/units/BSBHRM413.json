@@ -37,10 +37,7 @@
   "performanceEvidence": "The candidate must demonstrate the ability to complete the tasks outlined in the elements, performance criteria and foundation skills of this unit, including evidence of the ability to:\n\nIn the course of the above, the candidate must:\n\n• contribute to, facilitate and monitor learning and development for at least one team and for at least one individual.\n\n• collect data on team and individual and team development needs\n• collaboratively develop learning plans to match skill needs of individuals and groups\n• coordinate learning opportunities\n• give and receive feedback during the implementation of learning plans\n• monitor and review workplace learning plan implementation plans.",
   "knowledgeEvidence": "The candidate must be able to demonstrate knowledge to complete the tasks outlined in the elements, performance criteria and foundation skills of this unit, including knowledge of:\n\n• facilitation techniques to support team development and improvement\n• organisational policies, plans and procedures for developing teams\n• career paths and competency standards relevant to the industry\n• key sources of information relevant to inform development needs\n• key features of learning and development methods.",
   "supersededBy": null,
-  "supersedes": {
-    "code": "BSBLED401",
-    "url": "https://training.gov.au/training/details/BSBLED401"
-  },
+  "supersedes": null,
   "sections": [
     {
       "heading": "Unit of competency",
@@ -171,5 +168,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-19T23:45:11.811Z"
+  "lastFetchedAt": "2025-11-20T02:15:14.110Z"
 }

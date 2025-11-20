@@ -37,7 +37,10 @@
   "performanceEvidence": "The candidate must demonstrate the ability to complete the tasks outlined in the elements, performance criteria and foundation skills of this unit, including evidence of the ability to:\n\nIn the course of the above, the candidate must:\n\n• lead effective workplace relationships on at least four occasions with different individuals or groups.\n\n• access and analyse information required to achieve planned outcomes\n• collaborate with work team to develop and implement a work task strategy\n• apply techniques for resolving problems and conflicts, and dealing with poor performance according to organisational and legislative requirements\n• monitor and communicate work progress to relevant internal and external stakeholders\n• seek and review feedback to improve workplace leadership.",
   "knowledgeEvidence": "The candidate must be able to demonstrate knowledge to complete the tasks outlined in the elements, performance criteria and foundation skills of this unit, including knowledge of:\n\n• considerations for communicating information including audience cultural and social diversity\n• consultation processes including internal and external sources of consultees\n• impacts of relationships, cultural and social environment, in supporting or hindering the achievement of planned outcomes\n• techniques for developing positive work relationships and building trust and confidence in a team, including:\n  ◦ interpersonal styles\n  ◦ communications\n  ◦ consultation\n  ◦ cultural and social sensitivity\n  ◦ networking\n• impact of legislation and organisational policies on workplace relationships\n• techniques for communicating information and ideas to a range of stakeholders\n• common methods to resolve workplace conflict\n• common methods to manage poor work performance\n• common methods to monitor, analyse and improve work relationships.\n\n• interpersonal styles\n• communications\n• consultation\n• cultural and social sensitivity\n• networking",
   "supersededBy": null,
-  "supersedes": null,
+  "supersedes": {
+    "code": "BSBLDR402",
+    "url": "https://training.gov.au/training/details/BSBLDR402"
+  },
   "sections": [
     {
       "heading": "Unit of competency",
@@ -168,5 +171,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-19T23:45:11.416Z"
+  "lastFetchedAt": "2025-11-20T02:15:14.394Z"
 }

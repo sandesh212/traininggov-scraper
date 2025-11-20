@@ -32,6 +32,10 @@
         "2.4 Determine relevant environmental factors accurately within the limitations of available information",
         "2.5 Ensure selected fishing environment is appropriate to target species and fishing gear"
       ]
+    },
+    {
+      "element": "MappingSupersedes and is equivalent to  SFIFISH401C  Locate fishing grounds and stocks of fish",
+      "performanceCriteria": []
     }
   ],
   "assessmentConditions": "Assessment of skills must take place under the following conditions:\nphysical conditions:skills must be demonstrated in a fishing operation setting or an environment that accurately represents workplace conditions\nresources, equipment and materials:electronic aids for locating fish\nnavigational and fishing charts\nlogs of fishing operations and other sources of information used to make decisions on fishing operations\nspecifications:workplace procedures for fishing operations that include advice on health and safety and environmental requirements.\nAssessors of this unit must satisfy the requirements for assessors in applicable vocational education and training legislation, frameworks and/or standards.",
@@ -175,5 +179,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-19T23:45:23.824Z"
+  "lastFetchedAt": "2025-11-20T02:15:27.201Z"
 }

@@ -42,7 +42,10 @@
   "performanceEvidence": "An individual demonstrating competency must satisfy all of the elements and performance criteria in this unit. There must be evidence that the individual has costed at least one project for a business, including:\n\n• identified resources for a project\n• investigated options for material supplies, services, contractors and consultants\n• researched prices for resources\n• calculated costs for the project\n• documented a summary of project costs.",
   "knowledgeEvidence": "An individual must be able to demonstrate the knowledge required to perform the tasks outlined in the elements and performance criteria of this unit. This includes knowledge of:\n\n• state/territory and commonwealth legislation and management policies relating to the project\n• project costing technology and software\n• current pricing structures and options for material supplies, services, contractors and consultants relevant to work role.",
   "supersededBy": null,
-  "supersedes": null,
+  "supersedes": {
+    "code": "AHCBUS402",
+    "url": "https://training.gov.au/training/details/AHCBUS402"
+  },
   "sections": [
     {
       "heading": "Unit of competency",
@@ -179,5 +182,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-19T23:45:09.922Z"
+  "lastFetchedAt": "2025-11-20T02:15:12.941Z"
 }

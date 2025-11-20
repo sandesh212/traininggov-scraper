@@ -122,7 +122,10 @@ async function generateEmbedding(text: string): Promise<number[]> {
  */
 function cosineSimilarity(vecA: number[], vecB: number[]): number {
   if (vecA.length !== vecB.length) {
-    throw new Error('Vectors must have same length');
+    console.error(`Vector dimension mismatch: vecA=${vecA.length}, vecB=${vecB.length}`);
+    console.error(`VecA sample (first 5):`, vecA.slice(0, 5));
+    console.error(`VecB sample (first 5):`, vecB.slice(0, 5));
+    throw new Error(`Vectors must have same length (got ${vecA.length} and ${vecB.length})`);
   }
   
   let dotProduct = 0;
@@ -174,7 +177,12 @@ export async function mapAssessmentToUoCs(
   console.log('📊 Generating embeddings for assessment questions...');
   const questionEmbeddings = new Map<string, number[]>();
   for (const question of allQuestions) {
+    if (!question.text || question.text.trim().length === 0) {
+      console.warn(`⚠️  Skipping empty question: ${question.id}`);
+      continue;
+    }
     const embedding = await generateEmbedding(question.text);
+    console.log(`   Question "${question.text.substring(0, 50)}..." -> ${embedding.length}D vector`);
     questionEmbeddings.set(question.id, embedding);
   }
   
@@ -188,10 +196,19 @@ export async function mapAssessmentToUoCs(
     embedding: number[];
   }> = [];
   
+  let pcCount = 0;
   for (const unit of units) {
     for (const element of unit.elements) {
       for (const pc of element.performanceCriteria) {
+        if (!pc.text || pc.text.trim().length === 0) {
+          console.warn(`⚠️  Skipping empty PC: ${unit.code} ${element.number}.${pc.number}`);
+          continue;
+        }
         const embedding = await generateEmbedding(pc.text);
+        pcCount++;
+        if (pcCount <= 3 || pcCount % 100 === 0) {
+          console.log(`   [${pcCount}] PC "${pc.text.substring(0, 40)}..." -> ${embedding.length}D vector`);
+        }
         pcEmbeddings.push({
           unitCode: unit.code,
           elementNumber: element.number,
@@ -202,8 +219,24 @@ export async function mapAssessmentToUoCs(
       }
     }
   }
+  console.log(`   Total PCs embedded: ${pcCount}`);
   
   console.log('🔍 Performing semantic matching...\n');
+  
+  // Debug: Log embedding dimensions
+  if (allQuestions.length > 0 && pcEmbeddings.length > 0) {
+    const firstQuestionEmbed = questionEmbeddings.get(allQuestions[0].id)!;
+    console.log(`📊 Embedding dimensions:`);
+    console.log(`   Question embeddings: ${firstQuestionEmbed.length}`);
+    console.log(`   PC embeddings: ${pcEmbeddings[0].embedding.length}`);
+    
+    if (firstQuestionEmbed.length !== pcEmbeddings[0].embedding.length) {
+      throw new Error(
+        `Embedding dimension mismatch! Questions: ${firstQuestionEmbed.length}, PCs: ${pcEmbeddings[0].embedding.length}. ` +
+        `This usually means embeddings were generated with different models or methods.`
+      );
+    }
+  }
   
   // Match each question to all PCs
   let processed = 0;

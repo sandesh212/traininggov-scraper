@@ -40,10 +40,7 @@
   "performanceEvidence": "An individual demonstrating competency must satisfy all of the elements and performance criteria in this unit.\n\nThere must be evidence that the individual has conducted stock feeding activities for aquaculture on at least one occasion, including:\n\n• communicated and reported on feeding activities with supervisor\n• prepared and loaded to feed by hand or prepared to use manual, mechanical and/or automated feeding equipment with correct quantity of feed\n• used the appropriate feeding techniques for stock\n• completed accurate records on stock and feeding observations\n• cleaned up work area.",
   "knowledgeEvidence": "An individual must be able to demonstrate the knowledge required to perform the tasks outlined in the elements and performance criteria of this unit. This includes knowledge of:\n\n• feeding techniques:\n  ◦ remote feeding\n  ◦ by hand\n• basic characteristics of normal and abnormal stock feeding behaviour\n• effects of water and environmental conditions on stock feeding behaviour\n• feeding equipment or technology types, handling requirements and operating methods\n• storage requirements to maintain quality of feed\n• types and quantities of feed required for workplace stock\n• health and safety practices and biosecurity measures used when feeding stock.\n\n• remote feeding\n• by hand",
   "supersededBy": null,
-  "supersedes": {
-    "code": "SFIAQU206",
-    "url": "https://training.gov.au/training/details/SFIAQU206"
-  },
+  "supersedes": null,
   "sections": [
     {
       "heading": "Unit of competency",
@@ -180,5 +177,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-19T23:45:16.921Z"
+  "lastFetchedAt": "2025-11-20T02:15:19.157Z"
 }

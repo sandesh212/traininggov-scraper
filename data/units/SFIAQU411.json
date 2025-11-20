@@ -44,7 +44,10 @@
   "performanceEvidence": "An individual demonstrating competency must satisfy all of the elements and performance criteria in this unit.\n\nThere must be evidence that the individual has developed and implemented a stock health program, including:\n\n• researched and reported to management on treatment or prevention options in consideration of economic, regulatory, environmental and safety factors\n• established control measures and workplace plans and procedures covering all aspects of stock health\n• communicated details of the stock health program to staff\n• monitored effectiveness and legal requirements of stock health program and activities.",
   "knowledgeEvidence": "An individual must be able to demonstrate the knowledge required to perform the tasks outlined in the elements and performance criteria of this unit. This includes knowledge of:\n\n• purpose of stock health programs\n• areas of vulnerability for cultured or held stock to pests, predators and diseases\n• welfare requirements of cultured or held stock\n• ecology and behaviour of:\n  ◦ pests and predators\n  ◦ disease agents\n  ◦ species\n• key requirements of legislation and regulations relating to:\n  ◦ animal welfare and health care\n  ◦ use of chemicals and other disease treatments or control methods\n  ◦ biosecurity and food safety related to stock health\n• interaction between stock, the environment and disease agents in the development and treatment or control of disease\n• costs of chemicals and other disease treatment or control methods\n• workplace procedures used for disease control and prevention in cultured or held stock\n• processes and technology used to develop and monitor operation plans and workplace procedures.\n\n• pests and predators\n• disease agents\n• species\n\n• animal welfare and health care\n• use of chemicals and other disease treatments or control methods\n• biosecurity and food safety related to stock health",
   "supersededBy": null,
-  "supersedes": null,
+  "supersedes": {
+    "code": "SFIAQU401",
+    "url": "https://training.gov.au/training/details/SFIAQU401"
+  },
   "sections": [
     {
       "heading": "Unit of competency",
@@ -181,5 +184,5 @@
       "lists": []
     }
   ],
-  "lastFetchedAt": "2025-11-19T23:45:20.236Z"
+  "lastFetchedAt": "2025-11-20T02:15:23.281Z"
 }

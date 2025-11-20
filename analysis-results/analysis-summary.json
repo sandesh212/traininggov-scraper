@@ -1,0 +1,89 @@
+{
+  "summary": {
+    "totalDocuments": 12,
+    "totalQuestions": 112,
+    "commonUnits": [
+      "MARI003",
+      "MARN008",
+      "MARJ006",
+      "MARC037",
+      "MARK007"
+    ],
+    "topKeywords": [
+      "vessel",
+      "you",
+      "assessment",
+      "not",
+      "what",
+      "your",
+      "participant",
+      "when",
+      "name",
+      "satisfactory",
+      "training",
+      "list",
+      "required",
+      "following",
+      "date",
+      "answer",
+      "equipment",
+      "three",
+      "safety",
+      "other",
+      "fuel",
+      "crew",
+      "two",
+      "deck",
+      "assessor",
+      "signature",
+      "write",
+      "answers",
+      "water",
+      "make"
+    ]
+  },
+  "patterns": {
+    "questionIndicators": [
+      "List THREE pieces of Legislation that apply to a Domestic Commercial Vessel (DCV)",
+      "What is the minimum crew (core complement)",
+      "Part 1 – Ropework and lifting \n\nHow do you work out the Working Load Limit (WLL)",
+      "Nylon - Shock loading & elasticity\t                                \n\nPolypropylene - Good abrasion resistance/ Floating rope that will not rot\t       \n\nNatural Fibre - Tag lines lifting operations\t      \n\nFlexible Steel Wire Rope (FSWR)",
+      "Distress Signals:",
+      "Depth; bottom composition; swing room; changes in tide and weather; ease of moving in case of inclement weather\n\n\n\nSelect the anchor when anchoring on a soft mud seabed (circle your answers)",
+      "Check fuel connection\n\nEnsure prop and leg not restricted or damaged\n\nCheck oil level (mix and sump as applicable)",
+      "Manually\n\nDeck machinery to fold or compact\n\nCompacting unit (hydraulic)",
+      "When inspecting the integrity and condition of a hull, what are three (3)",
+      "Part 1:",
+      "What are four (4)",
+      "N008-K10\n\n\n\n\n\n\n\n\n\nPart 2:",
+      "Refer to Marine Safety (Domestic Commercial Vessel)",
+      "Refer to Marine Orders 504\n\nWhat are four (4)",
+      "List four (4)",
+      "Select the anchor/s when anchoring on a soft mud seabed (Circle your selection)",
+      "What are two (2)",
+      "Name three (3)",
+      "What are three (3)",
+      "Part 5:",
+      "Name two (2)",
+      "Part 6:",
+      "Reduce speed, find deeper water\n\n\n\nList two (2)",
+      "List two (2)",
+      "List three (3)",
+      "S\n\nNS\n\n\n\n\n\nVESSEL:",
+      "Whilst completing the above activities the participant correctly answered the following questions:",
+      "Secured the anchor for sea N008-P11\n\n\n\n\n\nWhilst completing the above activities the participant correctly answered the following questions:"
+    ],
+    "answerIndicators": [],
+    "unitCodePatterns": [
+      {},
+      {}
+    ],
+    "commonStructures": [
+      "Knowledge assessment",
+      "Performance assessment",
+      "Marking sheet",
+      "Open book",
+      "Closed book"
+    ]
+  }
+}

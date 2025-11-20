@@ -22,6 +22,11 @@ import {
   parseMultipleAssessments,
 } from './services/assessmentParser.js';
 import {
+  parseWordAssessment,
+  parseMultipleWordAssessments,
+  convertWordToAssessmentFormat,
+} from './services/wordAssessmentParser.js';
+import {
   generateExcelReport,
   saveTextReport,
   printReport,
@@ -225,7 +230,13 @@ NOTES:
   console.log(`   File: ${assessmentFile}`);
   
   let assessments;
-  if (format === 'smt' || (format === 'auto' && assessmentFile.toLowerCase().includes('maritime'))) {
+  const fileExt = path.extname(assessmentFile).toLowerCase();
+  
+  if (fileExt === '.docx' || fileExt === '.doc') {
+    console.log('   Format: Word Document\n');
+    const wordAssessment = await parseWordAssessment(assessmentFile);
+    assessments = convertWordToAssessmentFormat([wordAssessment]);
+  } else if (format === 'smt' || (format === 'auto' && assessmentFile.toLowerCase().includes('maritime'))) {
     console.log('   Format: SMT Maritime\n');
     assessments = parseSMTMaritimeAssessment(assessmentFile);
   } else {
@@ -235,11 +246,11 @@ NOTES:
   
   if (assessments.length === 0 || assessments.every(a => a.questions.length === 0)) {
     console.error('❌ ERROR: No assessment questions found');
-    console.error('   Check the Excel file format');
+    console.error('   Check the file format');
     process.exit(1);
   }
   
-  const totalQuestions = assessments.reduce((sum, a) => sum + a.questions.length, 0);
+  const totalQuestions = assessments.reduce((sum, a => sum + a.questions.length, 0);
   console.log(`   ✅ Parsed ${assessments.length} assessment(s) with ${totalQuestions} questions\n`);
   
   // Run validation

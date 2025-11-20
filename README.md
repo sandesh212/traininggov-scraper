@@ -1,8 +1,37 @@
-# Training.gov.au Scraper (Maritime Excel Format)
+# 🚀 RTO Assessment Validator - Quick Start
 
-Automated scraper for extracting Units of Competency from training.gov.au with intelligent code matching, duplicate detection, and maritime-format Excel export.
+**Fast • Free • Simple**
 
-## 🚀 Quick Start
+## How to Run
+
+### **Mac** 🍎
+Double-click: **`VALIDATE_FAST.command`**
+
+### **Windows** 🪟
+Double-click: **`VALIDATE_FAST.bat`**
+
+That's it! Results in 2-3 seconds ⚡
+
+---
+
+## What It Does
+
+✅ Validates assessment questions against Performance Criteria  
+✅ Shows coverage report  
+✅ 100% local (no internet, no API keys)  
+✅ FREE forever
+
+**Speed:** 2-3 seconds | **Coverage:** ~58% | **Cost:** $0
+
+---
+
+## Full Documentation
+
+👉 **See [`START_HERE.md`](START_HERE.md) for detailed instructions**
+
+---
+
+## Original Purpose (Advanced)
 
 **One-Click Execution:**
 - **Mac/Linux**: Double-click `START.sh` or `RUN_SCRAPER.command`

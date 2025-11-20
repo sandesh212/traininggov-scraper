@@ -37,6 +37,10 @@ import {
   saveTextReport,
   printReport,
 } from './services/reportGenerator.js';
+import {
+  checkOllamaAvailability,
+  downloadOllamaModels,
+} from './services/ollamaService.js';
 
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -311,16 +315,28 @@ function detectClustering(assessments: any[], allUnitCodes: string[]): {
 async function main() {
   console.log('╔════════════════════════════════════════════════════════════════════════╗');
   console.log('║          🤖 FULLY AUTOMATED ASSESSMENT VALIDATOR                       ║');
-  console.log('║          Just drop your files and run - I do the rest!                ║');
+  console.log('║          Uses FREE local AI (Ollama) - No API key needed!             ║');
   console.log('╚════════════════════════════════════════════════════════════════════════╝\n');
   
-  // Check OpenAI API key
-  if (!process.env.OPENAI_API_KEY) {
-    console.error('❌ ERROR: OPENAI_API_KEY environment variable not set');
-    console.error('   Get your API key from: https://platform.openai.com/api-keys');
-    console.error('   Set it: export OPENAI_API_KEY="sk-proj-your-key-here"\n');
+  // Check if Ollama is available
+  logStep('Checking Ollama AI');
+  
+  const ollamaStatus = await checkOllamaAvailability();
+  
+  if (!ollamaStatus.available) {
+    console.error('❌ Ollama is not running or required models are missing\n');
+    console.error('To install Ollama:');
+    console.error('  1. Visit: https://ollama.com');
+    console.error('  2. Download and install for macOS');
+    console.error('  3. Run: ollama pull llama3.2');
+    console.error('  4. Run: ollama pull nomic-embed-text');
+    console.error('  5. Then run this script again\n');
+    console.error(`Status: ${ollamaStatus.message}\n`);
     process.exit(1);
   }
+  
+  log('✅ Ollama is ready!');
+  log(`   Models available: ${ollamaStatus.models.slice(0, 3).join(', ')}`, 1);
   
   const rootDir = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
   const dataPath = path.join(rootDir, 'data', 'uoc.jsonl');
@@ -498,10 +514,10 @@ async function main() {
   console.log(`Assessments Processed:     ${allAssessments.length}`);
   console.log(`Questions Analyzed:        ${totalQuestions}`);
   console.log(`Total PC Mappings:         ${report.mappings.length}`);
-  console.log(`  • High Confidence:       ${report.mappings.filter(m => m.similarity >= 0.8).length}`);
-  console.log(`  • Medium Confidence:     ${report.mappings.filter(m => m.similarity >= 0.7 && m.similarity < 0.8).length}`);
-  console.log(`  • Low Confidence:        ${report.mappings.filter(m => m.similarity < 0.7).length}`);
-  console.log(`Uncovered PCs:             ${report.gaps.uncoveredPCs.length}`);
+  console.log(`  • High Confidence:       ${report.mappings.filter(m => m.semanticSimilarity >= 0.8).length}`);
+  console.log(`  • Medium Confidence:     ${report.mappings.filter(m => m.semanticSimilarity >= 0.7 && m.semanticSimilarity < 0.8).length}`);
+  console.log(`  • Low Confidence:        ${report.mappings.filter(m => m.semanticSimilarity < 0.7).length}`);
+  console.log(`Uncovered PCs:             ${report.gaps.filter(g => !g.covered).length}`);
   
   if (isClustered) {
     console.log(`\n🔗 Clustering:             Yes (multi-unit assessments)`);

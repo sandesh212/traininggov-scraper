@@ -18,21 +18,38 @@
 
 echo "╔════════════════════════════════════════════════════════════════════════╗"
 echo "║          🤖 FULLY AUTOMATED ASSESSMENT VALIDATOR                       ║"
-echo "║          Just drop your files and run - I do the rest!                ║"
+echo "║          Uses FREE local AI (Ollama) - No API key needed!             ║"
 echo "╚════════════════════════════════════════════════════════════════════════╝"
 echo ""
 
-# Check if OpenAI API key is set
-if [ -z "$OPENAI_API_KEY" ]; then
-    echo "❌ ERROR: OPENAI_API_KEY not set"
+# Check if Ollama is installed
+if ! command -v ollama &> /dev/null; then
+    echo "❌ ERROR: Ollama is not installed"
     echo ""
-    echo "Please set your OpenAI API key:"
-    echo "  1. Get key from: https://platform.openai.com/api-keys"
-    echo "  2. Run: export OPENAI_API_KEY=\"sk-proj-your-key-here\""
-    echo "  3. Or add to ~/.zshrc for permanent use"
+    echo "To install Ollama:"
+    echo "  1. Visit: https://ollama.com"
+    echo "  2. Download and install for macOS"
+    echo "  3. Run: ollama pull llama3.2"
+    echo "  4. Run: ollama pull nomic-embed-text"
+    echo "  5. Then run this script again"
     echo ""
     exit 1
 fi
+
+# Check if Ollama is running
+if ! curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
+    echo "❌ ERROR: Ollama is not running"
+    echo ""
+    echo "To start Ollama:"
+    echo "  Run: ollama serve"
+    echo ""
+    echo "Or it may start automatically. Try again in a few seconds."
+    echo ""
+    exit 1
+fi
+
+echo "✅ Ollama is ready!"
+echo ""
 
 # Navigate to config directory
 cd "$(dirname "$0")/.config" || exit 1

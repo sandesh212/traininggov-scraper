@@ -6,18 +6,17 @@
  * 
  * Features:
  * - Multi-unit, multi-assessment validation
- * - Semantic matching using AI embeddings
+ * - Semantic matching using AI embeddings (Ollama - FREE & LOCAL)
  * - Rules of Evidence validation
  * - Principles of Assessment validation
  * - Comprehensive reporting
  */
 
-import OpenAI from 'openai';
-
-// Initialize OpenAI client (user needs to set OPENAI_API_KEY environment variable)
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
-});
+import {
+  generateOllamaEmbedding,
+  generateOllamaMatchExplanation,
+  checkOllamaAvailability,
+} from './ollamaService.js';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -107,15 +106,11 @@ export interface PrinciplesOfAssessmentValidation {
 // ============================================================================
 
 /**
- * Generate embedding vector for text using OpenAI
+ * Generate embedding vector for text using Ollama (local AI)
  */
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
-    const response = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: text,
-    });
-    return response.data[0].embedding;
+    return await generateOllamaEmbedding(text);
   } catch (error: any) {
     console.error('Error generating embedding:', error.message);
     throw error;
@@ -152,24 +147,7 @@ async function generateMatchExplanation(
   similarity: number
 ): Promise<string> {
   try {
-    const prompt = `You are an educational assessment validator for Australian Registered Training Organisations (RTOs).
-
-Assessment Question: "${questionText}"
-Performance Criterion: "${pcText}"
-Semantic Similarity Score: ${(similarity * 100).toFixed(1)}%
-
-Task: Explain in 1-2 sentences how this assessment question addresses or covers this performance criterion. Focus on the semantic meaning and competency being assessed, not exact word matching.
-
-If they don't match well, explain what's missing or different.`;
-
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.3,
-      max_tokens: 150,
-    });
-
-    return response.choices[0].message.content?.trim() || 'No explanation generated';
+    return await generateOllamaMatchExplanation(questionText, pcText, similarity);
   } catch (error: any) {
     console.error('Error generating explanation:', error.message);
     return `Match based on semantic similarity (${(similarity * 100).toFixed(1)}%)`;

@@ -1,0 +1,372 @@
+[
+  {
+    "question": "How do you work out the Working Load Limit (WLL) of a lifting sling",
+    "references": "N008-K10",
+    "section": "Ropework and Lifting Equipment"
+  },
+  {
+    "question": "What will you use as maximum WLL if the limit for a crane",
+    "references": "N008-K10",
+    "section": "Ropework and Lifting Equipment"
+  },
+  {
+    "question": "Which rope would be chosen for the following applications",
+    "references": "N008-PC1.1, K19",
+    "section": "Ropework"
+  },
+  {
+    "question": "What are FOUR things you would look for when inspecting ropes for damage",
+    "references": "N008-PC1.2, K11, K19",
+    "section": "Ropework"
+  },
+  {
+    "question": "What are THREE safety considerations when working around ropes and loads under tension",
+    "references": "N008-K10",
+    "section": "Ropework"
+  },
+  {
+    "question": "List THREE pieces of Legislation that apply to a Domestic Commercial Vessel",
+    "references": "I003-PC1.2, 3.1, 3.4, P4, K5, K11, K13, K15, K17",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "What documentation onboard the vessel outlines the duties, responsibilities and authority of the Master and crew",
+    "references": "I003-PC1.2, 3.4, P4, P5, K17",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "What is the minimum crew (core complement) required for a DCV",
+    "references": "I003-PC1.3, 2.1, 3.1, 3.4, P5",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "What are the certification requirements for Master of a DCV",
+    "references": "I003-PC1.3, 2.1, 3.1, 3.4, 5.2, K2, K11, K13",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "What must the Master of a vessel do on becoming aware of another vessel in distress",
+    "references": "I003-PC1.2, 3.1, 3.4, P1, P2, P4, P5, K1, K5 / J006-PC3.2",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "What service category would a vessel carting cargo",
+    "references": "I003-PC3.3, P1, P2",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "What are FOUR emergency situations for which crew should receive inductions",
+    "references": "I003-PC3.3, P2, P3, K5, K15, K17",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "What service category would a vessel carrying passengers",
+    "references": "I003-PC3.4, P1, K14, K16",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "List FOUR documents that must be accessible to the operator",
+    "references": "I003-PC3.4, 5.1, 5.2, P2, K13, K14, K16 / J006-PC3.2",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "List FIVE critical pieces of information you must record in your vessel logbook",
+    "references": "I003-PC3.4, K10",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "As the Master of a DCV, how do you keep up with changes to industry and Legislation",
+    "references": "I003-PC4.1, 4.2, 4.3",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "Once changes to Regulations and Legislation have been identified, what must you do",
+    "references": "I003-PC2.2, 4.2, 4.3, 5.1, 5.2",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "List FIVE pieces of Safety Equipment required",
+    "references": "I003-K6, K13, K17",
+    "section": "Domestic Regulations"
+  },
+  {
+    "question": "What are THREE factors you would consider when selecting an anchorage",
+    "references": "N008-PC2.1, 2.2, K3, K17 / J006-PC1.2, K4 / K007-P1",
+    "section": "Anchoring"
+  },
+  {
+    "question": "Select the anchor when anchoring on a soft mud seabed",
+    "references": "N008-K1, K3",
+    "section": "Anchoring"
+  },
+  {
+    "question": "What are TWO ways you can check whether an anchor is dragging",
+    "references": "K007-P1 / N008-PC2.2, 2.4, K17",
+    "section": "Anchoring"
+  },
+  {
+    "question": "List THREE things you can do if your anchor is dragging",
+    "references": "N008-PC2.4, K17 / K007-P1",
+    "section": "Anchoring"
+  },
+  {
+    "question": "What are TWO emergencies that might lead to you beaching a vessel",
+    "references": "K007-PC3.1, K5",
+    "section": "Beaching"
+  },
+  {
+    "question": "What are THREE considerations for re-floating a beached vessel",
+    "references": "K007-P3, K8",
+    "section": "Beaching"
+  },
+  {
+    "question": "What would you do if any equipment required on your vessel by NSCV is not functioning",
+    "references": "N008-PC4.4, 4.5, P1 / C037-PC1.1",
+    "section": "Pre-start checks"
+  },
+  {
+    "question": "Name THREE pieces of equipment you would test prior to departure",
+    "references": "C037-PC1.1 / N008-PC4.2",
+    "section": "Pre-start checks"
+  },
+  {
+    "question": "How much fuel will you use if your voyage plan involves",
+    "references": "J006-PC1.1 / C037-PC1.2, P4",
+    "section": "Voyage Planning"
+  },
+  {
+    "question": "When would you report a fuel spill to authorities",
+    "references": "J006-PC1.6, 2.1, K6 / N008-K18",
+    "section": "Refuelling"
+  },
+  {
+    "question": "What are THREE precautions that will help to reduce the risk of a spill when refuelling",
+    "references": "N008-PC5.3, P11, K18, K20 / J006-PC1.4, K10, K11",
+    "section": "Refuelling"
+  },
+  {
+    "question": "List FOUR systems or pieces of equipment that you should shut down prior to refuelling",
+    "references": "N008-PC5.2, 5.4 / J006-PC1.4 / C037-PC2.2",
+    "section": "Refuelling"
+  },
+  {
+    "question": "List FOUR activities that should be restricted within a safety zone while refuelling",
+    "references": "N008-PC5.2, 5.3, 5.4",
+    "section": "Refuelling"
+  },
+  {
+    "question": "In the event of a spill, what procedures should you follow",
+    "references": "J006-PC1.4, 1.5, K6, K10 / N008-PC5.2, 5.4",
+    "section": "Refuelling"
+  },
+  {
+    "question": "If you couldn't start the outboard motor, list THREE checks you would make",
+    "references": "C037-PC1.1, 3.3, 3.4, 4.1, 4.2, 4.3, K6",
+    "section": "Outboards"
+  },
+  {
+    "question": "When using a motor, what are FOUR pre-start checks should you make",
+    "references": "C037-PC1.1, 1.2, 3.3, 3.4, P2",
+    "section": "Outboards"
+  },
+  {
+    "question": "Name TWO hazards associated with batteries",
+    "references": "C037-K1, K7",
+    "section": "Outboards"
+  },
+  {
+    "question": "What are THREE post-start checks you should make if the engine is running roughly",
+    "references": "C037-PC4.1, 4.3, K3, K6",
+    "section": "Outboards"
+  },
+  {
+    "question": "How many Annex make up the International Convention for the Prevention of Pollution from Ships (MARPOL)",
+    "references": "J006-PC1.1, 1.2, K2, K5, K8 / I003-K12",
+    "section": "Environmental"
+  },
+  {
+    "question": "What provision should you make for garbage disposal, and recyclables",
+    "references": "J006-PC1.1, 1.2, 1.3, 3.1, K2, K3, K5 / I003-K12",
+    "section": "Environmental"
+  },
+  {
+    "question": "What are the advantages of compacting waste onboard",
+    "references": "J006-PC1.1, 1.3, K5 / I003-K12",
+    "section": "Environmental"
+  },
+  {
+    "question": "What do you need to consider when storing fuel, waste oil, and chemicals",
+    "references": "J006-PC2.2, K1, K5, K7 / I003-K12 / C037-PC2.4",
+    "section": "Environmental"
+  },
+  {
+    "question": "Where can you discharge sewage at sea",
+    "references": "J006-K2, K5, K6 / I003-K12",
+    "section": "Environmental"
+  },
+  {
+    "question": "List TWO environmental impacts from",
+    "references": "J006-PC1.1, 1.2, K4, K5",
+    "section": "Environmental"
+  },
+  {
+    "question": "Why are watertight compartments important",
+    "references": "N008-K2, K6, K7, K8",
+    "section": "Construction"
+  },
+  {
+    "question": "When inspecting the integrity and condition of a hull",
+    "references": "N008-P2, P5, K6, K8",
+    "section": "Construction"
+  },
+  {
+    "question": "What types of damage or deterioration would you look for in vessels constructed",
+    "references": "N008-P2, P5, K6, K8",
+    "section": "Construction"
+  },
+  {
+    "question": "Identify the following structural parts of a vessel",
+    "references": "N008-K2, K6, K7, K14",
+    "section": "Construction"
+  },
+  {
+    "question": "List TWO areas where water can enter the vessel whilst at sea",
+    "references": "N008-K7, K14, K15, K16",
+    "section": "Construction"
+  },
+  {
+    "question": "To improve the safety of your vessel and crew prior to crossing a bar",
+    "references": "K007-PC1.1, 1.2, P2, K11, K12, K13 / N008-K9, K12, K14, K16, K21",
+    "section": "Emergency Preparedness"
+  },
+  {
+    "question": "List TWO signs of approaching bad weather",
+    "references": "K007-PC2.1, 2.2, P5",
+    "section": "Emergency Preparedness"
+  },
+  {
+    "question": "What are the dangers of an approaching thunderstorm",
+    "references": "K007-PC2.1, 2.2, P5",
+    "section": "Emergency Preparedness"
+  },
+  {
+    "question": "Tropical Revolving Storms (TRS) impact which areas",
+    "references": "K007-PC2.1, 2.2, K1, K2",
+    "section": "Emergency Preparedness"
+  },
+  {
+    "question": "List SIX courses of action you would take following a grounding",
+    "references": "K007-PC3.1, 3.2, 3.3, 3.4, K5, K8",
+    "section": "Emergency Preparedness"
+  },
+  {
+    "question": "List FIVE actions to be taken if a person falls overboard",
+    "references": "K007-PC3.1, 3.2, 3.3, 3.4, K3, K5, K9 / I003-P4",
+    "section": "Emergency Preparedness"
+  },
+  {
+    "question": "You hear a distress (Mayday) call on the VHF radio",
+    "references": "I003-PC1.2, K1, K4, K5",
+    "section": "Emergency Preparedness"
+  },
+  {
+    "question": "A risk assessment identifies the following THREE high risk FIRE areas",
+    "references": "I003-K6, K9, K10, K15, K17 / C037-PC2.4 / K007-PC3.2",
+    "section": "Emergency Preparedness"
+  },
+  {
+    "question": "List THREE considerations you would make before setting up to tow another vessel",
+    "references": "K007-PC4.1, 4.2, K10",
+    "section": "Emergency Preparedness"
+  },
+  {
+    "question": "If travelling in shallow water, list TWO ways to minimise the risk of your vessel squatting",
+    "references": "K007-PC1.1, 1.3, 1.6, K6, K14 / N008-K8",
+    "section": "Vessel Handling"
+  },
+  {
+    "question": "List TWO manoeuvring characteristics of the following single engine propulsion systems",
+    "references": "K007-K4, K6, K9",
+    "section": "Vessel Handling"
+  },
+  {
+    "question": "How can the risk of capsizing or swamping be reduced in large seas",
+    "references": "K007-PC1.1, 2.1, 2.2, P5, K4, K14 / J006-K5",
+    "section": "Vessel Handling"
+  },
+  {
+    "question": "When your vessel is passing near a large vessel or structure",
+    "references": "K007-K5, K6, K7",
+    "section": "Vessel Handling"
+  },
+  {
+    "question": "Fill in the names of each of the mooring lines",
+    "references": "N008-P10, K13 / C037-PC2.3",
+    "section": "Vessel Handling"
+  },
+  {
+    "question": "In your own words describe the following stability terms",
+    "references": "K007-K11, K14",
+    "section": "Vessel Handling"
+  },
+  {
+    "question": "List THREE safety precautions you must consider when refuelling a vessel",
+    "references": "C037-PC2.2, P4, K7 / N008-PC5.2, 5.3, K18, K20 / J006-PC1.3, 1.4, K5, K8, K11",
+    "section": "Vessel Systems"
+  },
+  {
+    "question": "List THREE reasons for an engine to overheat",
+    "references": "C037-PC3.3, K3, K6",
+    "section": "Vessel Systems"
+  },
+  {
+    "question": "List FOUR reasons an outboard engine may fail to start",
+    "references": "C037-PC4.1, 4.3, K3, K5, K6",
+    "section": "Vessel Systems"
+  },
+  {
+    "question": "How do you determine if a risk of collision exists with another vessel",
+    "references": "I003-PC1.1, 3.1, 3.2, P5, K8, K11",
+    "section": "Watchkeeping"
+  },
+  {
+    "question": "When two vessels are approaching one another, a risk of collision can exist when",
+    "references": "I003-PC1.1, 1.3, 3.2, P1, P4, P5, K8, K11",
+    "section": "Watchkeeping"
+  },
+  {
+    "question": "Two power-driven vessels are crossing and there is a risk of collision",
+    "references": "I003-PC1.1, 1.3, 3.2, 3.3, P1, P5, K8, K11",
+    "section": "Watchkeeping"
+  },
+  {
+    "question": "Vessel A is overtaking Vessel B",
+    "references": "I003-PC1.1, 1.3, P5, K8, K11",
+    "section": "Watchkeeping"
+  },
+  {
+    "question": "In a distress situation, list THREE ways you would raise the attention",
+    "references": "I003-PC1.1, 1.3, 2.1, P2, P5, K11, K13",
+    "section": "Watchkeeping"
+  },
+  {
+    "question": "On which side of this Cardinal Mark is safe water",
+    "references": "I003-PC1.1, 1.3, P5, K7",
+    "section": "Watchkeeping"
+  },
+  {
+    "question": "Describe the light colour and flashing characteristic of an Isolated Danger Mark",
+    "references": "I003-PC1.1, 1.3, P5, K7",
+    "section": "Watchkeeping"
+  },
+  {
+    "question": "When leaving Harbour, which side of your vessel should you keep this mark",
+    "references": "I003-PC1.1, 1.3, P5, K7",
+    "section": "Watchkeeping"
+  },
+  {
+    "question": "When determining a safe speed for your vessel, list FIVE factors",
+    "references": "I003-PC1.1, 1.3, 3.4, P5, K8, K11",
+    "section": "Watchkeeping"
+  }
+]

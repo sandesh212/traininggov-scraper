@@ -1,0 +1,939 @@
+{
+  "unitCodes": [
+    "MARN008",
+    "MARB027"
+  ],
+  "mappedUnits": [
+    {
+      "code": "MARN008",
+      "title": "Apply seamanship skills aboard a vessel up to 12 metres"
+    },
+    {
+      "code": "MARB027",
+      "title": "Perform basic servicing and maintenance of main propulsion unit and auxiliary systems"
+    }
+  ],
+  "questionsCount": 50,
+  "results": [
+    {
+      "questionId": "KnowledgeCoxsw_A",
+      "isValid": false,
+      "mappedUnit": null,
+      "confidence": 26,
+      "reasoning": "Non-Compliant (Validity): The question does not demonstrate sufficient semantic alignment with any Unit requirements. It may be irrelevant or poorly worded.",
+      "questionText": "course participant is not expected to provide answers to that level of detail, instead for a satisfactory response, the participant’s answers should be within the range of model answers and meet the minimum required number of responses provided and indicate a basic level of knowledge and understanding of the topic",
+      "questionSection": "Knowledge Coxswain Deck",
+      "gaps": []
+    },
+    {
+      "questionId": "Part1Ropewo_Q2",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [],
+      "mappedKnowledge": [
+        "• loading, discharging and movement of weights",
+        "• rope types, characteristics and applications, dynamic and non-dynamic, including:",
+        "• wire core rope",
+        "• wire rope",
+        "◦ wire core rope"
+      ],
+      "confidence": 53,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion undefined. Semantic alignment score: 53%. Aligns with: \"• loading, discharging and movement of weights...\"",
+      "questionText": "How do you work out the Working Load Limit (WLL) of a lifting sling?",
+      "questionSection": "Part 1 – Ropework and lifting",
+      "gaps": []
+    },
+    {
+      "questionId": "Part1Ropewo_Q3",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [],
+      "mappedKnowledge": [
+        "• loading, discharging and movement of weights",
+        "• rope types, characteristics and applications, dynamic and non-dynamic, including:",
+        "• types of anchors used on small vessels up to 12 metres",
+        "• wire rope",
+        "• wire core rope"
+      ],
+      "confidence": 44,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion undefined. Semantic alignment score: 44%. Aligns with: \"• loading, discharging and movement of weights...\"",
+      "questionText": "What will you use as maximum WLL if the limit for a crane is 2,000kg and the WLL for the lifting sling is 1,700kg?",
+      "questionSection": "Part 1 – Ropework and lifting",
+      "gaps": []
+    },
+    {
+      "questionId": "Part1Ropewo_Q4",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "1.2",
+        "1.1"
+      ],
+      "mappedKnowledge": [
+        "• maintenance of synthetic and natural fibre ropes",
+        "• rope types, characteristics and applications, dynamic and non-dynamic, including:",
+        "• wire rope"
+      ],
+      "confidence": 55,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (1.2, 1.1), contributing to sufficiency. Semantic alignment score: 55%. Aligns with: \"Ropes are checked for wear and repairs are undertaken according to manufacturer guidelines...\"",
+      "questionText": "What are FOUR things you would look for when inspecting ropes for damage?",
+      "questionSection": "Part 1 – Ropework and lifting",
+      "gaps": []
+    },
+    {
+      "questionId": "Part1Ropewo_Q5",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "1.1",
+        "1.2",
+        "1.6"
+      ],
+      "mappedKnowledge": [
+        "• wire rope",
+        "• rope types, characteristics and applications, dynamic and non-dynamic, including:"
+      ],
+      "confidence": 61,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (1.1, 1.2, 1.6), contributing to sufficiency. Semantic alignment score: 61%. Aligns with: \"Rope types and common areas of use are correctly identified...\"",
+      "questionText": "What are THREE safety considerations when working around ropes and loads under tensions",
+      "questionSection": "Part 1 – Ropework and lifting",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_1",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.1",
+        "4.6"
+      ],
+      "mappedKnowledge": [
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
+        "• securing a vessel for sea",
+        "• coverage and frequency of checks of vessels seaworthiness"
+      ],
+      "confidence": 51,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.1, 4.6), contributing to sufficiency. Semantic alignment score: 51%. Aligns with: \"• factors affecting the safety and integrity of vessel; its equipment and materials on board...\"",
+      "questionText": "List THREE pieces of Legislation that apply to a Domestic Commercial Vessel (DCV) and its crew?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_2",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.1"
+      ],
+      "mappedKnowledge": [
+        "• securing a vessel for sea",
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
+      ],
+      "confidence": 48,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 4.1. Semantic alignment score: 48%. Aligns with: \"• securing a vessel for sea...\"",
+      "questionText": "What documentation onboard the vessel outlines the duties, responsibilities, and authority of the Master and crew?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_3",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.6",
+        "4.1"
+      ],
+      "mappedKnowledge": [
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:",
+        "• coverage and frequency of checks of vessels seaworthiness",
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel"
+      ],
+      "confidence": 50,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.6, 4.1), contributing to sufficiency. Semantic alignment score: 50%. Aligns with: \"• process for checking seaworthiness and general condition of a vessel up to 12 metres including:...\"",
+      "questionText": "What is the minimum crew (core complement) required for a DCV less than 12 metres operating in D class waters?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_4",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.6",
+        "4.2"
+      ],
+      "mappedKnowledge": [
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:",
+        "• WHS/OHS requirements and work practices.",
+        "• coverage and frequency of checks of vessels seaworthiness"
+      ],
+      "confidence": 46,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.6, 4.2), contributing to sufficiency. Semantic alignment score: 46%. Aligns with: \"• process for checking seaworthiness and general condition of a vessel up to 12 metres including:...\"",
+      "questionText": "What are the certification requirements of Master of a DCV less than 12 metres operating in D class waters?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_5",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.1",
+        "4.6"
+      ],
+      "mappedKnowledge": [
+        "• coverage and frequency of checks of vessels seaworthiness",
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:",
+        "• securing a vessel for sea"
+      ],
+      "confidence": 55,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.1, 4.6), contributing to sufficiency. Semantic alignment score: 55%. Aligns with: \"Coverage and frequency of checks and inspections on vessel seaworthiness are undertaken according to...\"",
+      "questionText": "Refer to Marine Safety (Domestic Commercial Vessel) National Law Act 2012 Part 5What must the Master of a vessel do on becoming aware of another vessel in distress?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_Q11",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.6",
+        "4.5"
+      ],
+      "mappedKnowledge": [
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
+        "• securing a vessel for sea"
+      ],
+      "confidence": 49,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.6, 4.5), contributing to sufficiency. Semantic alignment score: 49%. Aligns with: \"• identifying and rectifying irregularities in the condition and seaworthiness of the vessel...\"",
+      "questionText": "What must the Master of a vessel do on becoming aware of another vessel in distress?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_6",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "3.1"
+      ],
+      "mappedKnowledge": [
+        "• securing a vessel for sea",
+        "• mooring line arrangements for securing at a berth",
+        "• galley, stores and equipment",
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel"
+      ],
+      "confidence": 52,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 3.1. Semantic alignment score: 52%. Aligns with: \"• securing a vessel for sea...\"",
+      "questionText": "Refer to Part B of the NSCVWhat service category would a vessel carting cargo in waters between Triabunna and Darlington on Maria Island fall under?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_Q13",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "3.1",
+        "3.2"
+      ],
+      "mappedKnowledge": [
+        "• galley, stores and equipment",
+        "• securing a vessel for sea",
+        "◦ galley, stores and equipment"
+      ],
+      "confidence": 52,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (3.1, 3.2), contributing to sufficiency. Semantic alignment score: 52%. Aligns with: \"• galley, stores and equipment...\"",
+      "questionText": "What service category would a vessel carting cargo in waters between Triabunna and Darlington on Maria Island fall under?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_7",
+      "isValid": true,
+      "mappedUnit": "MARB027",
+      "mappedCriteria": [
+        "1.2",
+        "1.3"
+      ],
+      "mappedKnowledge": [
+        "• emergency procedures, including emergency shutdown and stopping of equipment",
+        "◦ emergency procedures, including emergency shutdown and stopping of equipment",
+        "◦ safe and environmentally responsible work practices in servicing and maintenance activities"
+      ],
+      "confidence": 49,
+      "reasoning": "Compliant (Validity): Matched to MARB027. Covers multiple criteria (1.2, 1.3), contributing to sufficiency. Semantic alignment score: 49%. Aligns with: \"• emergency procedures, including emergency shutdown and stopping of equipment...\"",
+      "questionText": "What are FOUR emergency situations for which crew should receive inductions?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_Q15",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "3.1"
+      ],
+      "mappedKnowledge": [
+        "• securing a vessel for sea",
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
+        "• coverage and frequency of checks of vessels seaworthiness",
+        "• mooring line arrangements for securing at a berth"
+      ],
+      "confidence": 56,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 3.1. Semantic alignment score: 56%. Aligns with: \"• securing a vessel for sea...\"",
+      "questionText": "What service category would a vessel carrying passengers in waters between Port Arthur and Eaglehawk Neck fall under?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_9",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.3",
+        "4.1",
+        "4.6"
+      ],
+      "mappedKnowledge": [
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:",
+        "• galley, stores and equipment"
+      ],
+      "confidence": 53,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.3, 4.1, 4.6), contributing to sufficiency. Semantic alignment score: 53%. Aligns with: \"• process for checking seaworthiness and general condition of a vessel up to 12 metres including:...\"",
+      "questionText": "List four documents that must be accessible to the operator of <12 metre Class 2C surveyed vessel?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_Q17",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.6",
+        "4.1"
+      ],
+      "mappedKnowledge": [
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
+        "• coverage and frequency of checks of vessels seaworthiness",
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
+      ],
+      "confidence": 45,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.6, 4.1), contributing to sufficiency. Semantic alignment score: 45%. Aligns with: \"Reports of condition are completed according to workplace procedures...\"",
+      "questionText": "What information should you record daily in your vessel logbook?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_Q18",
+      "isValid": true,
+      "mappedUnit": "MARB027",
+      "mappedCriteria": [
+        "4.2",
+        "1.3",
+        "3.4",
+        "1.4"
+      ],
+      "mappedKnowledge": [
+        "◦ safe and environmentally responsible work practices in servicing and maintenance activities"
+      ],
+      "confidence": 29,
+      "reasoning": "Compliant (Validity): Matched to MARB027. Covers multiple criteria (4.2, 1.3, 3.4, 1.4), contributing to sufficiency. Semantic alignment score: 29%. Aligns with: \"Materials are disposed of or recycled according to legislative and workplace requirements...\"",
+      "questionText": "As the Master of DCV, how do you keep up with changes to the industry and Legislation?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_Q19",
+      "isValid": true,
+      "mappedUnit": "MARB027",
+      "mappedCriteria": [
+        "4.2",
+        "3.5",
+        "3.4",
+        "1.3"
+      ],
+      "mappedKnowledge": [
+        "• identifying faulty items or components and appropriate actions required to rectify faults"
+      ],
+      "confidence": 34,
+      "reasoning": "Compliant (Validity): Matched to MARB027. Covers multiple criteria (4.2, 3.5, 3.4, 1.3), contributing to sufficiency. Semantic alignment score: 34%. Aligns with: \"Materials are disposed of or recycled according to legislative and workplace requirements...\"",
+      "questionText": "Once changes to regulations and legislation have been identified, what must you do?",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part2Domest_Q20",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "3.1",
+        "2.1"
+      ],
+      "mappedKnowledge": [
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
+        "• securing a vessel for sea",
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
+      ],
+      "confidence": 57,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (3.1, 2.1), contributing to sufficiency. Semantic alignment score: 57%. Aligns with: \"• factors affecting the safety and integrity of vessel; its equipment and materials on board...\"",
+      "questionText": "List SIX pieces of safety equipment required for a 10 m 1D vessel as stated in the NSCV Part C Section 7 subsection 7A.",
+      "questionSection": "Part 2 – Domestic Regulations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part3Anchor_Q21",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "2.4",
+        "2.1"
+      ],
+      "mappedKnowledge": [
+        "• considerations to make when selecting an anchorage",
+        "• types of anchors used on small vessels up to 12 metres",
+        "• procedure for anchoring"
+      ],
+      "confidence": 86,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (2.4, 2.1), contributing to sufficiency. Semantic alignment score: 86%. Aligns with: \"• considerations to make when selecting an anchorage...\"",
+      "questionText": "What are THREE factors you would consider when selecting an anchorage?",
+      "questionSection": "Part 3 – Anchoring and Beaching",
+      "gaps": []
+    },
+    {
+      "questionId": "Part3Anchor_Q22",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "2.2",
+        "2.4",
+        "2.1"
+      ],
+      "mappedKnowledge": [
+        "• procedure for anchoring",
+        "• types of anchors used on small vessels up to 12 metres"
+      ],
+      "confidence": 60,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (2.2, 2.4, 2.1), contributing to sufficiency. Semantic alignment score: 60%. Aligns with: \"• procedure for anchoring...\"",
+      "questionText": "Select the anchor when anchoring on a soft mud seabed (circle your answers)",
+      "questionSection": "Part 3 – Anchoring and Beaching",
+      "gaps": []
+    },
+    {
+      "questionId": "Part3Anchor_Q23",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "2.1",
+        "2.5",
+        "2.4"
+      ],
+      "mappedKnowledge": [
+        "• procedure for anchoring",
+        "• types of anchors used on small vessels up to 12 metres"
+      ],
+      "confidence": 54,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (2.1, 2.5, 2.4), contributing to sufficiency. Semantic alignment score: 54%. Aligns with: \"• procedure for anchoring...\"",
+      "questionText": "What are TWO ways you can check whether an anchor is dragging?",
+      "questionSection": "Part 3 – Anchoring and Beaching",
+      "gaps": []
+    },
+    {
+      "questionId": "Part3Anchor_Q24",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "2.4",
+        "2.1",
+        "2.5",
+        "2.2"
+      ],
+      "mappedKnowledge": [
+        "• procedure for anchoring"
+      ],
+      "confidence": 48,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (2.4, 2.1, 2.5, 2.2), contributing to sufficiency. Semantic alignment score: 48%. Aligns with: \"Degree to which anchor and equipment are secured on completion of anchoring operations is appropriat...\"",
+      "questionText": "Identify position – transits shift (other than swing); feel vibration and dragging through anchor cable; position of vessel relative to wind/current; Change of sound from anchor chain",
+      "questionSection": "Part 3 – Anchoring and Beaching",
+      "gaps": []
+    },
+    {
+      "questionId": "Part3Anchor_Q25",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "2.1",
+        "2.5",
+        "2.4"
+      ],
+      "mappedKnowledge": [
+        "• procedure for anchoring",
+        "• types of anchors used on small vessels up to 12 metres"
+      ],
+      "confidence": 60,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (2.1, 2.5, 2.4), contributing to sufficiency. Semantic alignment score: 60%. Aligns with: \"• procedure for anchoring...\"",
+      "questionText": "List THREE things you can do if your anchor is dragging?",
+      "questionSection": "Part 3 – Anchoring and Beaching",
+      "gaps": []
+    },
+    {
+      "questionId": "Part3Anchor_Q26",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.5",
+        "4.1"
+      ],
+      "mappedKnowledge": [
+        "• securing a vessel for sea",
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board"
+      ],
+      "confidence": 58,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.5, 4.1), contributing to sufficiency. Semantic alignment score: 58%. Aligns with: \"• securing a vessel for sea...\"",
+      "questionText": "What are TWO emergencies that might lead to you beaching a vessel?",
+      "questionSection": "Part 3 – Anchoring and Beaching",
+      "gaps": []
+    },
+    {
+      "questionId": "Part3Anchor_Q27",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.5"
+      ],
+      "mappedKnowledge": [
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
+        "• securing a vessel for sea",
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
+      ],
+      "confidence": 59,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 4.5. Semantic alignment score: 59%. Aligns with: \"• identifying and rectifying irregularities in the condition and seaworthiness of the vessel...\"",
+      "questionText": "What are THREE considerations for re-floating a beached vessel?",
+      "questionSection": "Part 3 – Anchoring and Beaching",
+      "gaps": []
+    },
+    {
+      "questionId": "Part4Prest_Q28",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.5",
+        "4.4"
+      ],
+      "mappedKnowledge": [
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board"
+      ],
+      "confidence": 45,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.5, 4.4), contributing to sufficiency. Semantic alignment score: 45%. Aligns with: \"• factors affecting the safety and integrity of vessel; its equipment and materials on board...\"",
+      "questionText": "What would you do if any equipment required on your vessel by NSCV is not functioning?",
+      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
+      "gaps": []
+    },
+    {
+      "questionId": "Part4Prest_Q29",
+      "isValid": true,
+      "mappedUnit": "MARB027",
+      "mappedCriteria": [
+        "1.4",
+        "2.3",
+        "2.5"
+      ],
+      "mappedKnowledge": [
+        "• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment and other mechanical equipment."
+      ],
+      "confidence": 47,
+      "reasoning": "Compliant (Validity): Matched to MARB027. Covers multiple criteria (1.4, 2.3, 2.5), contributing to sufficiency. Semantic alignment score: 47%. Aligns with: \"Tools and equipment are selected and checked for serviceability...\"",
+      "questionText": "Name THREE pieces of equipment you would test prior to departure?",
+      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
+      "gaps": []
+    },
+    {
+      "questionId": "Part4Prest_Q30",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "5.3",
+        "5.2",
+        "5.4"
+      ],
+      "mappedKnowledge": [
+        "• safety precautions and pollution control measures during refuelling",
+        "• refuelling a vessel according to safety regulations and organisational safety management system requirements"
+      ],
+      "confidence": 45,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.3, 5.2, 5.4), contributing to sufficiency. Semantic alignment score: 45%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
+      "questionText": "What fuel consumption will you anticipate for the day if your voyage plan involves eight (8) hours of operation, and your fuel consumption is twelve (12) litres per hour?",
+      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
+      "gaps": []
+    },
+    {
+      "questionId": "Part4Prest_Q31",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "5.3",
+        "5.4"
+      ],
+      "mappedKnowledge": [
+        "• safety precautions and pollution control measures during refuelling"
+      ],
+      "confidence": 49,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.3, 5.4), contributing to sufficiency. Semantic alignment score: 49%. Aligns with: \"Spill prevention systems are correctly deployed...\"",
+      "questionText": "When would you report a fuel spill to authorities?",
+      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
+      "gaps": []
+    },
+    {
+      "questionId": "Part4Prest_Q32",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "5.3",
+        "5.2",
+        "5.4"
+      ],
+      "mappedKnowledge": [
+        "• safety precautions and pollution control measures during refuelling",
+        "• refuelling a vessel according to safety regulations and organisational safety management system requirements"
+      ],
+      "confidence": 77,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.3, 5.2, 5.4), contributing to sufficiency. Semantic alignment score: 77%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
+      "questionText": "What are three precautions that will help to reduce the risk of a spill when refuelling?",
+      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
+      "gaps": []
+    },
+    {
+      "questionId": "Part4Prest_Q33",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "5.2",
+        "5.3",
+        "5.4"
+      ],
+      "mappedKnowledge": [
+        "• safety precautions and pollution control measures during refuelling",
+        "• refuelling a vessel according to safety regulations and organisational safety management system requirements"
+      ],
+      "confidence": 64,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.2, 5.3, 5.4), contributing to sufficiency. Semantic alignment score: 64%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
+      "questionText": "What systems or equipment should you shut down prior to any refuelling?",
+      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
+      "gaps": []
+    },
+    {
+      "questionId": "Part4Prest_Q34",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "5.2",
+        "5.4",
+        "5.3"
+      ],
+      "mappedKnowledge": [
+        "• safety precautions and pollution control measures during refuelling",
+        "• refuelling a vessel according to safety regulations and organisational safety management system requirements"
+      ],
+      "confidence": 70,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.2, 5.4, 5.3), contributing to sufficiency. Semantic alignment score: 70%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
+      "questionText": "What activities should be restricted within a ‘safety zone’ while refuelling?",
+      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
+      "gaps": []
+    },
+    {
+      "questionId": "Part4Prest_Q35",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "5.3",
+        "5.4",
+        "5.2"
+      ],
+      "mappedKnowledge": [
+        "• safety precautions and pollution control measures during refuelling",
+        "• refuelling a vessel according to safety regulations and organisational safety management system requirements"
+      ],
+      "confidence": 74,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.3, 5.4, 5.2), contributing to sufficiency. Semantic alignment score: 74%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
+      "questionText": "In the event of a spill while refuelling, what procedures should you follow?",
+      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
+      "gaps": []
+    },
+    {
+      "questionId": "Part5Outboa_Q36",
+      "isValid": true,
+      "mappedUnit": "MARB027",
+      "mappedCriteria": [],
+      "mappedKnowledge": [
+        "• outboard engines",
+        "◦ outboard engines",
+        "• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment and other mechanical equipment.",
+        "• potential risks and hazards associated with servicing and maintaining propulsion machinery and auxiliary equipment",
+        "◦ potential risks and hazards associated with servicing and maintaining propulsion machinery and auxiliary equipment"
+      ],
+      "confidence": 46,
+      "reasoning": "Compliant (Validity): Matched to MARB027. Addresses specific criterion undefined. Semantic alignment score: 46%. Aligns with: \"• outboard engines...\"",
+      "questionText": "If you couldn’t start the outboard motor, list THREE checks you would make?",
+      "questionSection": "Part 5 - Outboards",
+      "gaps": []
+    },
+    {
+      "questionId": "Part5Outboa_Q37",
+      "isValid": true,
+      "mappedUnit": "MARB027",
+      "mappedCriteria": [],
+      "mappedKnowledge": [
+        "• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment and other mechanical equipment.",
+        "• checking shaft glands, strainers, cooling system, fuel levels and fuel systems",
+        "◦ checking shaft glands, strainers, cooling system, fuel levels and fuel systems"
+      ],
+      "confidence": 52,
+      "reasoning": "Compliant (Validity): Matched to MARB027. Addresses specific criterion undefined. Semantic alignment score: 52%. Aligns with: \"• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment a...\"",
+      "questionText": "When using a motor, what are FOUR pre-start checks you should make?",
+      "questionSection": "Part 5 - Outboards",
+      "gaps": []
+    },
+    {
+      "questionId": "Part5Outboa_Q38",
+      "isValid": true,
+      "mappedUnit": "MARB027",
+      "mappedCriteria": [],
+      "mappedKnowledge": [
+        "• care of extra low voltage electrical systems on a vessel, including precautions necessary when charging batteries",
+        "• battery maintenance",
+        "◦ battery maintenance",
+        "◦ emergency procedures, including emergency shutdown and stopping of equipment",
+        "• emergency procedures, including emergency shutdown and stopping of equipment"
+      ],
+      "confidence": 44,
+      "reasoning": "Compliant (Validity): Matched to MARB027. Addresses specific criterion undefined. Semantic alignment score: 44%. Aligns with: \"• care of extra low voltage electrical systems on a vessel, including precautions necessary when cha...\"",
+      "questionText": "Name TWO hazards association with batteries?",
+      "questionSection": "Part 5 - Outboards",
+      "gaps": []
+    },
+    {
+      "questionId": "Part5Outboa_Q39",
+      "isValid": true,
+      "mappedUnit": "MARB027",
+      "mappedCriteria": [],
+      "mappedKnowledge": [
+        "• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment and other mechanical equipment.",
+        "• checking shaft glands, strainers, cooling system, fuel levels and fuel systems",
+        "◦ checking shaft glands, strainers, cooling system, fuel levels and fuel systems"
+      ],
+      "confidence": 39,
+      "reasoning": "Compliant (Validity): Matched to MARB027. Addresses specific criterion undefined. Semantic alignment score: 39%. Aligns with: \"• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment a...\"",
+      "questionText": "What are THREE post-start checks you should make if the engine if running roughly?",
+      "questionSection": "Part 5 - Outboards",
+      "gaps": []
+    },
+    {
+      "questionId": "Part6Enviro_Q40",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.3",
+        "4.2",
+        "4.1"
+      ],
+      "mappedKnowledge": [
+        "• securing a vessel for sea",
+        "• safety precautions and pollution control measures during refuelling"
+      ],
+      "confidence": 44,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.3, 4.2, 4.1), contributing to sufficiency. Semantic alignment score: 44%. Aligns with: \"• securing a vessel for sea...\"",
+      "questionText": "Ho w many Annex make up the International Convention for the Prevention of Pollution from Ships (MARPOL)?",
+      "questionSection": "Part 6 – Environmental considerations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part6Enviro_Q41",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.2",
+        "4.1",
+        "4.5"
+      ],
+      "mappedKnowledge": [
+        "• securing a vessel for sea"
+      ],
+      "confidence": 50,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.2, 4.1, 4.5), contributing to sufficiency. Semantic alignment score: 50%. Aligns with: \"Materials are disposed of or recycled according to legislative and workplace requirements...\"",
+      "questionText": "What provision should you make for garbage disposal, and recyclables when operating a small vessel within 10nm of shore to comply with MARPOL?",
+      "questionSection": "Part 6 – Environmental considerations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part6Enviro_Q42",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [],
+      "mappedKnowledge": [
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
+        "• refuelling a vessel according to safety regulations and organisational safety management system requirements",
+        "• securing a vessel for sea",
+        "• safety precautions and pollution control measures during refuelling",
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel"
+      ],
+      "confidence": 46,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion undefined. Semantic alignment score: 46%. Aligns with: \"• factors affecting the safety and integrity of vessel; its equipment and materials on board...\"",
+      "questionText": "What are the advantages of compacting waste onboard your vessel",
+      "questionSection": "Part 6 – Environmental considerations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part6Enviro_Q43",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "5.3"
+      ],
+      "mappedKnowledge": [
+        "• safety precautions and pollution control measures during refuelling",
+        "• refuelling a vessel according to safety regulations and organisational safety management system requirements",
+        "• how to make a vessel watertight",
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board"
+      ],
+      "confidence": 50,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 5.3. Semantic alignment score: 50%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
+      "questionText": "How should you store fuel, waste oil and chemicals on your vessel?",
+      "questionSection": "Part 6 – Environmental considerations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part6Enviro_Q44",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [],
+      "mappedKnowledge": [
+        "• openings including hatch covers and all other openings that water can enter",
+        "• coverage and frequency of checks of vessels seaworthiness",
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
+        "• safety precautions and pollution control measures during refuelling",
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
+      ],
+      "confidence": 31,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion undefined. Semantic alignment score: 31%. Aligns with: \"• openings including hatch covers and all other openings that water can enter...\"",
+      "questionText": "Where can you discharge sewage at sea in Tasmania?",
+      "questionSection": "Part 6 – Environmental considerations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part6Enviro_Q45",
+      "isValid": true,
+      "mappedUnit": "MARB027",
+      "mappedCriteria": [
+        "4.2"
+      ],
+      "mappedKnowledge": [
+        "• environmental impacts and minimisation measures associated with servicing and maintaining propulsion machinery and auxiliary equipment",
+        "◦ safe and environmentally responsible work practices in servicing and maintenance activities",
+        "• safe and environmentally responsible work practices in servicing and maintenance activities"
+      ],
+      "confidence": 36,
+      "reasoning": "Compliant (Validity): Matched to MARB027. Addresses specific criterion 4.2. Semantic alignment score: 36%. Aligns with: \"• environmental impacts and minimisation measures associated with servicing and maintaining propulsi...\"",
+      "questionText": "List TWO environmental impacts from the following;",
+      "questionSection": "Part 6 – Environmental considerations",
+      "gaps": []
+    },
+    {
+      "questionId": "Part7Constr_Q46",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.2"
+      ],
+      "mappedKnowledge": [
+        "• principles of maintaining watertight integrity",
+        "• how to make a vessel watertight",
+        "• openings including hatch covers and all other openings that water can enter",
+        "◦ accommodation and storage spaces"
+      ],
+      "confidence": 60,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 4.2. Semantic alignment score: 60%. Aligns with: \"• principles of maintaining watertight integrity...\"",
+      "questionText": "Why are watertight compartments important?",
+      "questionSection": "Part 7 - Construction and Maintenance",
+      "gaps": []
+    },
+    {
+      "questionId": "Part7Constr_Q47",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.2",
+        "4.6"
+      ],
+      "mappedKnowledge": [
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
+      ],
+      "confidence": 56,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.2, 4.6), contributing to sufficiency. Semantic alignment score: 56%. Aligns with: \"• identifying and rectifying irregularities in the condition and seaworthiness of the vessel...\"",
+      "questionText": "When inspecting the integrity and condition of a hull, what are THREE signs of stress you would look for?",
+      "questionSection": "Part 7 - Construction and Maintenance",
+      "gaps": []
+    },
+    {
+      "questionId": "Part7Constr_Q48",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.6"
+      ],
+      "mappedKnowledge": [
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
+        "• coverage and frequency of checks of vessels seaworthiness",
+        "• basic structural parts of a small vessel"
+      ],
+      "confidence": 60,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 4.6. Semantic alignment score: 60%. Aligns with: \"• factors affecting the safety and integrity of vessel; its equipment and materials on board...\"",
+      "questionText": "What types of damage or deterioration would you look for in vessels constructed of the following?",
+      "questionSection": "Part 7 - Construction and Maintenance",
+      "gaps": []
+    },
+    {
+      "questionId": "Part7Constr_Q49",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [
+        "4.4"
+      ],
+      "mappedKnowledge": [
+        "• basic structural parts of a small vessel",
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
+        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
+      ],
+      "confidence": 69,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 4.4. Semantic alignment score: 69%. Aligns with: \"• basic structural parts of a small vessel...\"",
+      "questionText": "Identify the following structural parts of a vessel and place appropriate numbers by each part",
+      "questionSection": "Part 7 - Construction and Maintenance",
+      "gaps": []
+    },
+    {
+      "questionId": "Part7Constr_Q50",
+      "isValid": true,
+      "mappedUnit": "MARN008",
+      "mappedCriteria": [],
+      "mappedKnowledge": [
+        "• openings including hatch covers and all other openings that water can enter",
+        "• securing a vessel for sea",
+        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
+        "• how to make a vessel watertight",
+        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
+      ],
+      "confidence": 55,
+      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion undefined. Semantic alignment score: 55%. Aligns with: \"• openings including hatch covers and all other openings that water can enter...\"",
+      "questionText": "List two (2) areas where water can enter the vessel whilst at sea",
+      "questionSection": "Part 7 - Construction and Maintenance",
+      "gaps": []
+    }
+  ]
+}

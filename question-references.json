@@ -1,0 +1,154 @@
+[
+  {
+    "question": "Which rope would be chosen for the following applications? Join the ropes with the preferred use.",
+    "references": "N008-PC1.1, K19"
+  },
+  {
+    "question": "What are four (4) things you would look for when inspecting ropes for damage?",
+    "references": "N008-PC1.2, K11, K19"
+  },
+  {
+    "question": "List three (3) pieces of Legislation that apply to a Domestic Commercial Vessel (DCV) and its crew?",
+    "references": "I003-PC1.2, 3.1, 3.4: P4, K5, K11, K13, K15, K17"
+  },
+  {
+    "question": "What documentation onboard the vessel outlines the duties, responsibilities and authority of the Master and crew?",
+    "references": "I003-PC1.2, 3.4: P4, P5. K17"
+  },
+  {
+    "question": "What is the minimum crew (core complement) required for a DCV less than 12 metres operating in D Class waters?",
+    "references": "I003-PC1.3, 2.1, 3.1, 3.4, P5"
+  },
+  {
+    "question": "What are the certification requirements for Master of a DCV less than 12 metres operating in D waters?",
+    "references": "I003-PC1.3, 2.1, 3.1, 3.4, 5.2, K2, K11, K13"
+  },
+  {
+    "question": "What must the Master of a vessel do on becoming aware of another vessel in distress?",
+    "references": "I003-PC1.2, 3.1, 3.4: P1, P2, P4, P5, K1, K5 / J006-PC3.2"
+  },
+  {
+    "question": "What service category would a vessel carting cargo in waters between Triabunna and Darlington on Maria Island fall under?",
+    "references": "I003-PC3.3, P1, P2"
+  },
+  {
+    "question": "What are four (4) emergency situations for which crew should receive inductions?",
+    "references": "I003-PC3.3, P2, P3, K5, K15, K17"
+  },
+  {
+    "question": "What service category would a vessel carrying passengers in waters between Port Arthur and Eaglehawk Neck fall under?",
+    "references": "I003-PC3.4, P1, K14, K16"
+  },
+  {
+    "question": "List four (4) documents that must be accessible to the operator of a <12 metre Class 2C surveyed vessel?",
+    "references": "I003-PC3.4, 5.1, 5.2, P2, K13, K14, K16 / J006- PC3.2"
+  },
+  {
+    "question": "As the Master of a DCV, how do you keep up with changes to industry and Legislation?",
+    "references": "I003-PC4.1, 4.2, 4.3"
+  },
+  {
+    "question": "Once changes to Regulations and Legislation have been identified, what must you do?",
+    "references": "I003-PC2.2, 4.2, 4.3, 5.1, 5.2"
+  },
+  {
+    "question": "What are three (3) factors you would consider when selecting an anchorage?",
+    "references": "N008-PC2.1, 2.2, K3, K17 / J006-PC1.2, K4 / K007-P1"
+  },
+  {
+    "question": "What are two (2) ways you can check whether an anchor is dragging?",
+    "references": "K007-P1 / N008-PC2.2,2.4, K17"
+  },
+  {
+    "question": "List three (3) things you can do if your anchor is dragging?",
+    "references": "N008-PC2.4, K17 / K007-P1"
+  },
+  {
+    "question": "What are two (2) emergencies that might lead to you beaching a vessel?",
+    "references": "K007-PC3.1, K5"
+  },
+  {
+    "question": "What are three (3) considerations for re-floating a beached vessel?",
+    "references": "K007-P3, K8"
+  },
+  {
+    "question": "b) Would your vessel be legally seaworthy?",
+    "references": "N008-PC4.4, 4.5, P1 / C037-PC1.1"
+  },
+  {
+    "question": "Name three (3) pieces of equipment you would test prior to departure?",
+    "references": "C037-PC1.1 / N008-PC4.2"
+  },
+  {
+    "question": "How could you check your fuel consumption after 1 hour?",
+    "references": "J006-PC1.1 / C037-PC1.2, P4"
+  },
+  {
+    "question": "When would you report a fuel spill to authorities?",
+    "references": "J006-PC1.6, 2.1, K6 / N008- K18"
+  },
+  {
+    "question": "What are three (3) precautions that will help to reduce the risk of a spill when refuelling?",
+    "references": "N008-PC5.3, P11, K18, K20 / J006-PC1.4, K10, K11"
+  },
+  {
+    "question": "List four (4) systems or pieces of equipment that you should shut down prior to refuelling?",
+    "references": "N008-PC5.2, 5.4 / J006-PC1.4 / C037-PC2.2"
+  },
+  {
+    "question": "List four (4) activities that should be restricted within a \u2018safety zone\u2019 while refuelling?",
+    "references": "N008-PC5.2, 5.3, 5.4"
+  },
+  {
+    "question": "In the event of a spill, what procedures should you follow?",
+    "references": "J006-PC1.4, 1.5, K6, K10 / N008-PC5.2, 5.4"
+  },
+  {
+    "question": "If you couldn\u2019t start the outboard motor, list three (3) checks you would make?",
+    "references": "C037-PC1.1, 3.3, 3.4, 4.1, 4.2, 4.3, K6"
+  },
+  {
+    "question": "When using a motor, what are four (4) pre-start checks should you make?",
+    "references": "C037-PC1.1, 1.2, 3.3, 3.4, P2"
+  },
+  {
+    "question": "Name two (2) hazards associated with batteries?",
+    "references": "CO37 -K1, K7"
+  },
+  {
+    "question": "What are three (3) post-start checks you should make if the engine is running roughly?",
+    "references": "C037-PC4.1, 4.3, K3, K6"
+  },
+  {
+    "question": "How many Annex make up the International Convention for the Prevention of Pollution from Ships (MARPOL)?",
+    "references": "J006-PC1.1, 1.2, K2, K5, K8/ I003-K12"
+  },
+  {
+    "question": "What provision should you make for garbage disposal, and recyclables when operating a small vessel within 10nm of shore to comply with MARPOL?",
+    "references": "J006-PC1.1, 1.2, 1.3, 3.1, K2, K3, K5 / I003-K12"
+  },
+  {
+    "question": "3a. List one (1) way of compacting \u2018general\u2019 waste on a DCV?",
+    "references": "J006-PC1.1, 1.3, K5 / I003-K12"
+  },
+  {
+    "question": "What do you need to consider when storing fuel, waste oil, and chemicals on your vessel?",
+    "references": "J006-PC2.2,  K1, K5, K7 / I003-K12 / C037-PC2.4"
+  },
+  {
+    "question": "Where can you discharge sewage at sea in Tasmania?",
+    "references": "J006-K2, K5, K6 / I003-K12"
+  },
+  {
+    "question": "Why are watertight compartments important?",
+    "references": "N008-K2, K6, K7, K8."
+  },
+  {
+    "question": "When inspecting the integrity and condition of a hull, what are three (3) signs of damage you would look for?",
+    "references": "N008-P2, P5, K6, K8"
+  },
+  {
+    "question": "What types of damage or deterioration would you look for in vessels constructed of the following?",
+    "references": "N008-P2, P5, K6, K8"
+  }
+]

@@ -1,0 +1,367 @@
+import mammoth from "mammoth";
+import * as cheerio from "cheerio";
+import { AssessmentQuestion } from '../models/types';
+
+// Production mode - reduces console output
+const PRODUCTION_MODE = process.env.PRODUCTION_MODE === 'true';
+const log = (...args: any[]) => !PRODUCTION_MODE && console.log(...args);
+
+/**
+ * Extracts questions from a .docx file using robust HTML parsing with Cheerio.
+ * Handles complex layouts, tables, images, and varying formats.
+ * Improved to separate questions from answers and avoid duplicates.
+ * Also detects Unit Codes for auto-scoping.
+ */
+export async function extractQuestionsFromDocx(input: string | Buffer): Promise<{ questions: AssessmentQuestion[], detectedUnitCodes: string[], instructions: string[] }> {
+    // 1. Convert DOCX to HTML with embedded images
+    const options = {
+        convertImage: (mammoth.images as any).inline(function (element: any) {
+            return element.read("base64").then((imageBuffer: any) => {
+                return { src: `data:${element.contentType};base64,${imageBuffer}` };
+            });
+        })
+    };
+
+    let result;
+    if (Buffer.isBuffer(input)) {
+        result = await mammoth.convertToHtml({ buffer: input }, options);
+    } else {
+        result = await mammoth.convertToHtml({ path: input as string }, options);
+    }
+
+    const { value: html } = result;
+
+    // 2. Load into Cheerio
+    const $ = cheerio.load(html);
+    const questions: AssessmentQuestion[] = [];
+
+    let currentSection = "General";
+
+    // Track seen question text to avoid duplicates (normalized)
+    const seenQuestions = new Set<string>();
+    const instructions: string[] = [];
+    const seenInstructionTexts = new Set<string>(); // Track normalized instruction text
+
+    // 3. Traverse paragraphs and list items (more targeted than all elements)
+    $('p, li, tr').each((i, elem) => {
+        const $el = $(elem);
+        const text = $el.text().trim();
+
+        // Skip empty or very short text
+        if (!text || text.length < 5) return;
+
+        // A. Detect Section Headers
+        let tagName = '';
+        if (elem.type === 'tag' && typeof elem.name === 'string') {
+            tagName = elem.name.toLowerCase();
+        }
+        const isBold = $el.find('strong, b').length > 0 || $el.is('strong, b');
+        const isHeader = tagName && ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName);
+
+        // Improved Section Detection: Catch "Part 1", "Section A", etc.
+        const sectionMatch = text.match(/^(?:Part|Section|Module)\s+(?:\d+|[A-Z])(?:\s|$)/i);
+
+        if ((isHeader || (isBold && text.length < 100) || (sectionMatch && text.length < 50))) {
+            if (text.match(/^(PART|SECTION|MODULE|UNIT|KNOWLEDGE|PRACTICAL|ASSESSMENT)\s/i) || sectionMatch) {
+                currentSection = text.trim();
+                log(`   📂 Section detected: ${currentSection}`);
+                return;
+            }
+        }
+
+        // Check for Instruction/Marking Guide noise to skip
+        const instructionPhrases = [
+            "Instructions for marking",
+            "answers within this marking sheet",
+            "Listed below are the questions",
+            "Assessors must refer",
+            "course participant is not expected",
+            "Reasonable Adjustment",
+            "purpose of reasonable adjustment",
+            "Inherent requirements",
+            "Assessors may accept variations",
+            "Assessors must ensure",
+            "Revision Date",
+            "Next Review",
+            "RTO Code",
+            "NovaCore CMS"
+        ];
+
+        const isInstruction = instructionPhrases.some(phrase => text.includes(phrase));
+        if (isInstruction) {
+            // Aggressive normalization for deduplication
+            // Remove ALL whitespace variations, punctuation, and convert to lowercase
+            const normalizedText = text
+                .toLowerCase()
+                .replace(/\s+/g, ' ')  // Normalize whitespace
+                .replace(/[^\w\s]/g, '') // Remove punctuation
+                .trim();
+
+            // Only add if we haven't seen this instruction text before
+            if (!seenInstructionTexts.has(normalizedText)) {
+                seenInstructionTexts.add(normalizedText);
+                const htmlContent = $.html(elem);
+                instructions.push(htmlContent);
+                log(`   📋 Captured instruction: ${text.substring(0, 50)}...`);
+            } else {
+                log(`   ⏭️  Skipping duplicate instruction: ${text.substring(0, 50)}...`);
+            }
+            return;
+        }
+
+        // Pattern 4: Table row with ID in first cell
+        let tableQuestion: { id: string, text: string } | null = null;
+        if ($el.is('tr')) {
+            const cells = $el.find('td, th');
+            if (cells.length >= 2) {
+                const c1 = $(cells[0]).text().trim();
+                const c2 = $(cells[1]).text().trim();
+                // First cell looks like an ID, second has content
+                if (c1.match(/^(\d+|[a-z])[\.\)\:]?$/i) && c2.length > 10) {
+                    tableQuestion = {
+                        id: c1.replace(/[^\w]/g, ''),
+                        text: c2
+                    };
+                }
+            }
+        }
+
+        // Check for "Hidden Questions" merged in the same block (e.g., "Answer 3. Next Question")
+        // Regex looks for: (Space or Start) + (Number + dot/paren) + Space + (Capital Letter)
+        const splitPattern = /(?:^|\s+)(\d+[\.\)]\s+[A-Z])/g;
+        let match;
+        const splitIndices: number[] = [];
+
+        // Find all occurrences of potential question starts
+        while ((match = splitPattern.exec(text)) !== null) {
+            // If match is at start (index 0), it's a normal question, not a split (unless there are multiple)
+            if (match.index === 0 && splitIndices.length === 0) continue;
+            splitIndices.push(match.index);
+        }
+
+        let textParts: string[] = [];
+        if (splitIndices.length > 0) {
+            let lastIndex = 0;
+            splitIndices.forEach(idx => {
+                // Adjust index to include the leading space/newline in the previous part, 
+                // but keep the number for the new part.
+                // The regex match includes the leading space if present.
+                // We want to split AT the number.
+                // match[0] is " 3. W". match[1] is "3. W".
+                // We need to find the exact start of the number.
+                const matchStr = text.substring(idx);
+                const numberStart = matchStr.search(/\d/); // Find first digit relative to idx
+                const splitPoint = idx + numberStart;
+
+                textParts.push(text.substring(lastIndex, splitPoint).trim());
+                lastIndex = splitPoint;
+            });
+            textParts.push(text.substring(lastIndex).trim());
+        } else {
+            textParts = [text];
+        }
+
+        // Process each part as a separate entity
+        textParts.forEach(partText => {
+            if (!partText || partText.length < 2) return;
+
+            // Re-evaluate regexes for this part
+            const partNumberedMatch = partText.match(/^(?:Q(?:uestion)?\s*)?(\d+(?:\.\d+)*|[a-z])(?:\)|\.|:)?\s+(.*)/i);
+            const partQuestionWordMatch = partText.match(/^(Which|What|Who|Where|When|Why|How|List|Describe|Explain|Identify|Define|Calculate|Match|Select|Name|State|Give|Provide)\s+(.+?)(?:\?|\.)?$/i);
+            const partEndsWithQuestion = partText.endsWith('?');
+
+            let pQuestionId = null;
+            let pQuestionText = null;
+            let pIsNewQuestion = false;
+
+            if (tableQuestion && textParts.length === 1) {
+                // Only use table question logic if we didn't split (otherwise table structure is misleading)
+                pQuestionId = tableQuestion.id;
+                pQuestionText = tableQuestion.text;
+                pIsNewQuestion = true;
+            } else if (partNumberedMatch && partNumberedMatch[2].length > 5) {
+                const idPart = partNumberedMatch[1];
+                const contentPart = partNumberedMatch[2];
+                const isLetter = /^[a-z]$/i.test(idPart);
+                if (isLetter && questions.length > 0) {
+                    pIsNewQuestion = false;
+                } else {
+                    pQuestionId = idPart.replace(/[^\w]/g, '');
+                    pQuestionText = contentPart;
+                    pIsNewQuestion = true;
+                }
+            } else if ((partQuestionWordMatch || partEndsWithQuestion) && partText.length > 10) {
+                pQuestionId = `Q${questions.length + 1}`;
+                pQuestionText = partText;
+                pIsNewQuestion = true;
+            } else if (questions.length > 0 && partText.length > 15) {
+                // AGGRESSIVE new question detection:
+                // Default to treating substantial text as a new question
+                // Only append if it's clearly a continuation
+
+                const isClearlyContinuation =
+                    // Very short (< 15 chars)
+                    partText.length < 15 ||
+                    // Simple yes/no/single word answers
+                    partText.match(/^(Yes|No|True|False|N\/?A|None|Correct|Incorrect|One|Two|Three|Four|Five)$/i) ||
+                    // Just a number with units
+                    partText.match(/^\d+\s*(kg|m|cm|mm|L|mL|%|degrees?|hours?|minutes?)$/i) ||
+                    // Bullet points
+                    partText.match(/^[•\-\*]\s+/) ||
+                    // List items with parentheses: (a), (b), (1), (2), (i), (ii), etc.
+                    partText.match(/^\([a-z0-9]+\)/i) ||
+                    partText.match(/^\([ivxlcdm]+\)/i) || // Roman numerals
+                    // List items: a), b), 1), 2), i), ii)
+                    partText.match(/^[a-z0-9]+\)/i) ||
+                    partText.match(/^[ivxlcdm]+\)/i) ||
+                    // Starts with lowercase (likely continuation of sentence)
+                    partText.match(/^[a-z]/) ||
+                    // Common continuation words
+                    partText.match(/^(and|or|but|also|additionally|furthermore|moreover|however|therefore|thus)/i) ||
+                    // Indented or sub-item markers
+                    partText.match(/^\s+/) ||
+                    // Continuation phrases
+                    partText.match(/^(including|such as|for example|e\.g\.|i\.e\.)/i);
+
+                if (!isClearlyContinuation) {
+                    // Treat as new question
+                    pQuestionId = `Q${questions.length + 1}`;
+                    pQuestionText = partText;
+                    pIsNewQuestion = true;
+                    log(`   🔍 Treating text as new question (default behavior): ${partText.substring(0, 40)}...`);
+                }
+            }
+
+            if (pIsNewQuestion && pQuestionId && pQuestionText) {
+                // ... (Logic to create new question)
+                // Detect Mapping Hint
+                let mappingHint: string | undefined = undefined;
+                const hintMatch = pQuestionText.match(/([A-Z0-9]{3,4}-(?:PC|K|P|Element)[\d\.\,\s\:]+)$/i);
+                if (hintMatch) {
+                    mappingHint = hintMatch[1].trim();
+                    pQuestionText = pQuestionText.substring(0, hintMatch.index).trim();
+                }
+
+                const doubleNumbering = pQuestionText.match(/^(\d+|[a-z])[\.\)\:]\s+(.*)/);
+                if (doubleNumbering) {
+                    pQuestionText = doubleNumbering[2];
+                }
+
+                const normalizedText = pQuestionText.toLowerCase().replace(/[^\w\s]/g, '').trim();
+
+                // Deduplication
+                let isDuplicate = false;
+                let replaceIndex = -1;
+
+                for (let i = 0; i < questions.length; i++) {
+                    const existingQ = questions[i];
+                    const existingNorm = existingQ.text.toLowerCase().replace(/[^\w\s]/g, '').trim();
+
+                    // Check if texts are very similar (one contains the other)
+                    if (normalizedText.includes(existingNorm) && normalizedText.length > existingNorm.length + 10) {
+                        replaceIndex = i;
+                        break;
+                        questions.push(newQuestion);
+                        log(`   ✓ Extracted Q${questions.length}: ${uniqueId}`);
+                    }
+                } else {
+                    // Append to previous
+                    if (questions.length > 0) {
+                        const lastQ = questions[questions.length - 1];
+
+                        // Deduplication: Check if text is already in the question
+                        // Normalize both to check for loose duplicates
+                        const normText = partText.toLowerCase().replace(/\s+/g, ' ').trim();
+                        const normLastQ = lastQ.text.toLowerCase().replace(/\s+/g, ' ').trim();
+
+                        if (partText.length > 3 && (normLastQ.includes(normText) || normLastQ.endsWith(normText))) {
+                            log(`   Skipping duplicate text append: ${partText.substring(0, 20)}...`);
+                            return;
+                        }
+
+                        lastQ.text += `\n${partText}`;
+
+                        if (textParts.length === 1) {
+                            $el.find('img').each((_, img) => {
+                                const src = $(img).attr('src');
+                                if (src) {
+                                    if (!lastQ.images) lastQ.images = [];
+                                    lastQ.images.push(src);
+                                }
+                                // Images (only attach to first part if splitting? Hard to know. Attach to current.)
+                                // If we split, images might belong to previous or next. 
+                                // For now, attach images to the question created from the element containing them.
+                                const images: string[] = [];
+                                if (textParts.length === 1) {
+                                    $el.find('img').each((_, img) => {
+                                        const src = $(img).attr('src');
+                                        if (src) images.push(src);
+                                    });
+                                }
+
+                                pQuestionText = pQuestionText.replace(/\s+/g, ' ').trim();
+
+                                const newQuestion = {
+                                    id: uniqueId,
+                                    text: pQuestionText,
+                                    section: currentSection,
+                                    images: images.length > 0 ? images : undefined,
+                                    mappingHint
+                                };
+
+                                if (replaceIndex !== -1) {
+                                    questions[replaceIndex] = newQuestion;
+                                    log(`   🔄 Replaced Q${replaceIndex + 1} with longer version`);
+                                } else {
+                                    questions.push(newQuestion);
+                                    log(`   ✓ Extracted Q${questions.length}: ${uniqueId}`);
+                                }
+                            } else {
+                                // Append to previous
+                                if(questions.length > 0) {
+                                const lastQ = questions[questions.length - 1];
+
+                                // Deduplication: Check if text is already in the question
+                                // Normalize both to check for loose duplicates
+                                const normText = partText.toLowerCase().replace(/\s+/g, ' ').trim();
+                                const normLastQ = lastQ.text.toLowerCase().replace(/\s+/g, ' ').trim();
+
+                                if (partText.length > 3 && (normLastQ.includes(normText) || normLastQ.endsWith(normText))) {
+                                    log(`   Skipping duplicate text append: ${partText.substring(0, 20)}...`);
+                                    return;
+                                }
+
+                                lastQ.text += `\n${partText}`;
+
+                                if (textParts.length === 1) {
+                                    $el.find('img').each((_, img) => {
+                                        const src = $(img).attr('src');
+                                        if (src) {
+                                            if (!lastQ.images) lastQ.images = [];
+                                            lastQ.images.push(src);
+                                        }
+                                    });
+                                }
+
+                                const hintMatch = partText.match(/([A-Z0-9]{3,4}-(?:PC|K|P|Element)[\d\.\,\s\:]+)$/i);
+                                if (hintMatch && !lastQ.mappingHint) {
+                                    lastQ.mappingHint = hintMatch[1].trim();
+                                }
+                            }
+                        }
+                    });
+    });
+
+
+    // 4. Detect Unit Codes in the document (for auto-scoping)
+    const fullText = $.root().text();
+    // Regex for Australian Unit Codes: 3-4 letters, 3-4 numbers, optional suffix
+    const unitCodeRegex = /\b([A-Z]{3,4}[0-9]{3,4}[A-Z]?)\b/g;
+    const matches = fullText.match(unitCodeRegex) || [];
+    const detectedUnitCodes = Array.from(new Set(matches)); // Unique codes
+
+    log(`\n   📊 Total questions extracted: ${questions.length}`);
+    log(`   🔍 Detected Unit Codes: ${detectedUnitCodes.join(', ')}`);
+
+    return { questions, detectedUnitCodes, instructions };
+}

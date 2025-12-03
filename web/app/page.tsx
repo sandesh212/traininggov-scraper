@@ -104,12 +104,15 @@ export default function Home() {
             }
 
             // Check for invalid units warning (status 200 but has invalidUnits)
+            /* 
+            // DISABLED BY USER REQUEST: Stop checking valid/invalid units
             if (data.invalidUnits && data.invalidUnits.length > 0) {
                 setInvalidUnitsList(data.invalidUnits);
                 setShowInvalidModal(true);
                 setLoading(false); // Pause loading state while user decides
                 return;
             }
+            */
 
             setReport(data);
             showToast('Analysis complete! Report generated successfully.', 'success');

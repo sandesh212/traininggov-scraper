@@ -123,6 +123,9 @@ export class ScraperService {
             let $ = cheerio.load(unitHtml);
 
             // Check if it's the SPA shell (empty title or specific Nuxt markers)
+            let titleRaw = $('h1').first().text().trim();
+            let mainHeading = $('h1').text().toLowerCase();
+            let pageTitle = $('title').text().toLowerCase();
             isSpaShell = $('div#__nuxt').length > 0 || $('script[src*="_nuxt"]').length > 0;
 
             if (isSpaShell) {
@@ -166,7 +169,7 @@ export class ScraperService {
 
                 } catch (e) {
                     console.error(`   Puppeteer failed for ${code}:`, e);
-                    throw new Error('Puppeteer browser automation failed');
+                    return null;
                 } finally {
                     await page.close();
                 }
@@ -180,7 +183,7 @@ export class ScraperService {
 
                 if (!searchResponse.ok) {
                     console.warn(`   Search failed for ${code}. Reason: Search page request failed`);
-                    throw new Error('Search page request failed');
+                    return null;
                 }
 
                 const searchHtml = await searchResponse.text();
@@ -201,32 +204,32 @@ export class ScraperService {
                     $ = cheerio.load(unitHtml);
                 } else {
                     console.warn(`   No valid link found in search results for ${code}. Reason: Unit code not found in search results`);
-                    throw new Error('Not found in search results');
+                    return null;
                 }
             }
 
             if (response.status === 404 && !isSpaShell) {
                 console.warn(`   Unit ${code} returned 404 after search fallback. Reason: HTTP 404 - Page not found`);
-                throw new Error('404 - Page not found');
+                return null;
             }
 
             // Check for 404 indicators in content
-            const pageTitle = $('title').text().toLowerCase();
-            const mainHeading = $('h1, h2').text().toLowerCase();
+            pageTitle = $('title').text().toLowerCase();
+            mainHeading = $('h1, h2').text().toLowerCase();
 
             if (pageTitle.includes('404') ||
                 pageTitle.includes('page not found') ||
                 mainHeading.includes('page not found') ||
                 mainHeading.includes('error')) {
                 console.warn(`   Unit ${code} page indicates not found. Reason: Page contains 404/error indicators`);
-                throw new Error('Page contains 404/error indicators');
+                return null;
             }
 
             // Extract Title
-            const titleRaw = $('h1').text().trim();
+            titleRaw = $('h1').text().trim();
             if (!titleRaw) {
                 console.warn(`   Unit ${code} has no title. Reason: No title found on page (h1 element empty)`);
-                throw new Error('No title found on page');
+                return null;
             }
 
             const titleMatch = titleRaw.match(new RegExp(`${code}\\s+-\\s+(.+)`, 'i'));

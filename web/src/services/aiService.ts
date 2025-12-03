@@ -287,7 +287,13 @@ ${JSON.stringify(inputList, null, 2)}
 
         if (questionsWithImages.length === 0) return questions;
 
+        // SKIP IMAGE ANALYSIS FOR PERFORMANCE (User Request)
+        console.log(`   ⏩ Skipping image analysis for ${questionsWithImages.length} questions (Performance Optimization)`);
+        return questions;
+
+        /* 
         console.log(`   🖼️  Analyzing ${questionsWithImages.length} questions with images...`);
+        */
 
         // Process in parallel
         const updatedQuestions = await Promise.all(questions.map(async (q) => {

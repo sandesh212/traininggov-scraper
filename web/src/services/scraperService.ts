@@ -48,8 +48,8 @@ export class ScraperService {
         const invalid: { code: string, url: string, reason: string }[] = [];
 
         // CONCURRENCY CONTROL
-        // Process units in batches to speed up execution while respecting server limits
-        const BATCH_SIZE = 5;
+        // Reduced to 3 to prevent memory/CPU exhaustion and timeouts
+        const BATCH_SIZE = 3;
 
         console.log(`   🚀 Starting parallel scrape for ${codes.length} units (Batch size: ${BATCH_SIZE})...`);
 
@@ -60,6 +60,7 @@ export class ScraperService {
                 if (result.success && result.unit) {
                     valid.push(result.unit);
                 } else {
+                    console.warn(`   ⚠️ Failed to scrape ${code}: ${result.reason}`);
                     invalid.push({
                         code,
                         url: `${this.baseUrl}/${code}`,
@@ -67,6 +68,7 @@ export class ScraperService {
                     });
                 }
             } catch (e) {
+                console.error(`   ❌ Critical error processing ${code}:`, e);
                 invalid.push({
                     code,
                     url: `${this.baseUrl}/${code}`,

@@ -8,6 +8,8 @@ import { AIService } from '@/services/aiService';
 import { Unit } from '@/types';
 import { RedTextExtractor } from '@/services/redTextExtractor';
 
+export const maxDuration = 300; // 5 minutes timeout
+
 export async function POST(req: NextRequest) {
     try {
         const formData = await req.formData();

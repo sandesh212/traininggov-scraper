@@ -188,28 +188,34 @@ export default function Home() {
                 animate={{ y: 0 }}
                 className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40"
             >
-                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-0 sm:h-16 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2">
+                    {/* Logo and Title */}
+                    <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                         <motion.div
                             whileHover={{ rotate: 180 }}
                             transition={{ duration: 0.5 }}
-                            className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-sm"
+                            className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-sm"
                         >
-                            <Sparkles size={16} className="text-white" />
+                            <Sparkles size={14} className="text-white sm:w-4 sm:h-4" />
                         </motion.div>
                         <div>
-                            <h1 className="text-lg font-bold tracking-tight text-gray-900">The Validator by SMT</h1>
+                            <h1 className="text-sm sm:text-lg font-bold tracking-tight text-gray-900 whitespace-nowrap">
+                                The Validator by SMT
+                            </h1>
                         </div>
                     </div>
-                    <div className="flex items-center gap-4">
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2 sm:gap-4">
                         <button
                             onClick={() => setShowUnitManager(true)}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium transition-colors border border-gray-200"
+                            className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium transition-colors border border-gray-200"
                         >
-                            <Database size={14} />
-                            Manage Units
+                            <Database size={12} className="sm:w-3.5 sm:h-3.5" />
+                            <span className="hidden xs:inline sm:inline">Manage Units</span>
+                            <span className="inline xs:hidden sm:hidden">Units</span>
                         </button>
-                        <div className="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full border border-gray-200">
+                        <div className="hidden sm:flex text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full border border-gray-200 whitespace-nowrap">
                             v2.3.0 • Local AI
                         </div>
                     </div>
@@ -448,55 +454,60 @@ export default function Home() {
                             className="space-y-8"
                         >
                             {/* Report Header */}
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                            <div className="flex flex-col gap-4 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
                                 <div>
-                                    <h2 className="text-2xl font-bold text-gray-900">Compliance Report</h2>
-                                    <p className="text-gray-500 text-sm mt-1">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Compliance Report</h2>
+                                    <p className="text-gray-500 text-xs sm:text-sm mt-1">
                                         Analyzed <span className="font-medium text-gray-900">{report.questionsCount} questions</span> against <span className="font-medium text-gray-900">{report.totalUnitsInDatabase} units</span>.
                                     </p>
                                 </div>
-                                <div className="flex items-center gap-3">
+                                <div className="flex flex-wrap items-center gap-2">
                                     <button
                                         onClick={() => setReport(null)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                                        className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                     >
-                                        <ArrowLeft size={16} />
-                                        Back to Upload
+                                        <ArrowLeft size={14} className="sm:w-4 sm:h-4" />
+                                        <span className="hidden xs:inline">Back to Upload</span>
+                                        <span className="inline xs:hidden">Back</span>
                                     </button>
                                     <button
                                         onClick={() => handleAnalyze(false)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                                        className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                     >
-                                        <RefreshCw size={16} />
-                                        Re-run Analysis
+                                        <RefreshCw size={14} className="sm:w-4 sm:h-4" />
+                                        <span className="hidden sm:inline">Re-run Analysis</span>
+                                        <span className="inline sm:hidden">Re-run</span>
                                     </button>
                                     <button
                                         onClick={() => generateExcelReport(report)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg text-sm font-medium transition-colors"
+                                        className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                     >
-                                        <FileSpreadsheet size={16} />
-                                        Export Excel
+                                        <FileSpreadsheet size={14} className="sm:w-4 sm:h-4" />
+                                        <span className="hidden sm:inline">Export Excel</span>
+                                        <span className="inline sm:hidden">Excel</span>
                                     </button>
                                     <button
                                         onClick={downloadReport}
-                                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                                        className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                     >
-                                        <Download size={16} />
-                                        Export JSON
+                                        <Download size={14} className="sm:w-4 sm:h-4" />
+                                        <span className="hidden sm:inline">Export JSON</span>
+                                        <span className="inline sm:hidden">JSON</span>
                                     </button>
                                     <button
                                         onClick={() => generateUnitDataExcel(report.mappedUnits)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg text-sm font-medium transition-colors"
+                                        className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                     >
-                                        <FileSpreadsheet size={16} />
-                                        Export Units
+                                        <FileSpreadsheet size={14} className="sm:w-4 sm:h-4" />
+                                        <span className="hidden sm:inline">Export Units</span>
+                                        <span className="inline sm:hidden">Units</span>
                                     </button>
                                     <button
                                         onClick={resetAnalysis}
-                                        className="flex items-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg text-sm font-medium transition-colors"
+                                        className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                     >
-                                        <RotateCcw size={16} />
-                                        Reset
+                                        <RotateCcw size={14} className="sm:w-4 sm:h-4" />
+                                        <span className="hidden xs:inline">Reset</span>
                                     </button>
                                 </div>
                             </div>

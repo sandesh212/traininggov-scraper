@@ -47,11 +47,15 @@ export class ScraperService {
         const valid: Unit[] = [];
         const invalid: { code: string, url: string, reason: string }[] = [];
 
-        try {
-            for (const code of codes) {
-                console.log(`   Validating ${code}...`);
-                await new Promise(resolve => setTimeout(resolve, 500));
+        // CONCURRENCY CONTROL
+        // Process units in batches to speed up execution while respecting server limits
+        const BATCH_SIZE = 5;
 
+        console.log(`   🚀 Starting parallel scrape for ${codes.length} units (Batch size: ${BATCH_SIZE})...`);
+
+        // Helper to process a single unit
+        const processUnit = async (code: string) => {
+            try {
                 const result = await this.scrapeUnitWithReason(code);
                 if (result.success && result.unit) {
                     valid.push(result.unit);
@@ -62,11 +66,30 @@ export class ScraperService {
                         reason: result.reason || 'Unknown error'
                     });
                 }
+            } catch (e) {
+                invalid.push({
+                    code,
+                    url: `${this.baseUrl}/${code}`,
+                    reason: `Unexpected error: ${e}`
+                });
             }
-        } finally {
-            await this.close();
+        };
+
+        // Process in batches
+        for (let i = 0; i < codes.length; i += BATCH_SIZE) {
+            const batch = codes.slice(i, i + BATCH_SIZE);
+            console.log(`   Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(codes.length / BATCH_SIZE)} (${batch.join(', ')})...`);
+
+            // Run batch in parallel
+            await Promise.all(batch.map(code => processUnit(code)));
+
+            // Small delay between batches to be polite
+            if (i + BATCH_SIZE < codes.length) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
         }
 
+        await this.close();
         return { valid, invalid };
     }
 

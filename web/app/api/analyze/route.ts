@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
         const formData = await req.formData();
         const assessmentFile = formData.get('assessmentFile') as File;
         const unitsFile = formData.get('unitsFile') as File;
+        const ignoreInvalid = formData.get('ignoreInvalid') === 'true';
 
         if (!assessmentFile) {
             return NextResponse.json({ error: 'No assessment file provided' }, { status: 400 });
@@ -55,14 +56,11 @@ export async function POST(req: NextRequest) {
         console.log(`   ✅ Extracted ${questions.length} questions.`);
 
         // --- NEW: Merge Structured Pairs into Questions ---
-        // For each structured pair, either create a new question or merge as sub-question
         console.log("   🔗 Integrating structured sub-questions...");
         const enhancedQuestions = integrateStructuredPairs(questions, structuredPairs);
         console.log(`   ✅ Enhanced to ${enhancedQuestions.length} questions (including sub-questions).`);
 
         // --- NEW: Merge Red Text Answers ---
-        // We do this BEFORE AI refinement to ensure the "Red Text" formatting (newlines, lists) is preserved
-        // and explicitly tagged as the answer.
         console.log("   🔗 Merging Red Text segments into questions...");
         const questionsWithAnswers = mergeRedTextAnswers(enhancedQuestions, redTextSegments);
         const questionsValidated = ensureAnswers(questionsWithAnswers, redTextSegments);
@@ -113,26 +111,57 @@ export async function POST(req: NextRequest) {
 
             const scraper = new ScraperService();
             const scrapedUnits: Unit[] = [];
+            const missingFromDb = scopedCodes.filter(code => !units.some(u => u.code === code));
 
-            if (scopedCodes.length <= 10) {
+            // If units were provided via file, we MUST validate them all
+            if (unitsFile && missingFromDb.length > 0) {
+                console.log(`   🌐 Verifying ${missingFromDb.length} units from file on training.gov.au...`);
+                // Scrape all missing units to verify they exist
+                const freshUnits = await scraper.scrapeUnits(missingFromDb);
+                scrapedUnits.push(...freshUnits);
+            } else if (scopedCodes.length <= 10 && !unitsFile) {
+                // Auto-scoping behavior (small number): try to refresh
                 console.log(`   🌐 Scraping fresh data from training.gov.au...`);
                 const freshUnits = await scraper.scrapeUnits(scopedCodes);
                 scrapedUnits.push(...freshUnits);
             }
 
             unitsToAnalyze = [];
+            const invalidUnits: { code: string, url: string }[] = [];
+
             for (const code of scopedCodes) {
+                // Priority 1: Freshly scraped (verified)
                 const fresh = scrapedUnits.find(u => u.code === code);
                 if (fresh) {
                     unitsToAnalyze.push(fresh);
+                    continue;
+                }
+
+                // Priority 2: Existing in DB
+                const fromDb = units.find(u => u.code === code);
+                if (fromDb) {
+                    console.log(`   Using DB version for ${code}`);
+                    unitsToAnalyze.push(fromDb);
+                    continue;
+                }
+
+                // If we get here, it's invalid
+                console.warn(`   ⚠️ Unit ${code} not found in DB or TGA.`);
+                invalidUnits.push({
+                    code,
+                    url: `https://training.gov.au/Training/Details/${code}`
+                });
+            }
+
+            // If user explicitly provided a list, fail if any are invalid
+            if (unitsFile && invalidUnits.length > 0) {
+                if (ignoreInvalid) {
+                    console.log(`   ⚠️ Ignoring ${invalidUnits.length} invalid units as requested.`);
                 } else {
-                    const fromDb = units.find(u => u.code === code);
-                    if (fromDb) {
-                        console.log(`   Using DB version for ${code}`);
-                        unitsToAnalyze.push(fromDb);
-                    } else {
-                        console.warn(`   ⚠️ Unit ${code} not found in DB or TGA.`);
-                    }
+                    return NextResponse.json({
+                        invalidUnits,
+                        message: `The following units could not be verified: ${invalidUnits.map(u => u.code).join(', ')}`
+                    }, { status: 200 });
                 }
             }
         }
@@ -178,7 +207,7 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         console.error('Error processing request:', error);
         return NextResponse.json(
-            { error: 'Internal server error processing the file.' },
+            { error: `Internal server error processing the file: ${error instanceof Error ? error.message : String(error)}` },
             { status: 500 }
         );
     }

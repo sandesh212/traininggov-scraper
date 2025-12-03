@@ -1,5 +1,5 @@
 import { pipeline } from '@xenova/transformers';
-import { UnitOfCompetency, PerformanceCriteria } from './uocLoader';
+import { Unit } from './uocLoader';
 import { AssessmentQuestion } from '../models/types';
 import { parseEvidenceHierarchy, EvidenceNode } from '../../src/utils/evidenceHierarchy';
 
@@ -40,7 +40,7 @@ export class LocalAgent {
      * "Train" the agent by indexing the provided Units of Competency.
      * This converts all text into mathematical vectors.
      */
-    public async train(units: UnitOfCompetency[]) {
+    public async train(units: Unit[]) {
         if (!this.isInitialized) await this.init();
 
         console.log(`📚 Training agent on ${units.length} units...`);
@@ -210,6 +210,19 @@ export class LocalAgent {
         // Get top 5 matches to form a consensus
         const topMatches = matches.slice(0, 5);
         const bestMatch = topMatches[0];
+
+        if (!bestMatch) {
+            return {
+                questionId: question.id,
+                questionText: question.text,
+                isValid: false,
+                mappedUnit: null,
+                mappedCriteria: [],
+                mappedKnowledge: [],
+                confidence: 0,
+                reasoning: "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+            };
+        }
 
         // --- COMPLIANCE CHECKS ---
 

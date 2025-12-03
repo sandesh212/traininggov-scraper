@@ -3,22 +3,26 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { Upload, FileText, CheckCircle, Loader2, AlertCircle, Sparkles, Award, TrendingUp, List, Download, LayoutGrid, RefreshCw, FileSpreadsheet, X, ArrowLeft, RotateCcw } from 'lucide-react';
+import { Upload, FileText, CheckCircle, Loader2, AlertCircle, Sparkles, Award, TrendingUp, List, Download, LayoutGrid, RefreshCw, FileSpreadsheet, X, ArrowLeft, RotateCcw, Database } from 'lucide-react';
 import { Toast, ToastType } from '@/components/Toast';
+import { ConfirmationModal } from '@/components/ConfirmationModal';
 import { ReportData } from '@/types';
 import { generateExcelReport, generateUnitDataExcel } from '@/utils/excelExport';
 
 const UnifiedReportView = dynamic(() => import('@/components/UnifiedReportView').then(mod => mod.UnifiedReportView), { ssr: false });
 const RedTextColumn = dynamic(() => import('@/components/RedTextColumn').then(mod => mod.RedTextColumn), { ssr: false });
+const UnitManager = dynamic(() => import('@/components/UnitManager').then(mod => mod.UnitManager), { ssr: false });
 
 export default function Home() {
     const [assessmentFile, setAssessmentFile] = useState<File | null>(null);
     const [unitsFile, setUnitsFile] = useState<File | null>(null);
-    // Simulate backend unit data presence (replace with real backend check)
-    const [hasUnitData, setHasUnitData] = useState(true);
+    const [unitCount, setUnitCount] = useState<number>(0);
     const [loading, setLoading] = useState(false);
     const [report, setReport] = useState<ReportData | null>(null);
     const [activeTab, setActiveTab] = useState<'report' | 'redtext'>('report');
+    const [showUnitManager, setShowUnitManager] = useState(false);
+    const [showInvalidModal, setShowInvalidModal] = useState(false); // New state
+    const [invalidUnitsList, setInvalidUnitsList] = useState<{ code: string; url: string }[]>([]); // New state
 
     // Toast State
     const [toast, setToast] = useState<{ message: string; type: ToastType; isVisible: boolean }>({
@@ -32,6 +36,23 @@ export default function Home() {
     };
 
     const [loadingMessage, setLoadingMessage] = useState('Initializing...');
+
+    // Fetch unit count on mount and when manager closes
+    useEffect(() => {
+        fetchUnitCount();
+    }, [showUnitManager]);
+
+    const fetchUnitCount = async () => {
+        try {
+            const res = await fetch('/api/units', { cache: 'no-store' });
+            if (res.ok) {
+                const data = await res.json();
+                setUnitCount(data.count || 0);
+            }
+        } catch (e) {
+            console.error('Failed to fetch unit count', e);
+        }
+    };
 
     useEffect(() => {
         if (!loading) return;
@@ -54,7 +75,7 @@ export default function Home() {
         return () => clearInterval(interval);
     }, [loading]);
 
-    const handleAnalyze = async () => {
+    const handleAnalyze = async (ignoreInvalid = false) => {
         if (!assessmentFile) return;
 
         setLoading(true);
@@ -65,25 +86,48 @@ export default function Home() {
             if (unitsFile) {
                 formData.append('unitsFile', unitsFile);
             }
+            if (ignoreInvalid) {
+                formData.append('ignoreInvalid', 'true');
+            }
 
             const response = await fetch('/api/analyze', {
                 method: 'POST',
                 body: formData,
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                const data = await response.json();
                 throw new Error(data.error || 'Analysis failed');
             }
 
-            const data = await response.json();
+            // Check for invalid units warning (status 200 but has invalidUnits)
+            if (data.invalidUnits && data.invalidUnits.length > 0) {
+                setInvalidUnitsList(data.invalidUnits);
+                setShowInvalidModal(true);
+                setLoading(false); // Pause loading state while user decides
+                return;
+            }
+
             setReport(data);
             showToast('Analysis complete! Report generated successfully.', 'success');
         } catch (err) {
             showToast((err as Error).message, 'error');
         } finally {
-            setLoading(false);
+            if (!ignoreInvalid && !showInvalidModal) {
+                setLoading(false);
+            }
         }
+    };
+
+    const handleConfirmInvalid = () => {
+        setShowInvalidModal(false);
+        handleAnalyze(true);
+    };
+
+    const handleCancelInvalid = () => {
+        setShowInvalidModal(false);
+        setLoading(false);
     };
 
     const downloadReport = () => {
@@ -106,7 +150,7 @@ export default function Home() {
     };
 
     // Determine if analyze button should be enabled
-    const canAnalyze = hasUnitData
+    const canAnalyze = unitCount > 0
         ? !!assessmentFile
         : !!assessmentFile && !!unitsFile;
 
@@ -118,6 +162,25 @@ export default function Home() {
                 isVisible={toast.isVisible}
                 onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
             />
+
+            <ConfirmationModal
+                isOpen={showInvalidModal}
+                title="Invalid Units Detected"
+                message="The following units from your list could not be verified on training.gov.au. They may be invalid codes, superseded, or the server is unreachable."
+                items={invalidUnitsList}
+                confirmText="Continue Without Them"
+                cancelText="Stop & Fix File"
+                onConfirm={handleConfirmInvalid}
+                onCancel={handleCancelInvalid}
+                type="warning"
+            />
+
+            {/* Unit Manager Modal */}
+            <AnimatePresence>
+                {showUnitManager && (
+                    <UnitManager onClose={() => setShowUnitManager(false)} />
+                )}
+            </AnimatePresence>
 
             {/* Professional Header */}
             <motion.header
@@ -139,6 +202,13 @@ export default function Home() {
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setShowUnitManager(true)}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium transition-colors border border-gray-200"
+                        >
+                            <Database size={14} />
+                            Manage Units
+                        </button>
                         <div className="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full border border-gray-200">
                             v2.3.0 • Local AI
                         </div>
@@ -149,8 +219,8 @@ export default function Home() {
             <main className="max-w-7xl mx-auto px-6 py-8">
 
                 <AnimatePresence mode="wait">
-                    {/* Loading View */}
-                    {loading && (
+                    {loading ? (
+                        /* Loading View */
                         <motion.div
                             key="loading"
                             initial={{ opacity: 0 }}
@@ -174,10 +244,7 @@ export default function Home() {
                                 />
                             </div>
                         </motion.div>
-                    )}
-
-                    {/* Hero / Upload Section */}
-                    {!report && !loading && (
+                    ) : !report ? (
                         <motion.div
                             key="upload-section"
                             initial={{ opacity: 0, scale: 0.95 }}
@@ -201,7 +268,7 @@ export default function Home() {
                                     transition={{ delay: 0.2 }}
                                     className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed"
                                 >
-                                    Upload your DOCX file. Our local AI will map every question to the <span className="font-semibold text-blue-600">131 units</span> in your database and generate a professional compliance matrix instantly.
+                                    Upload your DOCX file. Our local AI will map every question to the <span className="font-semibold text-blue-600">{unitCount > 0 ? `${unitCount} units` : 'units'}</span> in your database and generate a professional compliance matrix instantly.
                                 </motion.p>
                             </div>
 
@@ -247,7 +314,7 @@ export default function Home() {
                                             <List size={32} />
                                         </div>
                                         <h3 className="text-lg font-bold mb-1 text-gray-900">
-                                            {unitsFile ? 'Units List Selected' : hasUnitData ? '1. Upload Units List (Optional)' : '1. Upload Units List (Required)'}
+                                            {unitsFile ? 'Units List Selected' : unitCount > 0 ? '1. Upload Units List (Optional)' : '1. Upload Units List (Required)'}
                                         </h3>
                                         <p className="text-gray-500 text-sm text-center">
                                             {unitsFile ? unitsFile.name : 'Limit scope to specific units (.xlsx)'}
@@ -337,14 +404,14 @@ export default function Home() {
                                 className="mt-10 text-center"
                             >
                                 <button
-                                    onClick={handleAnalyze}
+                                    onClick={() => handleAnalyze(false)}
                                     disabled={!canAnalyze || loading}
                                     className={`
-                                        px-12 py-5 rounded-2xl text-xl font-bold shadow-xl transition-all transform hover:-translate-y-1 active:scale-95
-                                        ${!canAnalyze || loading
+                                            px-12 py-5 rounded-2xl text-xl font-bold shadow-xl transition-all transform hover:-translate-y-1 active:scale-95
+                                            ${!canAnalyze || loading
                                             ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
                                             : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/30'}
-                                    `}
+                                        `}
                                 >
                                     {loading ? (
                                         <span className="flex items-center gap-3">
@@ -360,7 +427,7 @@ export default function Home() {
                                         </span>
                                     )}
                                 </button>
-                                {(!hasUnitData && !unitsFile) && (
+                                {(!(unitCount > 0) && !unitsFile) && (
                                     <p className="mt-4 text-sm text-red-600 font-medium">
                                         Units list is required if no unit data is present.
                                     </p>
@@ -370,20 +437,9 @@ export default function Home() {
                                         Scoped to units from {unitsFile.name}
                                     </p>
                                 )}
-                                <div className="mt-8 text-xs text-gray-500 text-center">
-                                    <button
-                                        className="underline text-blue-600"
-                                        onClick={() => setHasUnitData(!hasUnitData)}
-                                    >
-                                        Toggle: Simulate {hasUnitData ? 'No Unit Data' : 'Unit Data Present'}
-                                    </button>
-                                </div>
                             </motion.div>
                         </motion.div>
-                    )}
-
-                    {/* Report Dashboard */}
-                    {report && (
+                    ) : ( /* Report Dashboard */
                         <motion.div
                             key="report-dashboard"
                             initial={{ opacity: 0, y: 50 }}
@@ -408,7 +464,7 @@ export default function Home() {
                                         Back to Upload
                                     </button>
                                     <button
-                                        onClick={handleAnalyze}
+                                        onClick={() => handleAnalyze(false)}
                                         className="flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
                                     >
                                         <RefreshCw size={16} />

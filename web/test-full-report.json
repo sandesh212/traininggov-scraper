@@ -1,939 +1,1367 @@
 {
-  "unitCodes": [
-    "MARN008",
-    "MARB027"
-  ],
-  "mappedUnits": [
-    {
-      "code": "MARN008",
-      "title": "Apply seamanship skills aboard a vessel up to 12 metres"
-    },
-    {
-      "code": "MARB027",
-      "title": "Perform basic servicing and maintenance of main propulsion unit and auxiliary systems"
-    }
-  ],
-  "questionsCount": 50,
+  "questionsCount": 130,
+  "totalUnitsInDatabase": 131,
+  "mappedUnits": [],
   "results": [
     {
-      "questionId": "KnowledgeCoxsw_A",
+      "questionId": "Part 1  Ropework and lifting - Q1",
+      "questionText": "How do you work out the Working Load Limit (WLL) of a lifting sling\n[[ANSWER: Knowledge Coxswain Deck\nMarking Sheet\nKnowledge Coxswain Deck\nMarking Sheet]]",
       "isValid": false,
       "mappedUnit": null,
-      "confidence": 26,
-      "reasoning": "Non-Compliant (Validity): The question does not demonstrate sufficient semantic alignment with any Unit requirements. It may be irrelevant or poorly worded.",
-      "questionText": "course participant is not expected to provide answers to that level of detail, instead for a satisfactory response, the participant’s answers should be within the range of model answers and meet the minimum required number of responses provided and indicate a basic level of knowledge and understanding of the topic",
-      "questionSection": "Knowledge Coxswain Deck",
-      "gaps": []
-    },
-    {
-      "questionId": "Part1Ropewo_Q2",
-      "isValid": true,
-      "mappedUnit": "MARN008",
       "mappedCriteria": [],
-      "mappedKnowledge": [
-        "• loading, discharging and movement of weights",
-        "• rope types, characteristics and applications, dynamic and non-dynamic, including:",
-        "• wire core rope",
-        "• wire rope",
-        "◦ wire core rope"
-      ],
-      "confidence": 53,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion undefined. Semantic alignment score: 53%. Aligns with: \"• loading, discharging and movement of weights...\"",
-      "questionText": "How do you work out the Working Load Limit (WLL) of a lifting sling?",
-      "questionSection": "Part 1 – Ropework and lifting",
-      "gaps": []
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part1Ropewo_Q3",
-      "isValid": true,
-      "mappedUnit": "MARN008",
+      "questionId": "Part 1  Ropework and lifting - Q3",
+      "questionText": "What will you use as maximum WLL if the limit for a crane is 2,000kg and the WLL for the lifting sling is 1,700kg?1700kg\n[[ANSWER: 1700kg]]",
+      "isValid": false,
+      "mappedUnit": null,
       "mappedCriteria": [],
-      "mappedKnowledge": [
-        "• loading, discharging and movement of weights",
-        "• rope types, characteristics and applications, dynamic and non-dynamic, including:",
-        "• types of anchors used on small vessels up to 12 metres",
-        "• wire rope",
-        "• wire core rope"
-      ],
-      "confidence": 44,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion undefined. Semantic alignment score: 44%. Aligns with: \"• loading, discharging and movement of weights...\"",
-      "questionText": "What will you use as maximum WLL if the limit for a crane is 2,000kg and the WLL for the lifting sling is 1,700kg?",
-      "questionSection": "Part 1 – Ropework and lifting",
-      "gaps": []
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part1Ropewo_Q4",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "1.2",
-        "1.1"
-      ],
-      "mappedKnowledge": [
-        "• maintenance of synthetic and natural fibre ropes",
-        "• rope types, characteristics and applications, dynamic and non-dynamic, including:",
-        "• wire rope"
-      ],
-      "confidence": 55,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (1.2, 1.1), contributing to sufficiency. Semantic alignment score: 55%. Aligns with: \"Ropes are checked for wear and repairs are undertaken according to manufacturer guidelines...\"",
-      "questionText": "What are FOUR things you would look for when inspecting ropes for damage?",
-      "questionSection": "Part 1 – Ropework and lifting",
-      "gaps": []
+      "questionId": "Part 1  Ropework and lifting - Q3",
+      "questionText": "Which rope would be chosen for the following applications? Join the ropes with preferred use\n[[ANSWER: Nylon - Shock loading & elasticity\t                                \nPolypropylene - Good abrasion resistance/ Floating rope that will not rot\t       \nNatural Fibre - Tag lines lifting operations\t      \nFlexible Steel Wire Rope (FSWR) - Winch drum & hoist operations]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part1Ropewo_Q5",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "1.1",
-        "1.2",
-        "1.6"
-      ],
-      "mappedKnowledge": [
-        "• wire rope",
-        "• rope types, characteristics and applications, dynamic and non-dynamic, including:"
-      ],
-      "confidence": 61,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (1.1, 1.2, 1.6), contributing to sufficiency. Semantic alignment score: 61%. Aligns with: \"Rope types and common areas of use are correctly identified...\"",
-      "questionText": "What are THREE safety considerations when working around ropes and loads under tensions",
-      "questionSection": "Part 1 – Ropework and lifting",
-      "gaps": []
+      "questionId": "Part 1  Ropework and lifting - Q4",
+      "questionText": "Which rope would be chosen for the following applications? Join the ropes with preferred use;\n[[ANSWER: Nylon - Shock loading & elasticity                                \nPolypropylene - Good abrasion resistance/ Floating rope that will not rot       \nNatural Fibre - Tag lines lifting operations      \nFlexible Steel Wire Rope (FSWR) - Winch drum & hoist operations]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_1",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.1",
-        "4.6"
-      ],
-      "mappedKnowledge": [
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
-        "• securing a vessel for sea",
-        "• coverage and frequency of checks of vessels seaworthiness"
-      ],
-      "confidence": 51,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.1, 4.6), contributing to sufficiency. Semantic alignment score: 51%. Aligns with: \"• factors affecting the safety and integrity of vessel; its equipment and materials on board...\"",
-      "questionText": "List THREE pieces of Legislation that apply to a Domestic Commercial Vessel (DCV) and its crew?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 1  Ropework and lifting - Q5",
+      "questionText": "Nylon - Shock loading & elasticity",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_2",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.1"
-      ],
-      "mappedKnowledge": [
-        "• securing a vessel for sea",
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
-      ],
-      "confidence": 48,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 4.1. Semantic alignment score: 48%. Aligns with: \"• securing a vessel for sea...\"",
-      "questionText": "What documentation onboard the vessel outlines the duties, responsibilities, and authority of the Master and crew?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 1  Ropework and lifting - Q6",
+      "questionText": "Polypropylene - Good abrasion resistance/ Floating rope that will [[ANSWER: No]]t rot",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_3",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.6",
-        "4.1"
-      ],
-      "mappedKnowledge": [
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:",
-        "• coverage and frequency of checks of vessels seaworthiness",
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel"
-      ],
-      "confidence": 50,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.6, 4.1), contributing to sufficiency. Semantic alignment score: 50%. Aligns with: \"• process for checking seaworthiness and general condition of a vessel up to 12 metres including:...\"",
+      "questionId": "Part 1  Ropework and lifting - Q7",
+      "questionText": "Natural Fibre - Tag lines lifting operations",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 1  Ropework and lifting - Q8",
+      "questionText": "Flexible Steel Wire Rope (FSWR) - Winch drum & hoist operations",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 1  Ropework and lifting - Q9",
+      "questionText": "What are FOUR things you would look for when inspecting ropes for damage\n[[ANSWER: Burn marks/melting, flattening, kinks, frays, reduction in diameter, damage to core, knots, damaged fibres/cuts]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 1  Ropework and lifting - Q11",
+      "questionText": "What are THREE safety considerations when working around ropes and loads under tensions\n[[ANSWER: Do not – stand beneath loads, straddle cable, hold or put hand on cable when under strain, stand directly in line with the cable]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-ew67l",
+      "questionText": "Part 2 – Domestic Regulations\n1. List THREE pieces of Legislation that apply to a Domestic Commercial Vessel (DCV) and its crew?\n[[ANSWER: WHS Act 2012\nNavigation Act 2012\nAnti-discrimination Act\nWorkers Compensation Act 1986\nMarine Safety National Law Act 2012]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-0oo9b",
+      "questionText": "2. What documentation onboard the vessel outlines the duties, responsibilities, and authority of the Master and crew?\n[[ANSWER: Duties statement within SMS]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-23cc0",
+      "questionText": "3. What is the minimum crew (core complement) required for a DCV less than 12 metres operating in D class waters?\n[[ANSWER: One]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-tme4q",
+      "questionText": "4. What are the certification requirements of Master of a DCV less than 12 metres operating in D class waters?\n[[ANSWER: Coxswain Grade II]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-l1du5",
+      "questionText": "5. Refer to Marine Safety (Domestic Commercial Vessel) National Law Act 2012 Part 5\nWhat must the Master of a vessel do on becoming aware of another vessel in distress?\n[[ANSWER: Obligation to render assistance\n             (1)  The master of a domestic commercial vessel commits an offence if:\n                     (a)  the vessel is in any waters; and\n                     (b)  the master has reason to believe that one or more persons are in distress on a vessel or in any waters; and\n                     (c)  the master does not both:\n                              (i)  cause his or her vessel to proceed as fast as practicable to the assistance of the person or persons; and\n                             (ii)  inform the person or persons that the master is doing so.\nReport of marine incident]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-k47qy",
+      "questionText": "6. Refer to Part B of the NSCV\nWhat service category would a vessel carting cargo in waters between Triabunna and Darlington on Maria Island fall under?\n[[ANSWER: 2D]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-qpep8",
+      "questionText": "Refer to Marine Orders 504\n7. What are FOUR emergency situations for which crew should receive inductions?\n[[ANSWER: The emergency plan must include procedures for responding to each of the following situations that is relevant to the vessel and its operation:\n\n(a)   fire;\n(b)   a person overboard or unaccountably missing;\n(c)   a personal injury or other medical emergency;\n(d)   master incapacitated;\n(e)   loss of steering;\n(f)    vessel collision;\n(g)   vessel grounding;\n(h)   vessel flooding;\n(i)    adverse weather or water conditions;\n(j)    any other circumstance identified by the risk assessment that may require an emergency response.]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - 1",
+      "questionText": "List THREE pieces of Legislation that apply to a Domestic Commercial Vessel (DCV) and its crew\nWHS Act 2012",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q12",
+      "questionText": "Navigation Act 2012",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q13",
+      "questionText": "Anti-discrimination Act",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q14",
+      "questionText": "Workers Compensation Act 1986",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q15",
+      "questionText": "Marine Safety National Law Act 2012",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - 2",
+      "questionText": "What documentation onboard the vessel outlines the duties, responsibilities, and authority of the Master and crew",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - 3",
       "questionText": "What is the minimum crew (core complement) required for a DCV less than 12 metres operating in D class waters?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_4",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.6",
-        "4.2"
-      ],
-      "mappedKnowledge": [
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:",
-        "• WHS/OHS requirements and work practices.",
-        "• coverage and frequency of checks of vessels seaworthiness"
-      ],
-      "confidence": 46,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.6, 4.2), contributing to sufficiency. Semantic alignment score: 46%. Aligns with: \"• process for checking seaworthiness and general condition of a vessel up to 12 metres including:...\"",
-      "questionText": "What are the certification requirements of Master of a DCV less than 12 metres operating in D class waters?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 2  Domestic Regulations - 4",
+      "questionText": "What are the certification requirements of Master of a DCV less than 12 metres operating in D class waters",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_5",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.1",
-        "4.6"
-      ],
-      "mappedKnowledge": [
-        "• coverage and frequency of checks of vessels seaworthiness",
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:",
-        "• securing a vessel for sea"
-      ],
-      "confidence": 55,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.1, 4.6), contributing to sufficiency. Semantic alignment score: 55%. Aligns with: \"Coverage and frequency of checks and inspections on vessel seaworthiness are undertaken according to...\"",
-      "questionText": "Refer to Marine Safety (Domestic Commercial Vessel) National Law Act 2012 Part 5What must the Master of a vessel do on becoming aware of another vessel in distress?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 2  Domestic Regulations - 5",
+      "questionText": "Refer to Marine Safety (Domestic Commercial Vessel) National Law Act 2012 Part 5What must the Master of a vessel do on becoming aware of another vessel in distress",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_Q11",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.6",
-        "4.5"
-      ],
-      "mappedKnowledge": [
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
-        "• securing a vessel for sea"
-      ],
-      "confidence": 49,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.6, 4.5), contributing to sufficiency. Semantic alignment score: 49%. Aligns with: \"• identifying and rectifying irregularities in the condition and seaworthiness of the vessel...\"",
-      "questionText": "What must the Master of a vessel do on becoming aware of another vessel in distress?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 2  Domestic Regulations - Q20",
+      "questionText": "Obligation to render assistance\n(1)  The master of a domestic commercial vessel commits an offence if:\n(a)  the vessel is in any waters; and\n(b)  the master has reason to believe that one or more persons are in distress on a vessel or in any waters; and\n(c)  the master does not both:\n(i)  cause his or her vessel to proceed as fast as practicable to the assistance of the person or persons; and\n(ii)  inform the person or persons that the master is doing so.",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_6",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "3.1"
-      ],
-      "mappedKnowledge": [
-        "• securing a vessel for sea",
-        "• mooring line arrangements for securing at a berth",
-        "• galley, stores and equipment",
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel"
-      ],
-      "confidence": 52,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 3.1. Semantic alignment score: 52%. Aligns with: \"• securing a vessel for sea...\"",
+      "questionId": "Part 2  Domestic Regulations - Q21",
+      "questionText": "Report of marine incident",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - 6",
       "questionText": "Refer to Part B of the NSCVWhat service category would a vessel carting cargo in waters between Triabunna and Darlington on Maria Island fall under?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_Q13",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "3.1",
-        "3.2"
-      ],
-      "mappedKnowledge": [
-        "• galley, stores and equipment",
-        "• securing a vessel for sea",
-        "◦ galley, stores and equipment"
-      ],
-      "confidence": 52,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (3.1, 3.2), contributing to sufficiency. Semantic alignment score: 52%. Aligns with: \"• galley, stores and equipment...\"",
-      "questionText": "What service category would a vessel carting cargo in waters between Triabunna and Darlington on Maria Island fall under?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 2  Domestic Regulations - Q23",
+      "questionText": "Refer to Marine Orders",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_7",
-      "isValid": true,
-      "mappedUnit": "MARB027",
-      "mappedCriteria": [
-        "1.2",
-        "1.3"
-      ],
-      "mappedKnowledge": [
-        "• emergency procedures, including emergency shutdown and stopping of equipment",
-        "◦ emergency procedures, including emergency shutdown and stopping of equipment",
-        "◦ safe and environmentally responsible work practices in servicing and maintenance activities"
-      ],
-      "confidence": 49,
-      "reasoning": "Compliant (Validity): Matched to MARB027. Covers multiple criteria (1.2, 1.3), contributing to sufficiency. Semantic alignment score: 49%. Aligns with: \"• emergency procedures, including emergency shutdown and stopping of equipment...\"",
-      "questionText": "What are FOUR emergency situations for which crew should receive inductions?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 2  Domestic Regulations - 5047",
+      "questionText": "What are FOUR emergency situations for which crew should receive inductions",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_Q15",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "3.1"
-      ],
-      "mappedKnowledge": [
-        "• securing a vessel for sea",
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
-        "• coverage and frequency of checks of vessels seaworthiness",
-        "• mooring line arrangements for securing at a berth"
-      ],
-      "confidence": 56,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 3.1. Semantic alignment score: 56%. Aligns with: \"• securing a vessel for sea...\"",
-      "questionText": "What service category would a vessel carrying passengers in waters between Port Arthur and Eaglehawk Neck fall under?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 2  Domestic Regulations - Q25",
+      "questionText": "Refer to Marine Orders 504",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_9",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.3",
-        "4.1",
-        "4.6"
-      ],
-      "mappedKnowledge": [
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:",
-        "• galley, stores and equipment"
-      ],
-      "confidence": 53,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.3, 4.1, 4.6), contributing to sufficiency. Semantic alignment score: 53%. Aligns with: \"• process for checking seaworthiness and general condition of a vessel up to 12 metres including:...\"",
-      "questionText": "List four documents that must be accessible to the operator of <12 metre Class 2C surveyed vessel?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 2  Domestic Regulations - Q26",
+      "questionText": "[[ANSWER: The emergency plan must include procedures for responding to each of the following situations that is relevant to the vessel and its operation:\n(a)   fire;\n(b)   a person overboard or unaccountably missing;\n(c)   a personal injury or other medical emergency;\n(d)   master incapacitated;\n(e)   loss of steering;\n(f)    vessel collision;\n(g)   vessel grounding;\n(h)   vessel flooding;\n(i)    adverse weather or water conditions;\n(j)    any other circumstance identified by the risk assessment that may require an emergency response.]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_Q17",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.6",
-        "4.1"
-      ],
-      "mappedKnowledge": [
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
-        "• coverage and frequency of checks of vessels seaworthiness",
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
-      ],
-      "confidence": 45,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.6, 4.1), contributing to sufficiency. Semantic alignment score: 45%. Aligns with: \"Reports of condition are completed according to workplace procedures...\"",
-      "questionText": "What information should you record daily in your vessel logbook?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 2  Domestic Regulations - Q27",
+      "questionText": "Refer to Part B of the NSCV What service category would a vessel carrying passengers in waters between Port Arthur and Eaglehawk Neck fall under?1C\n[[ANSWER: 1C]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_Q18",
-      "isValid": true,
-      "mappedUnit": "MARB027",
-      "mappedCriteria": [
-        "4.2",
-        "1.3",
-        "3.4",
-        "1.4"
-      ],
-      "mappedKnowledge": [
-        "◦ safe and environmentally responsible work practices in servicing and maintenance activities"
-      ],
-      "confidence": 29,
-      "reasoning": "Compliant (Validity): Matched to MARB027. Covers multiple criteria (4.2, 1.3, 3.4, 1.4), contributing to sufficiency. Semantic alignment score: 29%. Aligns with: \"Materials are disposed of or recycled according to legislative and workplace requirements...\"",
-      "questionText": "As the Master of DCV, how do you keep up with changes to the industry and Legislation?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "SubQ-sg7kp",
+      "questionText": "9. List four documents that must be accessible to the operator of <12 metre Class 2C surveyed vessel?\n[[ANSWER: Certificate of survey, SMS, Certificate of Operations, Compass deviation card, Life-saving equipment certificate, Life raft servicing certificate, Firefighting equipment certificate, Certificates of Competency (skipper, engineer), Marine Radio Operator's Certificate of Proficiency (and ship station licence for HF radio if relevant), Certificate of Insurance, Safety Management Compliance Certificate.]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_Q19",
-      "isValid": true,
-      "mappedUnit": "MARB027",
-      "mappedCriteria": [
-        "4.2",
-        "3.5",
-        "3.4",
-        "1.3"
-      ],
-      "mappedKnowledge": [
-        "• identifying faulty items or components and appropriate actions required to rectify faults"
-      ],
-      "confidence": 34,
-      "reasoning": "Compliant (Validity): Matched to MARB027. Covers multiple criteria (4.2, 3.5, 3.4, 1.3), contributing to sufficiency. Semantic alignment score: 34%. Aligns with: \"Materials are disposed of or recycled according to legislative and workplace requirements...\"",
-      "questionText": "Once changes to regulations and legislation have been identified, what must you do?",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 2  Domestic Regulations - 9",
+      "questionText": "List four documents that must be accessible to the operator of <12 metre Class 2C surveyed vessel",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part2Domest_Q20",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "3.1",
-        "2.1"
-      ],
-      "mappedKnowledge": [
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
-        "• securing a vessel for sea",
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
-      ],
-      "confidence": 57,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (3.1, 2.1), contributing to sufficiency. Semantic alignment score: 57%. Aligns with: \"• factors affecting the safety and integrity of vessel; its equipment and materials on board...\"",
-      "questionText": "List SIX pieces of safety equipment required for a 10 m 1D vessel as stated in the NSCV Part C Section 7 subsection 7A.",
-      "questionSection": "Part 2 – Domestic Regulations",
-      "gaps": []
+      "questionId": "Part 2  Domestic Regulations - Q30",
+      "questionText": "What information should you record daily in your vessel logbook\n[[ANSWER: fuel, area of operations, persons onboard, emergency events, faults/breakdowns, handover items pertinent to the safe use of the vessel]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part3Anchor_Q21",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "2.4",
-        "2.1"
-      ],
-      "mappedKnowledge": [
-        "• considerations to make when selecting an anchorage",
-        "• types of anchors used on small vessels up to 12 metres",
-        "• procedure for anchoring"
-      ],
-      "confidence": 86,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (2.4, 2.1), contributing to sufficiency. Semantic alignment score: 86%. Aligns with: \"• considerations to make when selecting an anchorage...\"",
-      "questionText": "What are THREE factors you would consider when selecting an anchorage?",
-      "questionSection": "Part 3 – Anchoring and Beaching",
-      "gaps": []
+      "questionId": "Part 2  Domestic Regulations - Q31",
+      "questionText": "As the Master of DCV, how do you keep up with changes to the industry and Legislation\n[[ANSWER: AMSA, MAST and NMSC websites bulletins, Notice to Mariners]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part3Anchor_Q22",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "2.2",
-        "2.4",
-        "2.1"
-      ],
-      "mappedKnowledge": [
-        "• procedure for anchoring",
-        "• types of anchors used on small vessels up to 12 metres"
-      ],
-      "confidence": 60,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (2.2, 2.4, 2.1), contributing to sufficiency. Semantic alignment score: 60%. Aligns with: \"• procedure for anchoring...\"",
+      "questionId": "Part 2  Domestic Regulations - Q32",
+      "questionText": "Once changes to regulations and legislation have been identified, what must you do\n[[ANSWER: Safety Management Plan updates, Operational Policies and procedures reviews, crew induction and briefing, training]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q33",
+      "questionText": "List SIX pieces of safety equipment required for a 10 m 1D vessel as stated in the NSCV Part C Section 7 subsection 7A.Distress Signals\n[[ANSWER: 3 Parachute distress rockets\n2 Red hand-held flares\n1 hand-held orange smoke signal\nManual or water activated EPIRB]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-xb6ie",
+      "questionText": "Navigation Equipment:\n[[ANSWER: Clock (May be included in other nav equipment\nBinoculars\nEcho sounder\nNautical publications\nSpeed and distance calculator\nCompass Nav lights\nSound signal]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - 3",
+      "questionText": "Parachute distress rockets",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - 2",
+      "questionText": "Red hand-held flares",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - 1",
+      "questionText": "hand-held orange smoke signal",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q36",
+      "questionText": "Manual or water activated EPIRB",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q59",
+      "questionText": "Name THREE pieces of equipment you would test prior to departure\n[[ANSWER: Steering gear, sound signalling device, radio/EPIRB, navigation equipment, engine and machinery, engine controls, remote bilge alarms and pumps]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q38",
+      "questionText": "Clock (May be included in other nav equipment\nBinoculars\nEcho sounder",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q39",
+      "questionText": "Nautical publications",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q40",
+      "questionText": "Speed and distance calculator",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q41",
+      "questionText": "Compass Nav lights\nSound signal",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q42",
+      "questionText": "Onboard communication:\n[[ANSWER: Signalling light\nVHF radio\nCurrent edition of the ‘Marine VHF Radio operators handbook]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-kkkg9",
+      "questionText": "Firefighting equipment:\n[[ANSWER: Refer to NSCV Part C4]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q43",
+      "questionText": "Signalling light\nVHF radio",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q44",
+      "questionText": "Current edition of the ‘Marine VHF Radio operators handbook",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q67",
+      "questionText": "In the event of a spill while refuelling, what procedures should you follow\n[[ANSWER: Vessel SMS procedures -Shut down fuelling system; prevent further spillage, fire-fighting equipment available, contain using spill kit and bunding, alert personnel; alert authorities; clean up any spillage aboard]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-w7hdj",
+      "questionText": "Part 5 - Outboards\nIf you couldn’t start the outboard motor, list THREE checks you would make?\n[[ANSWER: lack of fuel, filter clogged, hoses not connected properly or kinked, spark plug, shift lever in gear, lanyard stop switch]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 2  Domestic Regulations - Q46",
+      "questionText": "\nLifejackets:\n[[ANSWER: Coastal lifejacket for 100% complement]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-uzh8g",
+      "questionText": "Part 3 – Anchoring and Beaching\nWhat are THREE factors you would consider when selecting an anchorage?\n[[ANSWER: Depth; bottom composition; swing room; changes in tide and weather; ease of moving in case of inclement weather]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-qe855",
+      "questionText": "Select the anchor when anchoring on a soft mud seabed (circle your answers)\n\n\n What are TWO ways you can check whether an anchor is dragging?\n[[ANSWER: Identify position – transits shift (other than swing); feel vibration and dragging through anchor cable; position of vessel relative to wind/current; Change of sound from anchor chain]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 3  Anchoring and Beaching - Q48",
+      "questionText": "What are THREE factors you would consider when selecting an anchorage",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 3  Anchoring and Beaching - Q49",
       "questionText": "Select the anchor when anchoring on a soft mud seabed (circle your answers)",
-      "questionSection": "Part 3 – Anchoring and Beaching",
-      "gaps": []
-    },
-    {
-      "questionId": "Part3Anchor_Q23",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "2.1",
-        "2.5",
-        "2.4"
-      ],
-      "mappedKnowledge": [
-        "• procedure for anchoring",
-        "• types of anchors used on small vessels up to 12 metres"
-      ],
-      "confidence": 54,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (2.1, 2.5, 2.4), contributing to sufficiency. Semantic alignment score: 54%. Aligns with: \"• procedure for anchoring...\"",
-      "questionText": "What are TWO ways you can check whether an anchor is dragging?",
-      "questionSection": "Part 3 – Anchoring and Beaching",
-      "gaps": []
-    },
-    {
-      "questionId": "Part3Anchor_Q24",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "2.4",
-        "2.1",
-        "2.5",
-        "2.2"
-      ],
-      "mappedKnowledge": [
-        "• procedure for anchoring"
-      ],
-      "confidence": 48,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (2.4, 2.1, 2.5, 2.2), contributing to sufficiency. Semantic alignment score: 48%. Aligns with: \"Degree to which anchor and equipment are secured on completion of anchoring operations is appropriat...\"",
-      "questionText": "Identify position – transits shift (other than swing); feel vibration and dragging through anchor cable; position of vessel relative to wind/current; Change of sound from anchor chain",
-      "questionSection": "Part 3 – Anchoring and Beaching",
-      "gaps": []
-    },
-    {
-      "questionId": "Part3Anchor_Q25",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "2.1",
-        "2.5",
-        "2.4"
-      ],
-      "mappedKnowledge": [
-        "• procedure for anchoring",
-        "• types of anchors used on small vessels up to 12 metres"
-      ],
-      "confidence": 60,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (2.1, 2.5, 2.4), contributing to sufficiency. Semantic alignment score: 60%. Aligns with: \"• procedure for anchoring...\"",
-      "questionText": "List THREE things you can do if your anchor is dragging?",
-      "questionSection": "Part 3 – Anchoring and Beaching",
-      "gaps": []
-    },
-    {
-      "questionId": "Part3Anchor_Q26",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.5",
-        "4.1"
-      ],
-      "mappedKnowledge": [
-        "• securing a vessel for sea",
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board"
-      ],
-      "confidence": 58,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.5, 4.1), contributing to sufficiency. Semantic alignment score: 58%. Aligns with: \"• securing a vessel for sea...\"",
-      "questionText": "What are TWO emergencies that might lead to you beaching a vessel?",
-      "questionSection": "Part 3 – Anchoring and Beaching",
-      "gaps": []
-    },
-    {
-      "questionId": "Part3Anchor_Q27",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.5"
-      ],
-      "mappedKnowledge": [
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
-        "• securing a vessel for sea",
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
-      ],
-      "confidence": 59,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 4.5. Semantic alignment score: 59%. Aligns with: \"• identifying and rectifying irregularities in the condition and seaworthiness of the vessel...\"",
-      "questionText": "What are THREE considerations for re-floating a beached vessel?",
-      "questionSection": "Part 3 – Anchoring and Beaching",
-      "gaps": []
-    },
-    {
-      "questionId": "Part4Prest_Q28",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.5",
-        "4.4"
-      ],
-      "mappedKnowledge": [
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board"
-      ],
-      "confidence": 45,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.5, 4.4), contributing to sufficiency. Semantic alignment score: 45%. Aligns with: \"• factors affecting the safety and integrity of vessel; its equipment and materials on board...\"",
-      "questionText": "What would you do if any equipment required on your vessel by NSCV is not functioning?",
-      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
-      "gaps": []
-    },
-    {
-      "questionId": "Part4Prest_Q29",
-      "isValid": true,
-      "mappedUnit": "MARB027",
-      "mappedCriteria": [
-        "1.4",
-        "2.3",
-        "2.5"
-      ],
-      "mappedKnowledge": [
-        "• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment and other mechanical equipment."
-      ],
-      "confidence": 47,
-      "reasoning": "Compliant (Validity): Matched to MARB027. Covers multiple criteria (1.4, 2.3, 2.5), contributing to sufficiency. Semantic alignment score: 47%. Aligns with: \"Tools and equipment are selected and checked for serviceability...\"",
-      "questionText": "Name THREE pieces of equipment you would test prior to departure?",
-      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
-      "gaps": []
-    },
-    {
-      "questionId": "Part4Prest_Q30",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "5.3",
-        "5.2",
-        "5.4"
-      ],
-      "mappedKnowledge": [
-        "• safety precautions and pollution control measures during refuelling",
-        "• refuelling a vessel according to safety regulations and organisational safety management system requirements"
-      ],
-      "confidence": 45,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.3, 5.2, 5.4), contributing to sufficiency. Semantic alignment score: 45%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
-      "questionText": "What fuel consumption will you anticipate for the day if your voyage plan involves eight (8) hours of operation, and your fuel consumption is twelve (12) litres per hour?",
-      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
-      "gaps": []
-    },
-    {
-      "questionId": "Part4Prest_Q31",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "5.3",
-        "5.4"
-      ],
-      "mappedKnowledge": [
-        "• safety precautions and pollution control measures during refuelling"
-      ],
-      "confidence": 49,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.3, 5.4), contributing to sufficiency. Semantic alignment score: 49%. Aligns with: \"Spill prevention systems are correctly deployed...\"",
-      "questionText": "When would you report a fuel spill to authorities?",
-      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
-      "gaps": []
-    },
-    {
-      "questionId": "Part4Prest_Q32",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "5.3",
-        "5.2",
-        "5.4"
-      ],
-      "mappedKnowledge": [
-        "• safety precautions and pollution control measures during refuelling",
-        "• refuelling a vessel according to safety regulations and organisational safety management system requirements"
-      ],
-      "confidence": 77,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.3, 5.2, 5.4), contributing to sufficiency. Semantic alignment score: 77%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
-      "questionText": "What are three precautions that will help to reduce the risk of a spill when refuelling?",
-      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
-      "gaps": []
-    },
-    {
-      "questionId": "Part4Prest_Q33",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "5.2",
-        "5.3",
-        "5.4"
-      ],
-      "mappedKnowledge": [
-        "• safety precautions and pollution control measures during refuelling",
-        "• refuelling a vessel according to safety regulations and organisational safety management system requirements"
-      ],
-      "confidence": 64,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.2, 5.3, 5.4), contributing to sufficiency. Semantic alignment score: 64%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
-      "questionText": "What systems or equipment should you shut down prior to any refuelling?",
-      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
-      "gaps": []
-    },
-    {
-      "questionId": "Part4Prest_Q34",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "5.2",
-        "5.4",
-        "5.3"
-      ],
-      "mappedKnowledge": [
-        "• safety precautions and pollution control measures during refuelling",
-        "• refuelling a vessel according to safety regulations and organisational safety management system requirements"
-      ],
-      "confidence": 70,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.2, 5.4, 5.3), contributing to sufficiency. Semantic alignment score: 70%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
-      "questionText": "What activities should be restricted within a ‘safety zone’ while refuelling?",
-      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
-      "gaps": []
-    },
-    {
-      "questionId": "Part4Prest_Q35",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "5.3",
-        "5.4",
-        "5.2"
-      ],
-      "mappedKnowledge": [
-        "• safety precautions and pollution control measures during refuelling",
-        "• refuelling a vessel according to safety regulations and organisational safety management system requirements"
-      ],
-      "confidence": 74,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (5.3, 5.4, 5.2), contributing to sufficiency. Semantic alignment score: 74%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
-      "questionText": "In the event of a spill while refuelling, what procedures should you follow?",
-      "questionSection": "Part 4 – Pre-start checks/Voyage Planning and Refuelling",
-      "gaps": []
-    },
-    {
-      "questionId": "Part5Outboa_Q36",
-      "isValid": true,
-      "mappedUnit": "MARB027",
+      "isValid": false,
+      "mappedUnit": null,
       "mappedCriteria": [],
-      "mappedKnowledge": [
-        "• outboard engines",
-        "◦ outboard engines",
-        "• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment and other mechanical equipment.",
-        "• potential risks and hazards associated with servicing and maintaining propulsion machinery and auxiliary equipment",
-        "◦ potential risks and hazards associated with servicing and maintaining propulsion machinery and auxiliary equipment"
-      ],
-      "confidence": 46,
-      "reasoning": "Compliant (Validity): Matched to MARB027. Addresses specific criterion undefined. Semantic alignment score: 46%. Aligns with: \"• outboard engines...\"",
-      "questionText": "If you couldn’t start the outboard motor, list THREE checks you would make?",
-      "questionSection": "Part 5 - Outboards",
-      "gaps": []
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part5Outboa_Q37",
-      "isValid": true,
-      "mappedUnit": "MARB027",
+      "questionId": "Part 3  Anchoring and Beaching - Q49",
+      "questionText": "What are TWO ways you can check whether an anchor is dragging",
+      "isValid": false,
+      "mappedUnit": null,
       "mappedCriteria": [],
-      "mappedKnowledge": [
-        "• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment and other mechanical equipment.",
-        "• checking shaft glands, strainers, cooling system, fuel levels and fuel systems",
-        "◦ checking shaft glands, strainers, cooling system, fuel levels and fuel systems"
-      ],
-      "confidence": 52,
-      "reasoning": "Compliant (Validity): Matched to MARB027. Addresses specific criterion undefined. Semantic alignment score: 52%. Aligns with: \"• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment a...\"",
-      "questionText": "When using a motor, what are FOUR pre-start checks you should make?",
-      "questionSection": "Part 5 - Outboards",
-      "gaps": []
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part5Outboa_Q38",
-      "isValid": true,
-      "mappedUnit": "MARB027",
+      "questionId": "Part 3  Anchoring and Beaching - Q51",
+      "questionText": "List THREE things you can do if your anchor is dragging\n[[ANSWER: Reset anchor; use different type of anchor; lay out second anchor; seek more sheltered anchorage or one with different bottom composition, increase scope]]",
+      "isValid": false,
+      "mappedUnit": null,
       "mappedCriteria": [],
-      "mappedKnowledge": [
-        "• care of extra low voltage electrical systems on a vessel, including precautions necessary when charging batteries",
-        "• battery maintenance",
-        "◦ battery maintenance",
-        "◦ emergency procedures, including emergency shutdown and stopping of equipment",
-        "• emergency procedures, including emergency shutdown and stopping of equipment"
-      ],
-      "confidence": 44,
-      "reasoning": "Compliant (Validity): Matched to MARB027. Addresses specific criterion undefined. Semantic alignment score: 44%. Aligns with: \"• care of extra low voltage electrical systems on a vessel, including precautions necessary when cha...\"",
-      "questionText": "Name TWO hazards association with batteries?",
-      "questionSection": "Part 5 - Outboards",
-      "gaps": []
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part5Outboa_Q39",
-      "isValid": true,
-      "mappedUnit": "MARB027",
+      "questionId": "Part 3  Anchoring and Beaching - Q52",
+      "questionText": "What are TWO emergencies that might lead to you beaching a vessel\n[[ANSWER: Vessel flooding, offload injured persons, fire damage, NUC]]",
+      "isValid": false,
+      "mappedUnit": null,
       "mappedCriteria": [],
-      "mappedKnowledge": [
-        "• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment and other mechanical equipment.",
-        "• checking shaft glands, strainers, cooling system, fuel levels and fuel systems",
-        "◦ checking shaft glands, strainers, cooling system, fuel levels and fuel systems"
-      ],
-      "confidence": 39,
-      "reasoning": "Compliant (Validity): Matched to MARB027. Addresses specific criterion undefined. Semantic alignment score: 39%. Aligns with: \"• routine checks required when servicing and maintaining propelling machinery, auxiliary equipment a...\"",
-      "questionText": "What are THREE post-start checks you should make if the engine if running roughly?",
-      "questionSection": "Part 5 - Outboards",
-      "gaps": []
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part6Enviro_Q40",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.3",
-        "4.2",
-        "4.1"
-      ],
-      "mappedKnowledge": [
-        "• securing a vessel for sea",
-        "• safety precautions and pollution control measures during refuelling"
-      ],
-      "confidence": 44,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.3, 4.2, 4.1), contributing to sufficiency. Semantic alignment score: 44%. Aligns with: \"• securing a vessel for sea...\"",
-      "questionText": "Ho w many Annex make up the International Convention for the Prevention of Pollution from Ships (MARPOL)?",
-      "questionSection": "Part 6 – Environmental considerations",
-      "gaps": []
-    },
-    {
-      "questionId": "Part6Enviro_Q41",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.2",
-        "4.1",
-        "4.5"
-      ],
-      "mappedKnowledge": [
-        "• securing a vessel for sea"
-      ],
-      "confidence": 50,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.2, 4.1, 4.5), contributing to sufficiency. Semantic alignment score: 50%. Aligns with: \"Materials are disposed of or recycled according to legislative and workplace requirements...\"",
-      "questionText": "What provision should you make for garbage disposal, and recyclables when operating a small vessel within 10nm of shore to comply with MARPOL?",
-      "questionSection": "Part 6 – Environmental considerations",
-      "gaps": []
-    },
-    {
-      "questionId": "Part6Enviro_Q42",
-      "isValid": true,
-      "mappedUnit": "MARN008",
+      "questionId": "Part 3  Anchoring and Beaching - Q53",
+      "questionText": "What are THREE considerations for re-floating a beached vessel\n[[ANSWER: Ensure tide suitable, inspect hull for damage, check bilges, remove water or items adding to weight of vessel, brief crew on process, check weather conditions, determine if support vessel is required, ensure bilge systems and safety equipment are in working order, secure loose items]]",
+      "isValid": false,
+      "mappedUnit": null,
       "mappedCriteria": [],
-      "mappedKnowledge": [
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
-        "• refuelling a vessel according to safety regulations and organisational safety management system requirements",
-        "• securing a vessel for sea",
-        "• safety precautions and pollution control measures during refuelling",
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel"
-      ],
-      "confidence": 46,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion undefined. Semantic alignment score: 46%. Aligns with: \"• factors affecting the safety and integrity of vessel; its equipment and materials on board...\"",
-      "questionText": "What are the advantages of compacting waste onboard your vessel",
-      "questionSection": "Part 6 – Environmental considerations",
-      "gaps": []
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part6Enviro_Q43",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "5.3"
-      ],
-      "mappedKnowledge": [
-        "• safety precautions and pollution control measures during refuelling",
-        "• refuelling a vessel according to safety regulations and organisational safety management system requirements",
-        "• how to make a vessel watertight",
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board"
-      ],
-      "confidence": 50,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 5.3. Semantic alignment score: 50%. Aligns with: \"• safety precautions and pollution control measures during refuelling...\"",
-      "questionText": "How should you store fuel, waste oil and chemicals on your vessel?",
-      "questionSection": "Part 6 – Environmental considerations",
-      "gaps": []
-    },
-    {
-      "questionId": "Part6Enviro_Q44",
-      "isValid": true,
-      "mappedUnit": "MARN008",
+      "questionId": "SubQ-uk3te",
+      "questionText": "Part 4 – Pre-start checks/Voyage Planning and Refuelling\n\nWhat would you do if any equipment required on your vessel by NSCV is not functioning?\n[[ANSWER: Replace or repair if competent to do so.\nAdhere to SMS\nLock out, tag out to ensure not used\nNotify vessel owner or DPA\nDetail findings in vessel logbook]]",
+      "isValid": false,
+      "mappedUnit": null,
       "mappedCriteria": [],
-      "mappedKnowledge": [
-        "• openings including hatch covers and all other openings that water can enter",
-        "• coverage and frequency of checks of vessels seaworthiness",
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
-        "• safety precautions and pollution control measures during refuelling",
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
-      ],
-      "confidence": 31,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion undefined. Semantic alignment score: 31%. Aligns with: \"• openings including hatch covers and all other openings that water can enter...\"",
-      "questionText": "Where can you discharge sewage at sea in Tasmania?",
-      "questionSection": "Part 6 – Environmental considerations",
-      "gaps": []
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part6Enviro_Q45",
-      "isValid": true,
-      "mappedUnit": "MARB027",
-      "mappedCriteria": [
-        "4.2"
-      ],
-      "mappedKnowledge": [
-        "• environmental impacts and minimisation measures associated with servicing and maintaining propulsion machinery and auxiliary equipment",
-        "◦ safe and environmentally responsible work practices in servicing and maintenance activities",
-        "• safe and environmentally responsible work practices in servicing and maintenance activities"
-      ],
-      "confidence": 36,
-      "reasoning": "Compliant (Validity): Matched to MARB027. Addresses specific criterion 4.2. Semantic alignment score: 36%. Aligns with: \"• environmental impacts and minimisation measures associated with servicing and maintaining propulsi...\"",
-      "questionText": "List TWO environmental impacts from the following;",
-      "questionSection": "Part 6 – Environmental considerations",
-      "gaps": []
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q54",
+      "questionText": "What would you do if any equipment required on your vessel by NSCV is not functioning",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part7Constr_Q46",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.2"
-      ],
-      "mappedKnowledge": [
-        "• principles of maintaining watertight integrity",
-        "• how to make a vessel watertight",
-        "• openings including hatch covers and all other openings that water can enter",
-        "◦ accommodation and storage spaces"
-      ],
-      "confidence": 60,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 4.2. Semantic alignment score: 60%. Aligns with: \"• principles of maintaining watertight integrity...\"",
-      "questionText": "Why are watertight compartments important?",
-      "questionSection": "Part 7 - Construction and Maintenance",
-      "gaps": []
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q54",
+      "questionText": "Replace or repair if competent to do so.\nAdhere to SMS",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part7Constr_Q47",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.2",
-        "4.6"
-      ],
-      "mappedKnowledge": [
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
-      ],
-      "confidence": 56,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Covers multiple criteria (4.2, 4.6), contributing to sufficiency. Semantic alignment score: 56%. Aligns with: \"• identifying and rectifying irregularities in the condition and seaworthiness of the vessel...\"",
-      "questionText": "When inspecting the integrity and condition of a hull, what are THREE signs of stress you would look for?",
-      "questionSection": "Part 7 - Construction and Maintenance",
-      "gaps": []
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q55",
+      "questionText": "Lock out, tag out to ensure not used",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part7Constr_Q48",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.6"
-      ],
-      "mappedKnowledge": [
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
-        "• coverage and frequency of checks of vessels seaworthiness",
-        "• basic structural parts of a small vessel"
-      ],
-      "confidence": 60,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 4.6. Semantic alignment score: 60%. Aligns with: \"• factors affecting the safety and integrity of vessel; its equipment and materials on board...\"",
-      "questionText": "What types of damage or deterioration would you look for in vessels constructed of the following?",
-      "questionSection": "Part 7 - Construction and Maintenance",
-      "gaps": []
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q56",
+      "questionText": "Notify vessel owner or DPA",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part7Constr_Q49",
-      "isValid": true,
-      "mappedUnit": "MARN008",
-      "mappedCriteria": [
-        "4.4"
-      ],
-      "mappedKnowledge": [
-        "• basic structural parts of a small vessel",
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
-        "• factors affecting the safety and integrity of vessel; its equipment and materials on board",
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
-      ],
-      "confidence": 69,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion 4.4. Semantic alignment score: 69%. Aligns with: \"• basic structural parts of a small vessel...\"",
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q57",
+      "questionText": "Detail findings in vessel logbook",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q58",
+      "questionText": "Would your vessel be seaworthy if not rectified? No",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q60",
+      "questionText": "What fuel consumption will you anticipate for the day if your voyage plan involves eight (8) hours of operation, and your fuel consumption is twelve (12) litres per hour\n[[ANSWER: 96\n\n120-144\nCheck fuel level in tank at a certain time and then check again after 1 hour. The difference will be your hourly consumption rate. Sound tanks to verify against gauges (if fitted)]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q60",
+      "questionText": "What fuel consumption will you anticipate for the day if your voyage plan involves eight (8) hours of operation, and your fuel consumption is twelve (12) litres per hour? 96\n120-144",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q61",
+      "questionText": "Check fuel level in tank at a certain time and then check again after 1 hour. The difference will be your hourly consumption rate. Sound tanks to verify against gauges (if fitted)\n[[ANSWER: 96\n120-144\nCheck fuel level in tank at a certain time and then check again after 1 hour. The difference will be your hourly consumption rate. Sound tanks to verify against gauges (if fitted)]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q62",
+      "questionText": "When would you report a fuel spill to authorities\n[[ANSWER: Asap once spill is controlled or contained, then be prepared to follow instructions]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q64",
+      "questionText": "What are three precautions that will help to reduce the risk of a spill when refuelling\n[[ANSWER: estimate how much fuel required, block freeing ports, maintain communication with fuelling person, follow SMS process, place bucket under vents, vessel held fast,]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q65",
+      "questionText": "What systems or equipment should you shut down prior to any refuelling\n[[ANSWER: LPG, engines and other machinery, anything likely to cause sparks or heat]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 4  Pre-start checksVoyage Planning and Refuelling - Q66",
+      "questionText": "What activities should be restricted within a ‘safety zone’ while refuelling\n[[ANSWER: Smoking, talking on the phone, welding, grinding, hot work, anything likely to cause ignition]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 5 - Outboards - Q67",
+      "questionText": "If you couldn’t start the outboard motor, list THREE checks you would make",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 5 - Outboards - Q68",
+      "questionText": "When using a motor, what are FOUR pre-start checks you should make\n[[ANSWER: mounting bolts/screws, throttle/gear shift operation, fittings for looseness, reverse-lock mechanism, 2-stroke oil usage (if applicable), anodes, steering range, safety switches]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 5 - Outboards - Q69",
+      "questionText": "Name TWO hazards association with batteries\n[[ANSWER: Risk of spark, gas produced by batteries in confined/restricted spaces, incorrect fitting or - + cables, battery explosion, eye contact with battery acid, manual strain moving batteries]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 5 - Outboards - Q70",
+      "questionText": "What are THREE post-start checks you should make if the engine if running roughly\n[[ANSWER: Check fuel connection\nEnsure prop and leg not restricted or damaged\nCheck oil level (mix and sump as applicable)\nCooling system-water transfer\nSpark plug and timing]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-r49dt",
+      "questionText": "Part 6 – Environmental considerations\nHo w many Annex make up the International Convention for the Prevention of Pollution from Ships (MARPOL)?\n[[ANSWER: 6]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 5 - Outboards - Q70",
+      "questionText": "Check fuel connection",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 5 - Outboards - Q71",
+      "questionText": "Ensure prop and leg not restricted or damaged",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 5 - Outboards - Q72",
+      "questionText": "Check oil level (mix and sump as applicable)",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 5 - Outboards - Q73",
+      "questionText": "Cooling system-water transfer",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 5 - Outboards - Q74",
+      "questionText": "Spark plug and timing",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q75",
+      "questionText": "Ho w many Annex make up the International Convention for the Prevention of Pollution from Ships (MARPOL)?6",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q76",
+      "questionText": "What provision should you make for garbage disposal, and recyclables when operating a small vessel within 10nm of shore to comply with MARPOL\n[[ANSWER: Bring it back – no disposal of rubbish overboard (and small vessels don’t normally have pulverisation gear on board)]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q78",
+      "questionText": "What are the advantages of compacting waste onboard your vessel\n[[ANSWER: Greater space and storage ability. \nControl of waste into designated types for disposal post voyage\nContaining on board]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q78",
+      "questionText": "Greater space and storage ability.",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q79",
+      "questionText": "Control of waste into designated types for disposal post voyage",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q80",
+      "questionText": "Containing on board",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q81",
+      "questionText": "3a List one (1) way of compacting ‘general’ waste on a DCV.\nManually\n[[ANSWER: Manually\nDeck machinery to fold or compact\nCompacting unit (hydraulic)]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q82",
+      "questionText": "Deck machinery to fold or compact",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q83",
+      "questionText": "Compacting unit (hydraulic)",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q84",
+      "questionText": "How should you store fuel, waste oil and chemicals on your vessel\n[[ANSWER: Refer to product SDS. Designated container shall be marked, vented (if required), and crew briefed of storage and handling, secured correctly]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q86",
+      "questionText": "Where can you discharge sewage at sea in Tasmania\n[[ANSWER: Vessels to which this Part applies must not discharge sewage that is not disinfected\nin any of the following waters:\nOpen  waters >1nm from land (including islands)\nGreat than 5metres deep;\nGreater than 120m of person in the water]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q86",
+      "questionText": "Vessels to which this Part applies must not discharge sewage that is not disinfected",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q87",
+      "questionText": "in any of the following waters:",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q88",
+      "questionText": "Open waters >1nm from land (including islands)",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q89",
+      "questionText": "Great than 5metres deep;",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q90",
+      "questionText": "Greater than 120m of person in the water",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - Q91",
+      "questionText": "List TWO environmental impacts from the following;Anchoring\n[[ANSWER: 1. Disturbing the seabed\n2. Damage to marine life\n3. Unearthing contaminated seabed]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-k1y60",
+      "questionText": "Noise\n[[ANSWER: 1. Disturbing animals resting or nesting \n2. Hearing loss\n3. sonar impact to navigating marine life\n4. Impact to natural habits of wild animals]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-ls0y7",
+      "questionText": "Propeller wash\n[[ANSWER: 1. Erosion to shoreline\n2. Churning up seabed in shallow water\n3. waves impacting coastal sensitive areas]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-ots6s",
+      "questionText": "Part 7 - Construction and Maintenance\nWhy are watertight compartments important?\n[[ANSWER: Buoyancy; watertight integrity of vessel; prevent sinking in case of penetration of individual compartments]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - 2",
+      "questionText": "Hearing loss3. sonar impact to navigating marine life4. Impact to natural habits of wild animalsPropeller wash\nAnchoring",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - 1",
+      "questionText": "Disturbing the seabed",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - 2",
+      "questionText": "Damage to marine life",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - 3",
+      "questionText": "Unearthing contaminated seabed\nNoise",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - 1",
+      "questionText": "Disturbing animals resting or nesting\nPropeller wash",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - 1",
+      "questionText": "Erosion to shoreline",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - 2",
+      "questionText": "Churning up seabed in shallow water",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 6  Environmental considerations - 3",
+      "questionText": "waves impacting coastal sensitive areas",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 7 - Construction and Maintenance - Q100",
+      "questionText": "Why are watertight compartments important",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 7 - Construction and Maintenance - Q102",
+      "questionText": "When inspecting the integrity and condition of a hull, what are THREE signs of stress you would look for\n[[ANSWER: Cracks, buckling, damage to welds, damage beneath paint, signs of leakage]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 7 - Construction and Maintenance - Q103",
+      "questionText": "What types of damage or deterioration would you look for in vessels constructed of the following\n[[ANSWER: Steel: rust, electrolysis, poor welds, other\nWood: rot, damage, deterioration of fastenings, attack by marine life, other\nAluminium: electrolysis, corrosion, cracks, other\nFibreglass: osmosis, cracks, damage to gelcoat, delamination, other]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-0tf48",
+      "questionText": "Identify the following structural parts of a vessel and place appropriate numbers by each part \n\n\n \n\nList two (2) areas where water can enter the vessel whilst at sea\n[[ANSWER: Engine hatch\nDeck mounted pipework\nWheel house\nWatertight doors or hatches on deck\nStern Tube]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 7 - Construction and Maintenance - Q103",
+      "questionText": "Steel: rust, electrolysis, poor welds, other",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 7 - Construction and Maintenance - Q104",
+      "questionText": "Wood: rot, damage, deterioration of fastenings, attack by marine life, other",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 7 - Construction and Maintenance - Q105",
+      "questionText": "Aluminium: electrolysis, corrosion, cracks, other",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 7 - Construction and Maintenance - Q106",
+      "questionText": "Fibreglass: osmosis, cracks, damage to gelcoat, delamination, other",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 7 - Construction and Maintenance - Q107",
       "questionText": "Identify the following structural parts of a vessel and place appropriate numbers by each part",
-      "questionSection": "Part 7 - Construction and Maintenance",
-      "gaps": []
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     },
     {
-      "questionId": "Part7Constr_Q50",
-      "isValid": true,
-      "mappedUnit": "MARN008",
+      "questionId": "Part 7 - Construction and Maintenance - Q108",
+      "questionText": "List two (2) areas where water can enter the vessel whilst at sea\nEngine hatch",
+      "isValid": false,
+      "mappedUnit": null,
       "mappedCriteria": [],
-      "mappedKnowledge": [
-        "• openings including hatch covers and all other openings that water can enter",
-        "• securing a vessel for sea",
-        "• identifying and rectifying irregularities in the condition and seaworthiness of the vessel",
-        "• how to make a vessel watertight",
-        "• process for checking seaworthiness and general condition of a vessel up to 12 metres including:"
-      ],
-      "confidence": 55,
-      "reasoning": "Compliant (Validity): Matched to MARN008. Addresses specific criterion undefined. Semantic alignment score: 55%. Aligns with: \"• openings including hatch covers and all other openings that water can enter...\"",
-      "questionText": "List two (2) areas where water can enter the vessel whilst at sea",
-      "questionSection": "Part 7 - Construction and Maintenance",
-      "gaps": []
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 7 - Construction and Maintenance - Q109",
+      "questionText": "Deck mounted pipework\nWheel house",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "Part 7 - Construction and Maintenance - Q110",
+      "questionText": "Watertight doors or hatches on deck\nStern Tube",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
+    },
+    {
+      "questionId": "SubQ-c1lr6",
+      "questionText": "Trainer / Assessor Instructions for marking of assessment \nThis answers within this marking sheet are comprehensive and technically correct as acceptable responses\nListed below are the questions asked and answers in red\nAssessors must refer to these when considering the responses provided by participants\nA course participant is not expected to provide answers to that level of detail, instead for a satisfactory response, the participant’s answers should be within the range of model answers and meet the minimum required number of responses provided and indicate a basic level of knowledge and understanding of the topic\nEach question must be completed correctly, and the assessor must indicate whether the response is satisfactory in the column against each question on the assessment\nIf a verbal answer is given for any questions, the assessor is to document the participant’s answers and initial next to it\nReasonable Adjustment\n\nThe purpose of reasonable adjustment is to make it possible for learners to participate fully. A reasonable adjustment in teaching, learning and assessment activity needs to be justifiable and uphold the integrity of the qualification.\n\nInherent requirements are the fundamental parts of a course that must be met by all students for them to be deemed competent. They are the abilities, skills and knowledge students need to complete the course — those components which, if removed, would compromise the learning outcomes\n\nAssessors may accept variations of an acceptable response in marking the assessment for example where the benchmark is ‘adequate lighting’ the assessor may also choose to accept variations such as ‘enough lighting, sufficient lighting, good bright lighting.’ \nAssessors must ensure the answers provided are comparable to the meaning and intent of the acceptable responses provided.\n\n\n\nPart 1 – Ropework and lifting \nHow do you work out the Working Load Limit (WLL) of a lifting sling?\n[[ANSWER: Read the label, colour match with manufacturer guide, identify number of strips on sling]]",
+      "isValid": false,
+      "mappedUnit": null,
+      "mappedCriteria": [],
+      "mappedKnowledge": [],
+      "confidence": 0,
+      "reasoning": "Analysis Failed: No matching units found in knowledge base. Please ensure Units of Competency are loaded."
     }
+  ],
+  "instructions": [
+    "<tr><td><p><strong>Trainer / Assessor Instructions for marking of assessment </strong></p></td><td><ul><li>This answers within this marking sheet are comprehensive and technically correct as acceptable responses</li><li>Listed below are the questions asked and answers in red</li><li>Assessors must refer to these when considering the responses provided by participants</li><li>A course participant is not expected to provide answers to that level of detail, instead for a satisfactory response, the participant’s answers should be within the range of model answers and meet the minimum required number of responses provided and indicate a basic level of knowledge and understanding of the topic</li><li>Each question must be completed correctly, and the assessor must indicate whether the response is satisfactory in the column against each question on the assessment</li><li>If a verbal answer is given for any questions, the assessor is to document the participant’s answers and initial next to it</li></ul></td></tr>",
+    "<tr><td><p><strong>Reasonable Adjustment</strong></p></td><td><p>The purpose of reasonable adjustment is to make it possible for learners to participate fully. A reasonable adjustment in teaching, learning and assessment activity needs to be justifiable and uphold the integrity of the qualification.</p><p>Inherent requirements are the fundamental parts of a course that must be met by all students for them to be deemed competent. They are the abilities, skills and knowledge students need to complete the course — those components which, if removed, would compromise the learning outcomes</p><ul><li>Assessors may accept variations of an acceptable response in marking the assessment for example where the benchmark is ‘adequate lighting’ the assessor may also choose to accept variations such as ‘enough lighting, sufficient lighting, good bright lighting.’ </li><li>Assessors must ensure the answers provided are comparable to the meaning and intent of the acceptable responses provided.</li></ul></td></tr>"
+  ],
+  "redTextSegments": [
+    "Knowledge Coxswain Deck\nMarking Sheet\nKnowledge Coxswain Deck\nMarking Sheet",
+    "Read the label, colour match with manufacturer guide, identify number of strips on sling",
+    "1700kg",
+    "Nylon - Shock loading & elasticity                                \nPolypropylene - Good abrasion resistance/ Floating rope that will not rot       \nNatural Fibre - Tag lines lifting operations      \nFlexible Steel Wire Rope (FSWR) - Winch drum & hoist operations",
+    "Burn marks/melting, flattening, kinks, frays, reduction in diameter, damage to core, knots, damaged fibres/cuts",
+    "Do not – stand beneath loads, straddle cable, hold or put hand on cable when under strain, stand directly in line with the cable",
+    "WHS Act 2012\nNavigation Act 2012\nAnti-discrimination Act\nWorkers Compensation Act 1986\nMarine Safety National Law Act 2012",
+    "Duties statement within SMS",
+    "One",
+    "Coxswain Grade II",
+    "Obligation to render assistance\n             (1)  The master of a domestic commercial vessel commits an offence if:\n                     (a)  the vessel is in any waters; and\n                     (b)  the master has reason to believe that one or more persons are in distress on a vessel or in any waters; and\n                     (c)  the master does not both:\n                              (i)  cause his or her vessel to proceed as fast as practicable to the assistance of the person or persons; and\n                             (ii)  inform the person or persons that the master is doing so.\nReport of marine incident",
+    "2D",
+    "The emergency plan must include procedures for responding to each of the following situations that is relevant to the vessel and its operation:\n(a)   fire;\n(b)   a person overboard or unaccountably missing;\n(c)   a personal injury or other medical emergency;\n(d)   master incapacitated;\n(e)   loss of steering;\n(f)    vessel collision;\n(g)   vessel grounding;\n(h)   vessel flooding;\n(i)    adverse weather or water conditions;\n(j)    any other circumstance identified by the risk assessment that may require an emergency response.",
+    "1C",
+    "Certificate of survey, SMS, Certificate of Operations, Compass deviation card, Life-saving equipment certificate, Life raft servicing certificate, Firefighting equipment certificate, Certificates of Competency (skipper, engineer), Marine Radio Operator's Certificate of Proficiency (and ship station licence for HF radio if relevant), Certificate of Insurance, Safety Management Compliance Certificate.",
+    "fuel, area of operations, persons onboard, emergency events, faults/breakdowns, handover items pertinent to the safe use of the vessel",
+    "AMSA, MAST and NMSC websites bulletins, Notice to Mariners",
+    "Safety Management Plan updates, Operational Policies and procedures reviews, crew induction and briefing, training",
+    "3 Parachute distress rockets\n2 Red hand-held flares\n1 hand-held orange smoke signal\nManual or water activated EPIRB",
+    "Clock (May be included in other nav equipment\nBinoculars\nEcho sounder\nNautical publications\nSpeed and distance calculator\nCompass Nav lights\nSound signal",
+    "Signalling light\nVHF radio\nCurrent edition of the ‘Marine VHF Radio operators handbook",
+    "Refer to NSCV Part C4",
+    "Coastal lifejacket for 100% complement",
+    "Depth; bottom composition; swing room; changes in tide and weather; ease of moving in case of inclement weather",
+    "Identify position – transits shift (other than swing); feel vibration and dragging through anchor cable; position of vessel relative to wind/current; Change of sound from anchor chain",
+    "Reset anchor; use different type of anchor; lay out second anchor; seek more sheltered anchorage or one with different bottom composition, increase scope",
+    "Vessel flooding, offload injured persons, fire damage, NUC",
+    "Ensure tide suitable, inspect hull for damage, check bilges, remove water or items adding to weight of vessel, brief crew on process, check weather conditions, determine if support vessel is required, ensure bilge systems and safety equipment are in working order, secure loose items",
+    "Replace or repair if competent to do so.\nAdhere to SMS\nLock out, tag out to ensure not used\nNotify vessel owner or DPA\nDetail findings in vessel logbook",
+    "No",
+    "Steering gear, sound signalling device, radio/EPIRB, navigation equipment, engine and machinery, engine controls, remote bilge alarms and pumps",
+    "96\n120-144\nCheck fuel level in tank at a certain time and then check again after 1 hour. The difference will be your hourly consumption rate. Sound tanks to verify against gauges (if fitted)",
+    "Asap once spill is controlled or contained, then be prepared to follow instructions",
+    "estimate how much fuel required, block freeing ports, maintain communication with fuelling person, follow SMS process, place bucket under vents, vessel held fast,",
+    "LPG, engines and other machinery, anything likely to cause sparks or heat",
+    "Smoking, talking on the phone, welding, grinding, hot work, anything likely to cause ignition",
+    "Vessel SMS procedures -Shut down fuelling system; prevent further spillage, fire-fighting equipment available, contain using spill kit and bunding, alert personnel; alert authorities; clean up any spillage aboard",
+    "lack of fuel, filter clogged, hoses not connected properly or kinked, spark plug, shift lever in gear, lanyard stop switch",
+    "mounting bolts/screws, throttle/gear shift operation, fittings for looseness, reverse-lock mechanism, 2-stroke oil usage (if applicable), anodes, steering range, safety switches",
+    "Risk of spark, gas produced by batteries in confined/restricted spaces, incorrect fitting or - + cables, battery explosion, eye contact with battery acid, manual strain moving batteries",
+    "Check fuel connection\nEnsure prop and leg not restricted or damaged\nCheck oil level (mix and sump as applicable)\nCooling system-water transfer\nSpark plug and timing",
+    "6",
+    "Bring it back – no disposal of rubbish overboard (and small vessels don’t normally have pulverisation gear on board)",
+    "Greater space and storage ability. \nControl of waste into designated types for disposal post voyage\nContaining on board",
+    "Manually\nDeck machinery to fold or compact\nCompacting unit (hydraulic)",
+    "Refer to product SDS. Designated container shall be marked, vented (if required), and crew briefed of storage and handling, secured correctly",
+    "Vessels to which this Part applies must not discharge sewage that is not disinfected\nin any of the following waters:\nOpen  waters >1nm from land (including islands)\nGreat than 5metres deep;\nGreater than 120m of person in the water",
+    "1. Disturbing the seabed\n2. Damage to marine life\n3. Unearthing contaminated seabed",
+    "1. Disturbing animals resting or nesting \n2. Hearing loss\n3. sonar impact to navigating marine life\n4. Impact to natural habits of wild animals",
+    "1. Erosion to shoreline\n2. Churning up seabed in shallow water\n3. waves impacting coastal sensitive areas",
+    "Buoyancy; watertight integrity of vessel; prevent sinking in case of penetration of individual compartments",
+    "Cracks, buckling, damage to welds, damage beneath paint, signs of leakage",
+    "Steel: rust, electrolysis, poor welds, other\nWood: rot, damage, deterioration of fastenings, attack by marine life, other\nAluminium: electrolysis, corrosion, cracks, other\nFibreglass: osmosis, cracks, damage to gelcoat, delamination, other",
+    "Engine hatch\nDeck mounted pipework\nWheel house\nWatertight doors or hatches on deck\nStern Tube"
   ]
 }

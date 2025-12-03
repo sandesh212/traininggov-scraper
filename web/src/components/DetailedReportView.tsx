@@ -58,12 +58,12 @@ export function DetailedReportView({ results, instructions, onNavigateToMatrix }
             {isSingleGeneral ? (
                 <div className="space-y-4">
                     {sections[0][1].map((result, idx) => (
-                        <QuestionCard key={result.questionId} result={result} idx={idx} onNavigateToMatrix={onNavigateToMatrix} />
+                        <QuestionCard key={`q-${idx}-${result.questionId}`} result={result} idx={idx} onNavigateToMatrix={onNavigateToMatrix} />
                     ))}
                 </div>
             ) : (
-                sections.map(([section, sectionResults]) => (
-                    <ReportSection key={section} title={section} results={sectionResults} onNavigateToMatrix={onNavigateToMatrix} />
+                sections.map(([section, sectionResults], sectionIdx) => (
+                    <ReportSection key={`section-${sectionIdx}-${section}`} title={section} results={sectionResults} onNavigateToMatrix={onNavigateToMatrix} />
                 ))
             )}
         </div>
@@ -90,7 +90,7 @@ function ReportSection({ title, results, onNavigateToMatrix }: { title: string, 
             {isOpen && (
                 <div className="space-y-4">
                     {results.map((result, idx) => (
-                        <QuestionCard key={result.questionId} result={result} idx={idx} onNavigateToMatrix={onNavigateToMatrix} />
+                        <QuestionCard key={`q-${idx}-${result.questionId}`} result={result} idx={idx} onNavigateToMatrix={onNavigateToMatrix} />
                     ))}
                 </div>
             )}

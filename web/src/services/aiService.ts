@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { UnitOfCompetency } from './uocLoader';
+import { Unit } from './uocLoader';
 import { AssessmentQuestion } from '../models/types';
 
 export interface ValidationResult {
@@ -24,7 +24,7 @@ export class AIService {
 
     public async validateQuestion(
         question: AssessmentQuestion,
-        uocs: UnitOfCompetency[]
+        uocs: Unit[]
     ): Promise<ValidationResult> {
         // MOCK MODE: If API key is 'mock-key' or starts with 'sk-mock', return dummy data
         if (this.openai.apiKey === 'mock-key' || this.openai.apiKey.startsWith('sk-mock')) {
@@ -91,7 +91,7 @@ export class AIService {
         }
     }
 
-    private buildPrompt(q: AssessmentQuestion, uocs: UnitOfCompetency[]): string {
+    private buildPrompt(q: AssessmentQuestion, uocs: Unit[]): string {
         // Build detailed context for ALL units with better formatting
         const unitsContext = uocs.map(u => {
             const elementsText = u.elements.map((el, idx) => {

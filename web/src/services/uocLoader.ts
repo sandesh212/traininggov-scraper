@@ -1,29 +1,12 @@
 import fs from 'fs';
 import readline from 'readline';
 import path from 'path';
+import { Unit } from '../types';
 
-export interface PerformanceCriteria {
-    id: string;
-    text: string;
-}
-
-export interface Element {
-    title: string;
-    performanceCriteria: PerformanceCriteria[];
-}
-
-export interface UnitOfCompetency {
-    code: string;
-    title: string;
-    description?: string;
-    elements: Element[];
-    performanceEvidence: string;
-    knowledgeEvidence: string;
-    assessmentConditions: string;
-}
+export type { Unit }; // Re-export for compatibility
 
 export class UocLoader {
-    private uocMap: Map<string, UnitOfCompetency> = new Map();
+    private uocMap: Map<string, Unit> = new Map();
     private dataPath: string;
 
     constructor(dataPath: string = 'data/uoc.jsonl') {
@@ -32,8 +15,18 @@ export class UocLoader {
 
     public async load(): Promise<void> {
         const absolutePath = path.resolve(process.cwd(), this.dataPath);
+
+        // Ensure directory exists
+        const dir = path.dirname(absolutePath);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+
         if (!fs.existsSync(absolutePath)) {
-            throw new Error(`UoC data file not found at: ${absolutePath}`);
+            // Create empty file if it doesn't exist
+            fs.writeFileSync(absolutePath, '');
+            console.log(`Created new UoC data file at: ${absolutePath}`);
+            return;
         }
 
         const fileStream = fs.createReadStream(absolutePath);
@@ -41,6 +34,8 @@ export class UocLoader {
             input: fileStream,
             crlfDelay: Infinity
         });
+
+        this.uocMap.clear();
 
         for await (const line of rl) {
             try {
@@ -55,31 +50,92 @@ export class UocLoader {
         console.log(`Loaded ${this.uocMap.size} Units of Competency.`);
     }
 
-    public getUnit(code: string): UnitOfCompetency | undefined {
+    public getUnit(code: string): Unit | undefined {
         return this.uocMap.get(code);
     }
 
-    public getAllUnits(): UnitOfCompetency[] {
+    public getAllUnits(): Unit[] {
         return Array.from(this.uocMap.values());
     }
 
-    private transform(raw: any): UnitOfCompetency {
+    public getLastUpdated(): Date | null {
+        const absolutePath = path.resolve(process.cwd(), this.dataPath);
+        if (fs.existsSync(absolutePath)) {
+            return fs.statSync(absolutePath).mtime;
+        }
+        return null;
+    }
+
+    public async addUnit(unit: Unit): Promise<void> {
+        // Update memory
+        this.uocMap.set(unit.code, unit);
+        // Save all to keep file clean and unique
+        await this.save();
+    }
+
+    public async removeUnit(code: string): Promise<boolean> {
+        if (this.uocMap.has(code)) {
+            this.uocMap.delete(code);
+            await this.save();
+            return true;
+        }
+        return false;
+    }
+
+    private async save(): Promise<void> {
+        const absolutePath = path.resolve(process.cwd(), this.dataPath);
+        const stream = fs.createWriteStream(absolutePath);
+
+        for (const unit of this.uocMap.values()) {
+            stream.write(JSON.stringify(unit) + '\n');
+        }
+
+        stream.end();
+        await new Promise<void>(resolve => stream.on('finish', () => resolve()));
+    }
+
+    public async clearAll(): Promise<void> {
+        const absolutePath = path.resolve(process.cwd(), this.dataPath);
+        const backupPath = `${absolutePath}.bak`;
+
+        if (fs.existsSync(absolutePath)) {
+            fs.copyFileSync(absolutePath, backupPath);
+            fs.writeFileSync(absolutePath, ''); // Clear file
+            this.uocMap.clear();
+        }
+    }
+
+    public async restore(): Promise<boolean> {
+        const absolutePath = path.resolve(process.cwd(), this.dataPath);
+        const backupPath = `${absolutePath}.bak`;
+
+        if (fs.existsSync(backupPath)) {
+            fs.copyFileSync(backupPath, absolutePath);
+            await this.load(); // Reload from restored file
+            return true;
+        }
+        return false;
+    }
+
+    private transform(raw: any): Unit {
         // Transform raw JSONL structure to our internal interface
-        // The raw structure has 'elements' array with 'element' (title) and 'performanceCriteria' (array of strings)
-        
-        const elements: Element[] = (raw.elements || []).map((el: any) => {
-            const pcs: PerformanceCriteria[] = (el.performanceCriteria || []).map((pcText: string) => {
+        const elements = (raw.elements || []).map((el: any) => {
+            const pcs = (el.performanceCriteria || []).map((pcText: any) => {
+                // Handle both string and object formats
+                if (typeof pcText === 'object' && pcText.id) {
+                    return pcText;
+                }
+
                 // Extract ID if possible (e.g., "1.1 Identify...")
-                const match = pcText.match(/^(\d+\.\d+)\s+(.+)/);
+                const match = (pcText as string).match(/^(\d+\.\d+)\s+(.+)/);
                 if (match) {
                     return { id: match[1], text: match[2] };
                 }
                 return { id: '', text: pcText };
             });
-            
-            // Clean element title (remove number prefix if needed)
+
             return {
-                title: el.element,
+                title: el.title || el.element,
                 performanceCriteria: pcs
             };
         });
@@ -87,7 +143,11 @@ export class UocLoader {
         return {
             code: raw.code,
             title: raw.title,
-            description: raw.description, // Might be missing in raw
+            description: raw.description || raw.application || '',
+            application: raw.application || '',
+            unitSector: raw.unitSector || '',
+            modificationHistory: raw.modificationHistory || '',
+            foundationSkills: raw.foundationSkills || '',
             elements,
             performanceEvidence: raw.performanceEvidence || '',
             knowledgeEvidence: raw.knowledgeEvidence || '',

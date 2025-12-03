@@ -76,8 +76,8 @@ export class StructuredDocxParser {
         return !!(clean.match(/^\d+[\.\)]/) || clean.match(/^Q\d+/i) || clean.match(/^Question\s+\d+/i));
     }
 
-    private extractRuns(xml: string): Array<{ text: string; isRed: boolean }> {
-        const runs: Array<{ text: string; isRed: boolean }> = [];
+    private extractRuns(xml: string): Array<{ text: string; isRed: boolean; isBold: boolean; isItalic: boolean; size: number; font: string }> {
+        const runs: Array<{ text: string; isRed: boolean; isBold: boolean; isItalic: boolean; size: number; font: string }> = [];
         const pRegex = /<w:p(?: [^>]*)?>([\s\S]*?)<\/w:p>/g;
         let pMatch;
 
@@ -92,15 +92,22 @@ export class StructuredDocxParser {
                 if (!text) continue;
 
                 const isRed = this.checkRed(rContent);
-                runs.push({ text, isRed });
+                const isBold = /<w:b(?:\/| [^>]*\/?)>/i.test(rContent);
+                const isItalic = /<w:i(?:\/| [^>]*\/?)>/i.test(rContent);
+
+                let size = 0;
+                const sizeMatch = /<w:sz w:val="(\d+)"/i.exec(rContent);
+                if (sizeMatch) size = parseInt(sizeMatch[1], 10) / 2; // w:sz is in half-points
+
+                let font = "";
+                const fontMatch = /<w:rFonts w:ascii="([^"]+)"/i.exec(rContent);
+                if (fontMatch) font = fontMatch[1];
+
+                runs.push({ text, isRed, isBold, isItalic, size, font });
             }
 
             // Add newline at end of paragraph
-            // Treat as "neutral" (same color as previous or black?)
-            // If we treat as black (isRed=false), and we are in ANSWER state, it might switch state if we are not careful.
-            // But my logic says: `if (!isRed && !isWhitespace)`
-            // Newline IS whitespace. So it won't trigger switch.
-            runs.push({ text: '\n', isRed: false });
+            runs.push({ text: '\n', isRed: false, isBold: false, isItalic: false, size: 0, font: "" });
         }
         return runs;
     }

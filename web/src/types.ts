@@ -26,6 +26,11 @@ export interface Element {
 export interface Unit {
     code: string;
     title: string;
+    description?: string;
+    application?: string;
+    unitSector?: string;
+    modificationHistory?: string;
+    foundationSkills?: string;
     elements: Element[];
     knowledgeEvidence: string;
     performanceEvidence: string;

@@ -23,6 +23,7 @@
     "node-fetch": "^2.7.0",
     "openai": "^6.9.1",
     "pdf-parse": "^2.4.5",
+    "puppeteer": "^24.31.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "tailwind-merge": "^3.4.0",

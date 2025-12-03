@@ -63,7 +63,7 @@ export function UnifiedReportView({ results, mappedUnits, instructions }: Unifie
 
                 {results.map((result, idx) => (
                     <QuestionCard
-                        key={result.questionId}
+                        key={`q-${idx}-${result.questionId}`}
                         result={result}
                         idx={idx}
                         onNavigateToUnit={scrollToUnit}

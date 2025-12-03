@@ -281,20 +281,54 @@ export class ScraperService {
             const pcHeader = findHeader('Elements and Performance Criteria');
 
             if (pcHeader.length > 0) {
-                const pcTable = pcHeader.nextAll('table').first();
+                let pcTable = pcHeader.nextAll('table').first();
+                // If not found as direct sibling, check inside the next div (common in new TGA design)
+                if (pcTable.length === 0) {
+                    pcTable = pcHeader.nextAll('div').first().find('table').first();
+                }
+
                 let currentElement: Element | null = null;
 
-                pcTable.find('tr').each((_, row) => {
+                pcTable.find('tr').each((i, row) => {
                     const cells = $(row).find('td');
                     if (cells.length >= 2) {
                         const c1 = $(cells[0]).text().trim();
                         const c2 = $(cells[1]).text().trim();
+                        const c3 = cells.length >= 3 ? $(cells[2]).text().trim() : '';
 
                         if (/^\d+\.?$/.test(c1)) {
+                            // Standard Format: c1 is Element ID (e.g. "1"), c2 is Title
                             currentElement = { title: c2, performanceCriteria: [] };
                             elements.push(currentElement);
                         } else if (/^\d+\.\d+\.?$/.test(c1) && currentElement) {
+                            // Standard Format: c1 is PC ID (e.g. "1.1"), c2 is Text
                             currentElement.performanceCriteria.push({ id: c1, text: c2 });
+                        } else if (cells.length >= 3 && /^\d+\.\d+\.?$/.test(c2)) {
+                            // 3-Column Format: c1=Element, c2=PC ID, c3=PC Text
+                            if (c1 && !c1.toLowerCase().includes('elements describe')) {
+                                currentElement = { title: c1, performanceCriteria: [] };
+                                elements.push(currentElement);
+                            }
+
+                            if (currentElement) {
+                                currentElement.performanceCriteria.push({ id: c2, text: c3 });
+                            }
+                        } else {
+                            // Alternative Format: c1 is Element Title, c2 is PC ID + Text
+                            // e.g. c1="Prepare...", c2="1.1 ..."
+                            const pcMatch = c2.match(/^(\d+\.\d+)\.?\s+(.*)/);
+
+                            if (pcMatch) {
+                                // If c1 has text, it's a new Element (ignore header row)
+                                if (c1 && !c1.toLowerCase().includes('elements describe')) {
+                                    currentElement = { title: c1, performanceCriteria: [] };
+                                    elements.push(currentElement);
+                                }
+
+                                if (currentElement) {
+                                    currentElement.performanceCriteria.push({ id: pcMatch[1], text: pcMatch[2] });
+                                }
+                            }
                         }
                     }
                 });

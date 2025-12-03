@@ -579,7 +579,7 @@ export default function Home() {
                                 <StatsCard
                                     icon={<Award size={24} />}
                                     label="Mapped Units"
-                                    value={report.mappedUnits.length}
+                                    value={report.mappedUnits?.length || 0}
                                     color="purple"
                                     delay={0.2}
                                     onClick={() => setActiveTab('report')}
@@ -587,7 +587,7 @@ export default function Home() {
                                 <StatsCard
                                     icon={<TrendingUp size={24} />}
                                     label="Compliance"
-                                    value={`${Math.round((report.results.filter(r => r.isValid).length / report.questionsCount) * 100)}%`}
+                                    value={`${Math.round(((report.results?.filter(r => r.isValid).length || 0) / (report.questionsCount || 1)) * 100)}%`}
                                     color="green"
                                     delay={0.3}
                                     onClick={() => setActiveTab('report')}

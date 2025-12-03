@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
         const assessmentFile = formData.get('assessmentFile') as File;
         const unitsFile = formData.get('unitsFile') as File;
         const ignoreInvalid = formData.get('ignoreInvalid') === 'true';
+        const saveToDatabase = formData.get('saveToDatabase') !== 'false'; // Default true for backwards compatibility
 
         if (!assessmentFile) {
             return NextResponse.json({ error: 'No assessment file provided' }, { status: 400 });
@@ -106,6 +107,9 @@ export async function POST(req: NextRequest) {
             scopedCodes = detectedUnitCodes;
         }
 
+        // Track database changes for real-time stats
+        let dbStats = { added: 0, modified: 0, deleted: 0, total: units.length };
+
         if (scopedCodes.length > 0) {
             console.log(`   🎯 Scoping to ${scopedCodes.length} units: ${scopedCodes.join(', ')}`);
 
@@ -116,18 +120,52 @@ export async function POST(req: NextRequest) {
             // If units were provided via file, we MUST validate them all
             if (unitsFile && missingFromDb.length > 0) {
                 console.log(`   🌐 Verifying ${missingFromDb.length} units from file on training.gov.au...`);
-                // Scrape all missing units to verify they exist
-                const freshUnits = await scraper.scrapeUnits(missingFromDb);
-                scrapedUnits.push(...freshUnits);
+                // Use detailed scraping for better error messages
+                const { valid, invalid } = await scraper.scrapeUnitsWithDetails(missingFromDb);
+                scrapedUnits.push(...valid);
+
+                // If user did not ignore invalid and there are invalid units, return them
+                if (!ignoreInvalid && invalid.length > 0) {
+                    return NextResponse.json({
+                        invalidUnits: invalid,
+                        message: `The following units could not be verified: ${invalid.map(u => u.code).join(', ')}`
+                    }, { status: 200 });
+                }
+
+                // Track additions if saving to database
+                if (saveToDatabase && valid.length > 0) {
+                    dbStats.added = valid.length;
+                    dbStats.total += valid.length;
+                    console.log(`   💾 Will add ${valid.length} new units to database`);
+                }
             } else if (scopedCodes.length <= 10 && !unitsFile) {
                 // Auto-scoping behavior (small number): try to refresh
                 console.log(`   🌐 Scraping fresh data from training.gov.au...`);
-                const freshUnits = await scraper.scrapeUnits(scopedCodes);
-                scrapedUnits.push(...freshUnits);
+                const { valid, invalid } = await scraper.scrapeUnitsWithDetails(scopedCodes);
+                scrapedUnits.push(...valid);
+
+                if (invalid.length > 0) {
+                    console.warn(`   ⚠️ ${invalid.length} units failed validation: ${invalid.map(u => u.code).join(', ')}`);
+                }
+
+                // Check if any existing units were updated
+                if (saveToDatabase) {
+                    for (const fresh of valid) {
+                        const existing = units.find(u => u.code === fresh.code);
+                        if (existing) {
+                            dbStats.modified++;
+                        } else {
+                            dbStats.added++;
+                            dbStats.total++;
+                        }
+                    }
+                    if (dbStats.modified > 0 || dbStats.added > 0) {
+                        console.log(`   💾 Database changes: ${dbStats.added} added, ${dbStats.modified} modified`);
+                    }
+                }
             }
 
             unitsToAnalyze = [];
-            const invalidUnits: { code: string, url: string }[] = [];
 
             for (const code of scopedCodes) {
                 // Priority 1: Freshly scraped (verified)
@@ -145,24 +183,18 @@ export async function POST(req: NextRequest) {
                     continue;
                 }
 
-                // If we get here, it's invalid
-                console.warn(`   ⚠️ Unit ${code} not found in DB or TGA.`);
-                invalidUnits.push({
-                    code,
-                    url: `https://training.gov.au/Training/Details/${code}`
-                });
+                // Invalid units already handled above
             }
 
-            // If user explicitly provided a list, fail if any are invalid
-            if (unitsFile && invalidUnits.length > 0) {
-                if (ignoreInvalid) {
-                    console.log(`   ⚠️ Ignoring ${invalidUnits.length} invalid units as requested.`);
-                } else {
-                    return NextResponse.json({
-                        invalidUnits,
-                        message: `The following units could not be verified: ${invalidUnits.map(u => u.code).join(', ')}`
-                    }, { status: 200 });
+            // Save to database if requested
+            if (saveToDatabase && scrapedUnits.length > 0) {
+                console.log(`   💾 Saving ${scrapedUnits.length} units to database...`);
+                for (const unit of scrapedUnits) {
+                    await loader.addUnit(unit);
                 }
+                console.log(`   ✅ Database updated`);
+            } else if (!saveToDatabase) {
+                console.log(`   ℹ️ Skipping database save (one-time validation mode)`);
             }
         }
 
@@ -201,7 +233,8 @@ export async function POST(req: NextRequest) {
             mappedUnits: mappedUnitsDetails,
             results,
             instructions,
-            redTextSegments
+            redTextSegments,
+            databaseStats: dbStats
         });
 
     } catch (error) {

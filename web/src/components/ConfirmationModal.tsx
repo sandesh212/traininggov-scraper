@@ -6,7 +6,7 @@ interface ConfirmationModalProps {
     isOpen: boolean;
     title: string;
     message: string;
-    items?: (string | { code: string; url: string })[];
+    items?: (string | { code: string; url: string; reason?: string })[];
     onConfirm: () => void;
     onCancel: () => void;
     confirmText?: string;
@@ -33,7 +33,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-gray-100"
+                className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-gray-100"
             >
                 <div className="p-6">
                     <div className="flex items-start gap-4">
@@ -47,26 +47,38 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                             </p>
 
                             {items.length > 0 && (
-                                <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200 max-h-64 overflow-y-auto">
-                                    <ul className="space-y-2">
+                                <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200 max-h-80 overflow-y-auto">
+                                    <ul className="space-y-3">
                                         {items.map((item, idx) => (
-                                            <li key={idx} className="text-sm font-mono text-gray-700 flex items-center gap-2">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
+                                            <li key={`invalid-${idx}`} className="text-sm text-gray-700 pb-3 border-b border-gray-200 last:border-0 last:pb-0">
                                                 {typeof item === 'string' ? (
-                                                    item
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
+                                                        <span className="font-mono">{item}</span>
+                                                    </div>
                                                 ) : (
-                                                    <span className="flex items-center gap-2 flex-wrap">
-                                                        <span className="font-bold">{item.code}</span>
-                                                        <a
-                                                            href={item.url}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="text-blue-600 hover:text-blue-800 underline text-xs flex items-center gap-1"
-                                                        >
-                                                            {item.url}
-                                                            <ArrowRight size={10} className="-rotate-45" />
-                                                        </a>
-                                                    </span>
+                                                    <div className="space-y-1.5">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
+                                                            <span className="font-bold font-mono text-base">{item.code}</span>
+                                                        </div>
+                                                        {item.reason && (
+                                                            <div className="ml-3.5 text-xs text-red-600 bg-red-50 px-2 py-1 rounded border border-red-100">
+                                                                <span className="font-semibold">Reason:</span> {item.reason}
+                                                            </div>
+                                                        )}
+                                                        <div className="ml-3.5">
+                                                            <a
+                                                                href={item.url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-blue-600 hover:text-blue-800 underline text-xs flex items-center gap-1 w-fit"
+                                                            >
+                                                                Test: Verify on training.gov.au
+                                                                <ArrowRight size={10} className="-rotate-45" />
+                                                            </a>
+                                                        </div>
+                                                    </div>
                                                 )}
                                             </li>
                                         ))}

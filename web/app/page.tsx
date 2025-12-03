@@ -22,7 +22,8 @@ export default function Home() {
     const [activeTab, setActiveTab] = useState<'report' | 'redtext'>('report');
     const [showUnitManager, setShowUnitManager] = useState(false);
     const [showInvalidModal, setShowInvalidModal] = useState(false); // New state
-    const [invalidUnitsList, setInvalidUnitsList] = useState<{ code: string; url: string }[]>([]); // New state
+    const [invalidUnitsList, setInvalidUnitsList] = useState<{ code: string; url: string; reason?: string }[]>([]); // Updated with reason
+    const [saveToDatabase, setSaveToDatabase] = useState(true); // Default: save to database
 
     // Toast State
     const [toast, setToast] = useState<{ message: string; type: ToastType; isVisible: boolean }>({
@@ -89,6 +90,7 @@ export default function Home() {
             if (ignoreInvalid) {
                 formData.append('ignoreInvalid', 'true');
             }
+            formData.append('saveToDatabase', saveToDatabase.toString());
 
             const response = await fetch('/api/analyze', {
                 method: 'POST',
@@ -407,42 +409,67 @@ export default function Home() {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.5 }}
-                                className="mt-10 text-center"
+                                className="mt-10 space-y-6"
                             >
-                                <button
-                                    onClick={() => handleAnalyze(false)}
-                                    disabled={!canAnalyze || loading}
-                                    className={`
+                                {/* Save to Database Toggle */}
+                                <div className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-dashed border-blue-200 rounded-2xl">
+                                    <input
+                                        type="checkbox"
+                                        id="saveToDatabase"
+                                        checked={saveToDatabase}
+                                        onChange={(e) => setSaveToDatabase(e.target.checked)}
+                                        className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                                    />
+                                    <label
+                                        htmlFor="saveToDatabase"
+                                        className="text-sm font-medium text-gray-700 cursor-pointer select-none"
+                                    >
+                                        <span className="block text-base font-semibold text-gray-900">💾 Save validated units to database</span>
+                                        <span className="block text-xs text-gray-600 mt-1">
+                                            {saveToDatabase
+                                                ? "Units will be added/updated in the database for future use"
+                                                : "One-time validation only (units won't be saved)"}
+                                        </span>
+                                    </label>
+                                </div>
+
+                                {/* Analyze Button */}
+                                <div className="text-center">
+                                    <button
+                                        onClick={() => handleAnalyze(false)}
+                                        disabled={!canAnalyze || loading}
+                                        className={`
                                             px-12 py-5 rounded-2xl text-xl font-bold shadow-xl transition-all transform hover:-translate-y-1 active:scale-95
                                             ${!canAnalyze || loading
-                                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
-                                            : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/30'}
+                                                ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+                                                : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/30'}
                                         `}
-                                >
-                                    {loading ? (
-                                        <span className="flex items-center gap-3">
-                                            <Loader2 className="animate-spin" size={24} />
-                                            <div className="flex flex-col items-start text-left">
-                                                <span className="text-lg">Processing...</span>
-                                                <span className="text-xs font-normal opacity-90">{loadingMessage}</span>
-                                            </div>
-                                        </span>
-                                    ) : (
-                                        <span className="flex items-center gap-3">
-                                            Run Compliance Analysis
-                                        </span>
+                                    >
+                                        {loading ? (
+                                            <span className="flex items-center gap-3">
+                                                <Loader2 className="animate-spin" size={24} />
+                                                <div className="flex flex-col items-start text-left">
+                                                    <span className="text-lg">Processing...</span>
+                                                    <span className="text-xs font-normal opacity-90">{loadingMessage}</span>
+                                                </div>
+                                            </span>
+                                        ) : (
+                                            <span className="flex items-center gap-3">
+                                                Run Compliance Analysis
+                                            </span>
+                                        )}
+                                    </button>
+                                    {(!(unitCount > 0) && !unitsFile) && (
+                                        <p className="mt-4 text-sm text-red-600 font-medium">
+                                            Units list is required if no unit data is present.
+                                        </p>
                                     )}
-                                </button>
-                                {(!(unitCount > 0) && !unitsFile) && (
-                                    <p className="mt-4 text-sm text-red-600 font-medium">
-                                        Units list is required if no unit data is present.
-                                    </p>
-                                )}
-                                {unitsFile && (
-                                    <p className="mt-4 text-sm text-purple-600 font-medium animate-pulse">
-                                        Scoped to units from {unitsFile.name}
-                                    </p>
-                                )}
+                                    {unitsFile && (
+                                        <p className="mt-4 text-sm text-purple-600 font-medium animate-pulse">
+                                            Scoped to units from {unitsFile.name}
+                                        </p>
+                                    )}
+                                </div>
                             </motion.div>
                         </motion.div>
                     ) : ( /* Report Dashboard */
@@ -460,6 +487,30 @@ export default function Home() {
                                     <p className="text-gray-500 text-xs sm:text-sm mt-1">
                                         Analyzed <span className="font-medium text-gray-900">{report.questionsCount} questions</span> against <span className="font-medium text-gray-900">{report.totalUnitsInDatabase} units</span>.
                                     </p>
+                                    {/* Database Stats - Real-time Update Tracking */}
+                                    {report.databaseStats && (report.databaseStats.added > 0 || report.databaseStats.modified > 0 || report.databaseStats.deleted > 0) && (
+                                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                                            <span className="text-xs font-semibold text-gray-600">📊 Database Updates:</span>
+                                            {report.databaseStats.added > 0 && (
+                                                <span className="text-xs font-medium bg-green-100 text-green-700 px-2 py-1 rounded border border-green-200">
+                                                    ✓ Added: {report.databaseStats.added}
+                                                </span>
+                                            )}
+                                            {report.databaseStats.modified > 0 && (
+                                                <span className="text-xs font-medium bg-blue-100 text-blue-700 px-2 py-1 rounded border border-blue-200">
+                                                    ↻ Modified: {report.databaseStats.modified}
+                                                </span>
+                                            )}
+                                            {report.databaseStats.deleted > 0 && (
+                                                <span className="text-xs font-medium bg-red-100 text-red-700 px-2 py-1 rounded border border-red-200">
+                                                    ✗ Deleted: {report.databaseStats.deleted}
+                                                </span>
+                                            )}
+                                            <span className="text-xs text-gray-500">
+                                                (Total: {report.databaseStats.total})
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2">
                                     <button

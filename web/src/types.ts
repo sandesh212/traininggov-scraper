@@ -37,6 +37,19 @@ export interface Unit {
     assessmentConditions: string;
 }
 
+export interface InvalidUnit {
+    code: string;
+    url: string;
+    reason: string;
+}
+
+export interface DatabaseStats {
+    added: number;
+    modified: number;
+    deleted: number;
+    total: number;
+}
+
 export interface ReportData {
     questionsCount: number;
     totalUnitsInDatabase: number;
@@ -44,4 +57,5 @@ export interface ReportData {
     results: QuestionResult[];
     instructions: string[];
     redTextSegments?: string[];
+    databaseStats?: DatabaseStats;
 }

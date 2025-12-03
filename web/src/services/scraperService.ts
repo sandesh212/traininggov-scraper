@@ -42,6 +42,57 @@ export class ScraperService {
         return units;
     }
 
+    async scrapeUnitsWithDetails(codes: string[]): Promise<{ valid: Unit[], invalid: { code: string, url: string, reason: string }[] }> {
+        await this.init();
+        const valid: Unit[] = [];
+        const invalid: { code: string, url: string, reason: string }[] = [];
+
+        try {
+            for (const code of codes) {
+                console.log(`   Validating ${code}...`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                const result = await this.scrapeUnitWithReason(code);
+                if (result.success && result.unit) {
+                    valid.push(result.unit);
+                } else {
+                    invalid.push({
+                        code,
+                        url: `${this.baseUrl}/${code}`,
+                        reason: result.reason || 'Unknown error'
+                    });
+                }
+            }
+        } finally {
+            await this.close();
+        }
+
+        return { valid, invalid };
+    }
+
+    private async scrapeUnitWithReason(code: string): Promise<{ success: boolean, unit?: Unit, reason?: string }> {
+        try {
+            const unit = await this.scrapeUnit(code);
+            if (unit) {
+                return { success: true, unit };
+            }
+            return { success: false, reason: 'Unit returned null without specific error' };
+        } catch (e: any) {
+            const errorMsg = e?.message || String(e);
+            // Extract reason from console.warn messages if available
+            if (errorMsg.includes('No title found')) {
+                return { success: false, reason: 'No title found on page (h1 element empty)' };
+            } else if (errorMsg.includes('404')) {
+                return { success: false, reason: 'HTTP 404 - Page not found' };
+            } else if (errorMsg.includes('Puppeteer')) {
+                return { success: false, reason: 'Browser automation failed (timeout or content issue)' };
+            } else if (errorMsg.includes('search')) {
+                return { success: false, reason: 'Not found in training.gov.au search results' };
+            }
+            return { success: false, reason: 'Scraping error: ' + errorMsg };
+        }
+    }
+
     private async scrapeUnitWithRetry(code: string, retries = 3): Promise<Unit | null> {
         for (let i = 0; i < retries; i++) {
             try {
@@ -115,7 +166,7 @@ export class ScraperService {
 
                 } catch (e) {
                     console.error(`   Puppeteer failed for ${code}:`, e);
-                    return null;
+                    throw new Error('Puppeteer browser automation failed');
                 } finally {
                     await page.close();
                 }
@@ -129,7 +180,7 @@ export class ScraperService {
 
                 if (!searchResponse.ok) {
                     console.warn(`   Search failed for ${code}. Reason: Search page request failed`);
-                    return null;
+                    throw new Error('Search page request failed');
                 }
 
                 const searchHtml = await searchResponse.text();
@@ -150,13 +201,13 @@ export class ScraperService {
                     $ = cheerio.load(unitHtml);
                 } else {
                     console.warn(`   No valid link found in search results for ${code}. Reason: Unit code not found in search results`);
-                    return null;
+                    throw new Error('Not found in search results');
                 }
             }
 
             if (response.status === 404 && !isSpaShell) {
                 console.warn(`   Unit ${code} returned 404 after search fallback. Reason: HTTP 404 - Page not found`);
-                return null;
+                throw new Error('404 - Page not found');
             }
 
             // Check for 404 indicators in content
@@ -168,14 +219,14 @@ export class ScraperService {
                 mainHeading.includes('page not found') ||
                 mainHeading.includes('error')) {
                 console.warn(`   Unit ${code} page indicates not found. Reason: Page contains 404/error indicators`);
-                return null;
+                throw new Error('Page contains 404/error indicators');
             }
 
             // Extract Title
             const titleRaw = $('h1').text().trim();
             if (!titleRaw) {
                 console.warn(`   Unit ${code} has no title. Reason: No title found on page (h1 element empty)`);
-                return null;
+                throw new Error('No title found on page');
             }
 
             const titleMatch = titleRaw.match(new RegExp(`${code}\\s+-\\s+(.+)`, 'i'));

@@ -12,7 +12,7 @@ interface MatrixViewProps {
 
 export function MatrixView({ mappedUnits, results, initialScrollTarget }: MatrixViewProps) {
     // Gather all unique questions from results with section info
-    const allQuestions = results
+    const allQuestions = (results || [])
         .map(r => ({
             id: r.questionId,
             text: r.questionText,

@@ -57,11 +57,11 @@ export function UnifiedReportView({ results, mappedUnits, instructions }: Unifie
                 <div className="flex items-center justify-between border-b border-gray-200 pb-4">
                     <h2 className="text-2xl font-bold text-gray-900">Findings & Analysis</h2>
                     <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                        {results.length} Questions Analyzed
+                        {results?.length || 0} Questions Analyzed
                     </span>
                 </div>
 
-                {results.map((result, idx) => (
+                {results?.map((result, idx) => (
                     <QuestionCard
                         key={`q-${idx}-${result.questionId}`}
                         result={result}
@@ -79,7 +79,7 @@ export function UnifiedReportView({ results, mappedUnits, instructions }: Unifie
                     Unit Reference Matrix
                 </h2>
                 <div className="space-y-6">
-                    {mappedUnits.map((unit) => (
+                    {(mappedUnits || []).map((unit) => (
                         <UnitReferenceCard
                             key={unit.code}
                             unit={unit}

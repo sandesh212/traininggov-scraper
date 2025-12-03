@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 import { Unit, Element, PerformanceCriteria } from '../types';
 import puppeteer, { Browser } from 'puppeteer';
+import { logger } from '@/utils/logger';
 
 export class ScraperService {
     private baseUrl = 'https://training.gov.au/Training/Details';
@@ -51,16 +52,18 @@ export class ScraperService {
         // Reduced to 3 to prevent memory/CPU exhaustion and timeouts
         const BATCH_SIZE = 3;
 
-        console.log(`   🚀 Starting parallel scrape for ${codes.length} units (Batch size: ${BATCH_SIZE})...`);
+        logger.info(`🚀 Starting parallel scrape for ${codes.length} units (Batch size: ${BATCH_SIZE})...`);
 
         // Helper to process a single unit
         const processUnit = async (code: string) => {
             try {
+                logger.info(`   Scraping ${code}...`);
                 const result = await this.scrapeUnitWithReason(code);
                 if (result.success && result.unit) {
                     valid.push(result.unit);
+                    logger.info(`   ✅ Scraped ${code}`);
                 } else {
-                    console.warn(`   ⚠️ Failed to scrape ${code}: ${result.reason}`);
+                    logger.warn(`   ⚠️ Failed to scrape ${code}: ${result.reason}`);
                     invalid.push({
                         code,
                         url: `${this.baseUrl}/${code}`,
@@ -68,7 +71,7 @@ export class ScraperService {
                     });
                 }
             } catch (e) {
-                console.error(`   ❌ Critical error processing ${code}:`, e);
+                logger.error(`   ❌ Critical error processing ${code}:`, e);
                 invalid.push({
                     code,
                     url: `${this.baseUrl}/${code}`,

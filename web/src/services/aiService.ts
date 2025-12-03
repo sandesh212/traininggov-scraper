@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { Unit } from './uocLoader';
 import { AssessmentQuestion } from '../models/types';
+import { logger } from '@/utils/logger';
 
 export interface ValidationResult {
     questionId: string;
@@ -28,7 +29,7 @@ export class AIService {
     ): Promise<ValidationResult> {
         // MOCK MODE: If API key is 'mock-key' or starts with 'sk-mock', return dummy data
         if (this.openai.apiKey === 'mock-key' || this.openai.apiKey.startsWith('sk-mock')) {
-            console.log(`   (Mocking AI response for Q${question.id})`);
+            logger.debug(`   (Mocking AI response for Q${question.id})`);
             await new Promise(resolve => setTimeout(resolve, 500)); // Simulate latency
 
             // Heuristic: Match question text/section to Unit Title/Code
@@ -77,7 +78,7 @@ export class AIService {
             };
 
         } catch (error) {
-            console.error(`AI Validation failed for Q${question.id}:`, error);
+            logger.error(`AI Validation failed for Q${question.id}:`, error);
             return {
                 questionId: question.id,
                 isValid: false,

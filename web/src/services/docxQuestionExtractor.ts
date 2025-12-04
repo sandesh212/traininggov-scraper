@@ -1,6 +1,6 @@
 import mammoth from "mammoth";
 import * as cheerio from "cheerio";
-import { AssessmentQuestion } from '../models/types';
+import { AssessmentQuestion } from '@/models/types';
 import { logger } from '@/utils/logger';
 
 // Production mode - reduces console output
@@ -72,9 +72,9 @@ export async function extractQuestionsFromDocx(
     try {
         // 1. Convert DOCX to HTML with embedded images
         const options = {
-            convertImage: (mammoth.images as any).inline(function (element: any) {
-                return element.read("base64").then((imageBuffer: any) => {
-                    return { src: `data:${element.contentType};base64,${imageBuffer}` };
+            convertImage: mammoth.images.inline((element) => {
+                return element.read("base64").then((imageBuffer: Buffer) => {
+                    return { src: `data:${element.contentType};base64,${imageBuffer.toString('base64')}` };
                 });
             })
         };
@@ -193,7 +193,7 @@ export async function extractQuestionsFromDocx(
                 if (cells.length >= 2) {
                     const c1 = $(cells[0]).text().trim();
                     const c2 = $(cells[1]).text().trim();
-                    if (c1.match(/^(\d+|[a-z])[\.\ )\:]?$/i) && c2.length > 10) {
+                    if (c1.match(/^(\d+|[a-z])[\.\  )\:]?$/i) && c2.length > 10) {
                         tableQuestion = {
                             id: c1.replace(/[^\w]/g, ''),
                             text: c2
@@ -291,7 +291,7 @@ export async function extractQuestionsFromDocx(
                         pQuestionText = pQuestionText.substring(0, hintMatch.index).trim();
                     }
 
-                    const doubleNumbering = pQuestionText.match(/^(\d+|[a-z])[\.\)\:]\s+(.*)/);
+                    const doubleNumbering = pQuestionText.match(/^(\d+|[a-z])[\.\)\:]\s+(.*)/); 
                     if (doubleNumbering) {
                         pQuestionText = doubleNumbering[2];
                     }

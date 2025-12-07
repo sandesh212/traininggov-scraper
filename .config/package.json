@@ -1,0 +1,44 @@
+{
+  "name": "traininggov-scraper",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "npx tsx src/autoSync.ts",
+    "auto": "npx tsx src/autoValidate.ts",
+    "analyze": "npx tsx src/analyzeSamples.ts",
+    "validate": "npx tsx src/validateAssessment.ts",
+    "batch-validate": "npx tsx src/batchValidate.ts",
+    "test-parser": "npx tsx src/testWordParser.ts",
+    "scrape": "node dist/src/index.js",
+    "lint": "npm run lint:md",
+    "lint:md": "markdownlint \"**/*.md\"",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cheerio": "^1.0.0",
+    "mammoth": "^1.11.0",
+    "ollama": "^0.6.3",
+    "openai": "^4.104.0",
+    "pdf-parse": "^2.4.5",
+    "puppeteer": "^22.0.0",
+    "xlsx": "^0.18.5",
+    "xlsx-js-style": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^22.7.5",
+    "jsdom": "^24.1.0",
+    "markdownlint-cli": "^0.39.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.0.5"
+  }
+}

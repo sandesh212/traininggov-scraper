@@ -1,0 +1,89 @@
+{
+  "url": "https://training.gov.au/training/details/MARF029/unitdetails",
+  "code": "MARF029",
+  "title": "Meet work health and safety requirements",
+  "status": "Current",
+  "release": "Release 2",
+  "supersededBy": null,
+  "supersedes": {
+    "code": "MARF004",
+    "url": "https://training.gov.au/training/details/MARF004"
+  },
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-12-07T06:21:32.516Z"
+}

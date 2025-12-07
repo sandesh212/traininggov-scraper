@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Get the directory where this app bundle is located (parent of the .app)
+APP_DIR="$(cd "$(dirname "$(dirname "$(dirname "$0")")")" && pwd)"
+cd "$APP_DIR"
+
+# Open a new Terminal window and run the scraper
+osascript <<EOF
+tell application "Terminal"
+    activate
+    do script "cd '$APP_DIR' && chmod +x START.sh && ./START.sh; echo ''; echo 'Press any key to close this window...'; read -n 1; exit"
+end tell
+EOF

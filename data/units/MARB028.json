@@ -1,0 +1,203 @@
+{
+  "url": "https://training.gov.au/training/details/MARB028/unitdetails",
+  "code": "MARB028",
+  "title": "Service marine internal combustion engines and propulsion and auxiliary systems",
+  "status": "Current",
+  "release": "Release 2",
+  "licensingOrRegulatoryInfo": "has been incorporated in accordance with Regulatory requirements. Assessment Requirements have been strengthened in accordance with Regulatory requirements.",
+  "elements": [
+    {
+      "element": "Prepare for work",
+      "performanceCriteria": [
+        "1.1 Planned maintenance program is accessed to determine servicing requirements",
+        "1.2 Inspections are conducted and additional non-routine servicing requirements are determined",
+        "1.3 Manufacturer specifications for equipment are obtained",
+        "1.4 Tasks are planned and sequenced in conjunction with others involved in or affected by servicing work",
+        "1.5 Equipment is safely isolated according to regulations and work health and safety (WHS)/occupational health and safety (OHS) requirements",
+        "1.6 Tools and equipment are selected and checked for serviceability",
+        "1.7 Work area is prepared"
+      ]
+    },
+    {
+      "element": "Carry out routine service",
+      "performanceCriteria": [
+        "2.1 Equipment is inspected throughout servicing and inspection results are compared with manufacturer specifications",
+        "2.2 Servicing tasks are carried out to specifications",
+        "2.3 Mechanical equipment and system components are checked with appropriate instruments",
+        "2.4 Unserviceable equipment is tagged according to workplace procedures and appropriate personnel are notified"
+      ]
+    },
+    {
+      "element": "Repair and replace faulty components",
+      "performanceCriteria": [
+        "3.1 Faulty items or components are removed using appropriate tools and equipment according to workplace procedures",
+        "3.2 Replaceable items are selected or serviceable items are fitted according to manufacturer specifications",
+        "3.3 Adjustments are made to equipment or components to ensure compliance with specifications",
+        "3.4 Operational check is carried out on system to ensure compliance with manufacturer specifications"
+      ]
+    },
+    {
+      "element": "Clean up and complete documentation",
+      "performanceCriteria": [
+        "4.1 Work area is cleared and cleaned",
+        "4.2 Materials are disposed of or recycled according to legislative and workplace requirements",
+        "4.3 Tools and equipment are cleaned, checked and stored according to workplace procedures",
+        "4.4 Maintenance report is completed according to workplace procedures"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessors must hold credentials specified within the Standards for Registered Training Organisations current at the time of assessment.\nAssessment must satisfy the Principles of Assessment and Rules of Evidence and all regulatory requirements included within the Standards for Registered Training current at the time of assessment.\nAssessment processes and techniques must be appropriate to the language, literacy and numeracy requirements of the work being performed and the needs of the candidate.\nPractical assessment must occur in a workplace, or realistic simulated workplace, under the normal range of workplace conditions.\nSimulations and scenarios may be used where situations cannot be provided in the workplace or may occur only rarely, in particular for situations relating to emergency procedures and adverse weather conditions where assessment would be unsafe, impractical or may lead to environmental damage.\nResources for assessment must include access to:\na commercial vessel with inboard diesel propulsion power of greater than or equal to 75 kW or appropriate engine ashore\napplicable documentation, such as legislation, regulations, codes of practice, safety management system (SMS), workplace procedures and operational manuals\ntools, equipment, machinery, materials and relevant personal protective equipment (PPE) currently used in industry.",
+  "performanceEvidence": "• applying work health and safety (WHS)/occupational health and safety (OHS) requirements and work practices\n• carrying out servicing tasks, including:\n  ◦ checking propeller for damage\n  ◦ checking shaft alignment\n  ◦ cleaning strainers\n  ◦ lubricating\n  ◦ replacing:\n    ◦ anodes\n    ◦ drive belt\n    ◦ filters\n    ◦ gland packing\n    ◦ pumps\n  ◦ topping up oils\n• implementing safe and environmentally responsible work practices\n• implementing workplace environmental and waste management procedures correctly.\n\n• checking propeller for damage\n• checking shaft alignment\n• cleaning strainers\n• lubricating\n• replacing:\n  ◦ anodes\n  ◦ drive belt\n  ◦ filters\n  ◦ gland packing\n  ◦ pumps\n• topping up oils\n\n• anodes\n• drive belt\n• filters\n• gland packing\n• pumps",
+  "knowledgeEvidence": "• air intake system and system maintenance\n• basic combustion process\n• basic electronic control unit and governor maintenance\n• basic reverse or reduction gearbox maintenance\n• basic timing diagrams\n• circulating pumps and maintenance\n• cleaning heat exchangers\n• controllable pitch propellers maintenance\n• cooling systems and cooling system maintenance\n• couplings types, fittings, keys and keyways, securing nuts and locking\n• disposal and recycling of refrigerant gases\n• environmental responsibilities, regulations and legislative requirements\n• fuel systems and fuel system maintenance\n• instrumentation maintenance\n• lube oil contamination\n• lubricating systems and systems maintenance\n• principles of lubrication\n• process for cleaning on completion of work, including:\n  ◦ cleaning and stowing tools and equipment\n  ◦ clearing and cleaning work area\n  ◦ disposing of or recycling materials\n• propeller and intermediate shaft alignment\n• routine and remedial maintenance of:\n  ◦ drive systems, belts, clutches and motors\n  ◦ hydraulic systems\n  ◦ pumping systems\n  ◦ refrigeration systems\n  ◦ seawater piping, including corrosion control\n  ◦ shaft seals and rudder stock, glands and packings\n  ◦ steering systems\n• routine servicing of:\n  ◦ firefighting equipment in engine space\n  ◦ valves used in fire and bilge pumping systems\n• shaft bearing maintenance\n• sterndrive and water jet drive unit maintenance\n• techniques for reading and interpreting:\n  ◦ manufacturer specifications\n  ◦ safety data sheets (SDS)/material safety data sheets (MSDS)\n• types, characteristics and functions of equipment or tools used in maintenance\n• WHS/OHS requirements and work practices.\n\n• cleaning and stowing tools and equipment\n• clearing and cleaning work area\n• disposing of or recycling materials\n\n• drive systems, belts, clutches and motors\n• hydraulic systems\n• pumping systems\n• refrigeration systems\n• seawater piping, including corrosion control\n• shaft seals and rudder stock, glands and packings\n• steering systems\n\n• firefighting equipment in engine space\n• valves used in fire and bilge pumping systems\n\n• manufacturer specifications\n• safety data sheets (SDS)/material safety data sheets (MSDS)",
+  "supersededBy": null,
+  "supersedes": null,
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Competency field",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Range of conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-12-07T06:21:27.810Z"
+}

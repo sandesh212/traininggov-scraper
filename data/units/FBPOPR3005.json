@@ -1,0 +1,198 @@
+{
+  "url": "https://training.gov.au/training/details/FBPOPR3005/unitdetails",
+  "code": "FBPOPR3005",
+  "title": "Operate interrelated processes in a production system",
+  "status": "Current",
+  "release": "Release 1",
+  "elements": [
+    {
+      "element": "1. Prepare the production system for operation",
+      "performanceCriteria": [
+        "1.1 Confirm availability of equipment, materials and services according to workplace procedures",
+        "1.2 Identify and confirm cleaning requirements and equipment status",
+        "1.3 Select and fit personal protective equipment according to job requirements",
+        "1.4 Enter processing/operating parameters and select or adjust machine settings according to workplace procedures",
+        "1.5 Load or position materials, ingredients and/or product according to workplace procedures",
+        "1.6 Conduct pre-start checks, adjust equipment performance and confirm equipment is ready and safe to operate"
+      ]
+    },
+    {
+      "element": "2. Operate and monitor the production system",
+      "performanceCriteria": [
+        "2.1 Start up and operate and monitor the system and equipment for variation in operating conditions",
+        "2.2 Identify, rectify and report out-of-specification product and process outcomes to maintain the process within specification",
+        "2.3 Maintain the work area and report maintenance requirements according to workplace procedures",
+        "2.4 Conduct work according to workplace and environmental procedures"
+      ]
+    },
+    {
+      "element": "3. Hand over production system operation",
+      "performanceCriteria": [
+        "3.1 Maintain records according to workplace procedures",
+        "3.2 Conduct handover according to workplace procedures",
+        "3.3 Confirm process operators are properly informed of system and related equipment status at completion of handover"
+      ]
+    },
+    {
+      "element": "4. Shut down the production system",
+      "performanceCriteria": [
+        "4.1 Identify the appropriate shutdown procedure",
+        "4.2 Shut down the system according to workplace procedures",
+        "4.3 Identify and report maintenance requirements"
+      ]
+    },
+    {
+      "element": "5. Contribute to continuous improvement of the production system",
+      "performanceCriteria": [
+        "5.1 Review system performance against output plan/targets according to workplace procedures",
+        "5.2 Identify and investigate opportunities for system improvement",
+        "5.3 Develop and implement proposals for improvement within workplace planning arrangements, authority levels and according to workplace procedures"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessment of skills must take place under the following conditions:\nphysical conditions:skills must be demonstrated in a workplace setting or an environment that accurately represents a real workplace\nresources, equipment and materials:PPE\nproduction system equipment and related accessories and services\nmaterials/consumables required by the process\ncommunication and recording systems and procedures\nspecifications:production schedule and related advice on system requirements\ninformation on equipment capacity and operating parameters.\nAssessors of this unit must satisfy the requirements for assessors in applicable vocational education and training legislation, frameworks and/or standards.",
+  "performanceEvidence": "An individual demonstrating competency must satisfy all of the elements and performance criteria in this unit.\n\nThere must be evidence that the individual has safely and effectively operated interrelated processes in a production system, on at least one occasion, including:\n\n• conducting pre-start checks on production system components\n• confirming machine set-up is ready to achieve production requirements\n• applying safe work practices and identify hazards and controls\n• selecting and fitting personal protective equipment (PPE)\n• starting, operating, monitoring and adjusting process equipment throughout the system to achieve required quality outcomes\n• identifying system problems and taking corrective action\n• conducting operational handovers\n• shutting down system\n• identifying and investigating opportunities for operational improvements within areas of responsibility\n• completing workplace records\n• shutting down equipment according to workplace procedures.",
+  "knowledgeEvidence": "An individual must be able to demonstrate the knowledge required to perform the tasks outlined in the elements and performance criteria of this unit. This includes knowledge of:\n\n• purpose and basic principles of the production system, including the system process flow, the interrelationships of each process to identify the impact of variation on related processes, and optimisation options\n• basic operating principles of equipment and related accessories used by the system, including equipment adjustment points, status and purpose of guards, and range and location/alignment requirements of sensors and related feedback instruments\n• operating capacities of equipment used in the system, including different types of equipment and/or components by processing/packaging operations\n• related systems and responsibilities for interaction, including related production systems, services supply, packaging/warehousing, maintenance, laboratory/quality assurance and planning and scheduling\n• product characteristics and common types of variation in materials and/or ingredients used, including the effect of variation on each stage of the system and scope to adjust or correct\n• typical production related problems, including equipment faults, common causes and warning signs, incorrect or poor supply of materials, incorrect settings and poor operator control\n• relevant procedures, specifications and operating parameters for the system and the individual processes\n• isolation, lock-out and tag out procedures and responsibilities\n• hazards, risks, controls and methods for monitoring processes within the system, including health and safety in the workplace, food safety, quality and environmental hazards and risks\n• workplace system and approach to equipment maintenance\n• process improvement procedures and related consultative arrangements\n• troubleshooting procedures and problem-solving techniques\n• communication responsibilities to inform related work areas/support functions and other shifts of operational status and production issues\n• procedures and responsibility for reporting production and performance information.",
+  "supersededBy": {
+    "code": "FBPOPR3019",
+    "url": "https://training.gov.au/training/details/FBPOPR3019"
+  },
+  "supersedes": null,
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-12-07T06:21:42.514Z"
+}

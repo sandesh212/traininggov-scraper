@@ -1,0 +1,246 @@
+{
+  "url": "https://training.gov.au/training/details/MARB029/unitdetails",
+  "code": "MARB029",
+  "title": "Perform routine maintenance on a vessel up to 24 metres",
+  "status": "Current",
+  "release": "Release 2",
+  "licensingOrRegulatoryInfo": "has been incorporated in accordance with Regulatory requirements. Assessment Requirements have been strengthened in accordance with Regulatory requirements.",
+  "elements": [
+    {
+      "element": "Plan maintenance tasks",
+      "performanceCriteria": [
+        "1.1 Planned maintenance system is accessed to establish maintenance requirements for vessel",
+        "1.2 Maintenance tasks are proposed and prioritised in conjunction with others involved in or affected by the maintenance work",
+        "1.3 Resource requirements are identified and allocated to ensure efficient completion of tasks",
+        "1.4 Maintenance tasks to be performed are recorded in a maintenance schedule according to organisational procedures"
+      ]
+    },
+    {
+      "element": "Perform basic deck maintenance",
+      "performanceCriteria": [
+        "2.1 Deck surfaces are checked according to planned maintenance system",
+        "2.2 Deterioration or corrosion of vessel deck surfaces is identified and appropriate maintenance action is carried out according to planned maintenance system",
+        "2.3 Minor faults and imperfections in paint surfaces are repaired according to organisational procedures",
+        "2.4 Weathered surfaces are restored using cleaners and liquid abrasives according to manufacturer instructions and organisational procedures",
+        "2.5 Tools and equipment are used correctly and safely",
+        "2.6 Maintenance materials are obtained, prepared and applied according to organisational procedures and manufacturer instructions"
+      ]
+    },
+    {
+      "element": "Carry out cleaning activities",
+      "performanceCriteria": [
+        "3.1 Area to be cleaned is prepared and hazards are identified",
+        "3.2 Work area is barricaded or warning signs provided, as appropriate, to reduce risk to other crew members",
+        "3.3 Correct chemicals and cleaning agents are selected and applied according to manufacturer instructions and work health and safety (WHS)/occupational health and safety (OHS) requirements",
+        "3.4 Equipment is used correctly and safely",
+        "3.5 Cleaning tasks are completed according to organisational procedures and manufacturer instructions"
+      ]
+    },
+    {
+      "element": "Prepare and paint surfaces",
+      "performanceCriteria": [
+        "4.1 Suitable personal protective clothing is selected and used according to WHS/OHS requirements",
+        "4.2 Surfaces are prepared using correct equipment",
+        "4.3 Rust remover, rust converter and undercoats are applied according to manufacturer specifications",
+        "4.4 Paints are mixed in correct proportions according to manufacturer specifications",
+        "4.5 Paint is applied using appropriate application equipment"
+      ]
+    },
+    {
+      "element": "Carry out routine maintenance of deck fittings, equipment and systems",
+      "performanceCriteria": [
+        "5.1 Fittings and equipment are inspected and inspection results are compared with manufacturer specifications",
+        "5.2 Maintenance tasks are carried out to specifications",
+        "5.3 Mechanical equipment and system components are checked with appropriate instruments",
+        "5.4 Faulty items or components are identified and maintenance procedures selected",
+        "5.5 Unserviceable equipment is tagged and faults are identified according to organisational procedures"
+      ]
+    },
+    {
+      "element": "Repair or replace faulty fittings and equipment",
+      "performanceCriteria": [
+        "6.1 Fittings and equipment are safely isolated according to regulations and WHS/OHS requirements",
+        "6.2 Faulty fittings or equipment are removed using appropriate tools, equipment and procedures",
+        "6.3 Replaceable items are selected or serviceable items are fitted according to manufacturer specifications",
+        "6.4 Adjustments are made to fittings or equipment to comply with specifications",
+        "6.5 Operational check is carried out to ensure compliance with manufacturer specifications",
+        "6.6 Maintenance report is completed according to organisational procedures"
+      ]
+    },
+    {
+      "element": "Supervise crew in completing maintenance tasks",
+      "performanceCriteria": [
+        "7.1 Workload is organised in order of priority according to planned maintenance system",
+        "7.2 Maintenance tasks are allocated to appropriate crew members with consideration of individual experience and qualifications",
+        "7.3 Crew members are clearly briefed on their responsibility and maintenance tasks and WHS/OHS requirements",
+        "7.4 Guidance is provided appropriate to maintenance task and individual experience",
+        "7.5 Completed work is checked to ensure maintenance is performed according to organisational procedures"
+      ]
+    },
+    {
+      "element": "Clean up",
+      "performanceCriteria": [
+        "8.1 Work area is cleared and cleaned for serviceable condition",
+        "8.2 Materials are disposed of or recycled according to legislative and organisational requirements",
+        "8.3 Tools and equipment are cleaned, checked and stored according to organisational procedures"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessors must hold credentials specified within the Standards for Registered Training Organisations current at the time of assessment.\nAssessment must satisfy the Principles of Assessment and Rules of Evidence and all regulatory requirements included within the Standards for Registered Training current at the time of assessment.\nAssessment processes and techniques must be appropriate to the language, literacy and numeracy requirements of the work being performed and the needs of the candidate.\nPractical assessment must occur in a workplace, or realistic simulated workplace, under the normal range of workplace conditions.\nSimulations and scenarios may be used where situations cannot be provided in the workplace or may occur only rarely, in particular for situations relating to emergency procedures and adverse weather conditions where assessment would be unsafe, impractical or may lead to environmental damage.\nResources for assessment must include access to:\napplicable documentation, such as legislation, regulations, codes of practice, safety management system (SMS), workplace procedures and operational manuals, including:manufacturer specifications\nSDS/MSDS\nvessel drawings and plans\na commercial vessel greater than or equal to 7.5 m in length\ntools, equipment, machinery, materials and relevant PPE currently used in industry.",
+  "performanceEvidence": "• carrying out inspection of:\n  ◦ freshwater or bilge or firefighting pumps\n  ◦ steering gear\n  ◦ navigation lights\n  ◦ windlass or winch or capstan\n• carrying out maintenance, including:\n  ◦ greasing and oiling\n  ◦ lifesaving appliances\n• completing required records when performing routine remedial, preventative and survey deck maintenance on a vessel\n• demonstrating safe and environmentally responsible work practices when performing routine remedial, preventative and survey deck maintenance on a vessel\n• following required work schedule according to organisational requirements\n• identifying problems when performing deck maintenance on a vessel, including remedial, preventative and survey maintenance\n• identifying structural components from ship’s drawings and plans, locating on a vessel and ascertaining the relevant regulation governing the structure\n• identifying vessel construction material\n• reading and interpreting:\n  ◦ instructions for performing remedial, preventative and survey deck maintenance on a vessel\n  ◦ manufacturer specifications\n  ◦ safety data sheets (SDS)/material safety data sheets (MSDS)\n• selecting and using relevant tools, equipment and materials according to instructions.\n\n• freshwater or bilge or firefighting pumps\n• steering gear\n• navigation lights\n• windlass or winch or capstan\n\n• greasing and oiling\n• lifesaving appliances\n\n• instructions for performing remedial, preventative and survey deck maintenance on a vessel\n• manufacturer specifications\n• safety data sheets (SDS)/material safety data sheets (MSDS)",
+  "knowledgeEvidence": "• component parts, operation and routine maintenance requirements of vessel machinery\n• equipment cleaning and preservation techniques\n• fire and bilge pumps\n• fuel, fresh and ballast water, bilge and fire pumping arrangements\n• function of structural components and compliance with conventional maritime design\n• inspection and routine maintenance of:\n  ◦ corrosion prevention and rectification\n  ◦ lifting gear\n  ◦ ropes and wires\n  ◦ tank sounding and ventilation equipment\n• job safety analyses (JSAs) or safe work method statements\n• maintenance hazards and associated problems\n• maintenance of steering gear\n• maintenance procedures required to test and ensure watertight integrity\n• maintenance records for a vessel\n• nature and causes of corrosion of marine surfaces, structures and available methods of control\n• organisational procedures for cleaning and maintenance to ensure operational readiness\n• paint types and applications\n• pollution control legislation as it relates to maintenance activities\n• principal parts of a vessel and basic design methods\n• principles and procedures of machinery lubrication as they relate to deck machinery\n• procedures for checking deck areas, machinery and fittings of a vessel as part of the planned routine maintenance on a vessel\n• procedures for using hand tools for maintenance operations\n• procedures to avoid contamination of fuel or drinking water\n• relevant work health and safety (WHS)/occupational health and safety (OHS) and personal protective equipment (PPE) requirements\n• rust treatment\n• safety management system as it relates to planned vessel maintenance\n• steering gear arrangements and safety features\n• storage principles for paints, chemicals and cleaning agents used in planned maintenance operations\n• types, characteristics and functions of:\n  ◦ equipment or tools used in cleaning and maintenance\n  ◦ vessel machinery and equipment\n• use of various construction material and regulations governing structure.\n\n• corrosion prevention and rectification\n• lifting gear\n• ropes and wires\n• tank sounding and ventilation equipment\n\n• equipment or tools used in cleaning and maintenance\n• vessel machinery and equipment",
+  "supersededBy": null,
+  "supersedes": {
+    "code": "MARB004",
+    "url": "https://training.gov.au/training/details/MARB004"
+  },
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Competency field",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Range of conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-12-07T06:21:28.198Z"
+}

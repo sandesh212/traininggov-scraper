@@ -1,0 +1,192 @@
+{
+  "url": "https://training.gov.au/training/details/MARC042/unitdetails",
+  "code": "MARC042",
+  "title": "Operate electrical systems",
+  "status": "Current",
+  "release": "Release 2",
+  "licensingOrRegulatoryInfo": "has been incorporated in accordance with Regulatory requirements. Assessment Requirements have been strengthened in accordance with Regulatory requirements.",
+  "elements": [
+    {
+      "element": "Prepare electrical systems and equipment for operation",
+      "performanceCriteria": [
+        "1.1 Risks to self, others and the environment are identified according to organisational procedures",
+        "1.2 Pre-operational checks are carried out according to manufacturer specifications and organisational procedures"
+      ]
+    },
+    {
+      "element": "Operate electrical systems and equipment",
+      "performanceCriteria": [
+        "2.1 Electrical systems and equipment are operated according to manufacturer specifications, regulations and vessel procedures",
+        "2.2 Performance of electrical equipment is monitored",
+        "2.3 Alternating current (AC) electrical supply is monitored and changed to meet demand",
+        "2.4 Operational faults are recognised and recorded, and corrective action is taken according to manufacturer specifications and fault-finding procedures"
+      ]
+    },
+    {
+      "element": "Connect and disconnect ship to shore electrical supply",
+      "performanceCriteria": [
+        "3.1 Checking vessel is positioned and secured for connecting to shore electrical supply",
+        "3.2 Power cable is inspected and connected to shore supply",
+        "3.3 Procedures for changing from vessel supply to shore supply are implemented following vessel procedures",
+        "3.4 Electrical supply is monitored for correct operation according to vessel procedures",
+        "3.5 Operational faults are recognised and recorded, and corrective action is taken according to vessel procedures",
+        "3.6 Procedures for changing from shore supply to vessel supply are implemented following vessel procedures",
+        "3.7 Power cable is disconnected, inspected and stored"
+      ]
+    }
+  ],
+  "assessmentConditions": "Assessors must hold credentials specified within the Standards for Registered Training Organisations current at the time of assessment.\nAssessment must satisfy the Principles of Assessment and Rules of Evidence and all regulatory requirements included within the Standards for Registered Training current at the time of assessment.\nAssessment processes and techniques must be appropriate to the language, literacy and numeracy requirements of the work being performed and the needs of the candidate.\nPractical assessment must occur in a workplace, or realistic simulated workplace, under the normal range of workplace conditions.\nSimulations and scenarios may be used where situations cannot be provided in the workplace or may occur only rarely, in particular for situations relating to emergency procedures and adverse weather conditions where assessment would be unsafe, impractical or may lead to environmental damage.\nResources for assessment must include access to:\napplicable documentation, such as legislation, regulations, codes of practice, safety management systems (SMS), workplace procedures and operational manuals\na commercial vessel with inboard diesel propulsion power of greater than or equal to 150 kW or appropriate electrical systems ashore\ntools, equipment, machinery, materials and relevant personal protective equipment (PPE) currently used in industry.",
+  "performanceEvidence": "• applying work health and safety (WHS)/occupational health and safety (OHS) and pollution control, legislation and policies\n• connecting and disconnecting shore supply\n• locating, interpreting and applying manufacturer specifications for electrical systems and equipment\n• managing electrical supply to accommodate load demand\n• operating and monitoring alternating current (AC) and direct current (DC) electrical systems according to manufacturer recommendations, regulations and vessel operating procedures to ensure safe operation\n• operating electrical systems and equipment\n• performing isolation, lock out and tag out procedures\n• recognising and rectifying operational faults.",
+  "knowledgeEvidence": "• basic care of electrical systems and equipment in general - fault recognition\n• batteries:\n  ◦ care\n  ◦ hazards\n  ◦ types\n• charging systems:\n  ◦ alarms or indicators\n  ◦ regulators\n• connecting batteries in series and parallel\n• emergency supply and regulatory requirements\n• fault identification, location and safety implications\n• managing low voltage electrical supply to accommodate load demand, including:\n  ◦ changing electrical supply to a larger alternator/generator\n  ◦ connecting further alternators/generator in parallel\n• operation of fuses and circuit breakers\n• operation of protection devices on the switchboard including:\n  ◦ earth indicating devices\n• operation of starter motors, alternators and associated equipment\n• personal safety\n• process for recognising and rectifying operational faults, including:\n  ◦ activation of protection devices on the switchboard\n  ◦ battery faults\n  ◦ blown fuses and open circuit breakers\n  ◦ earth faults\n  ◦ failure of alternators to produce voltage\n  ◦ failure of starter motors\n  ◦ faults with shore power connections including phase rotations\n• process for recognising non-essential electrical systems be isolated.\n• process for requesting non-essential electrical systems be isolated\n• shore power connection\n• single and three-phase power\n• uses of fuses and circuit breakers and selection of correct capacity\n• WHS/OHS requirements and work practices.\n\n• care\n• hazards\n• types\n\n• alarms or indicators\n• regulators\n\n• changing electrical supply to a larger alternator/generator\n• connecting further alternators/generator in parallel\n\n• earth indicating devices\n\n• activation of protection devices on the switchboard\n• battery faults\n• blown fuses and open circuit breakers\n• earth faults\n• failure of alternators to produce voltage\n• failure of starter motors\n• faults with shore power connections including phase rotations",
+  "supersededBy": null,
+  "supersedes": null,
+  "sections": [
+    {
+      "heading": "Unit of competency",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Application",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Pre-requisite unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Competency field",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Unit sector",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Elements and performance criteria",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Foundation skills",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Range of conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment requirements",
+      "level": 3,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Modification history",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Performance evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Knowledge evidence",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Assessment conditions",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Qualifications that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Skill sets that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Accredited courses that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Mapping",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Releases",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Training packages that include this unit",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Classifications",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Companion volumes",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Find RTOs",
+      "level": 2,
+      "paragraphs": [],
+      "lists": []
+    },
+    {
+      "heading": "Acknowledgement of Country",
+      "level": 2,
+      "paragraphs": [
+        "We acknowledge the Traditional Owners and Custodians of Country throughout Australia and acknowledge their continuing connection to land, water, and community. We pay our respects to the people, the cultures, and the Elders past and present."
+      ],
+      "lists": []
+    }
+  ],
+  "lastFetchedAt": "2025-12-07T06:21:31.362Z"
+}

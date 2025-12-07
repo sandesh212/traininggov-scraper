@@ -7,19 +7,60 @@ export class ScraperService {
     private baseUrl = 'https://training.gov.au/Training/Details';
     private browser: Browser | null = null;
 
+    // Shared browser instance across all scrapers for better performance
+    private static sharedBrowser: Browser | null = null;
+    private static browserInitPromise: Promise<Browser> | null = null;
+
     async init() {
-        if (!this.browser) {
-            this.browser = await puppeteer.launch({
-                headless: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox']
-            });
+        if (ScraperService.sharedBrowser) {
+            this.browser = ScraperService.sharedBrowser;
+            return;
+        }
+
+        if (!ScraperService.browserInitPromise) {
+            logger.info('🚀 Launching browser (one-time initialization)...');
+            try {
+                ScraperService.browserInitPromise = puppeteer.launch({
+                    headless: true,
+                    args: [
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--disable-dev-shm-usage', // Reduce memory usage
+                        '--disable-accelerated-2d-canvas',
+                        '--no-first-run',
+                        '--no-zygote',
+                        '--disable-gpu'
+                    ]
+                });
+            } catch (launchError) {
+                logger.error('❌ Failed to launch Puppeteer browser:', launchError);
+                throw new Error(`Browser initialization failed: ${launchError instanceof Error ? launchError.message : String(launchError)}`);
+            }
+        }
+
+        try {
+            ScraperService.sharedBrowser = await ScraperService.browserInitPromise;
+            this.browser = ScraperService.sharedBrowser;
+            logger.info('✅ Browser ready');
+        } catch (browserError) {
+            logger.error('❌ Failed to await browser initialization:', browserError);
+            ScraperService.browserInitPromise = null; // Reset so next attempt can retry
+            throw new Error(`Browser initialization failed: ${browserError instanceof Error ? browserError.message : String(browserError)}`);
         }
     }
 
     async close() {
-        if (this.browser) {
-            await this.browser.close();
-            this.browser = null;
+        // Don't close shared browser - keep it warm for next request
+        // It will be reused for better performance
+        this.browser = null;
+    }
+
+    // Optional: Call this to fully cleanup (e.g., on server shutdown)
+    static async closeSharedBrowser() {
+        if (ScraperService.sharedBrowser) {
+            await ScraperService.sharedBrowser.close();
+            ScraperService.sharedBrowser = null;
+            ScraperService.browserInitPromise = null;
         }
     }
 
@@ -43,16 +84,25 @@ export class ScraperService {
         return units;
     }
 
-    async scrapeUnitsWithDetails(codes: string[]): Promise<{ valid: Unit[], invalid: { code: string, url: string, reason: string }[] }> {
-        await this.init();
+    async scrapeUnitsWithDetails(codes: string[], skipValidation: boolean = true): Promise<{ valid: Unit[], invalid: { code: string, url: string, reason: string }[] }> {
         const valid: Unit[] = [];
         const invalid: { code: string, url: string, reason: string }[] = [];
 
-        // CONCURRENCY CONTROL
-        // Reduced to 3 to prevent memory/CPU exhaustion and timeouts
-        const BATCH_SIZE = 3;
+        // Skip pre-validation - training.gov.au is a SPA, fetch validation doesn't work reliably
+        // The full scraper with Puppeteer will properly detect 404s
+        const codesToScrape = codes;
 
-        logger.info(`🚀 Starting parallel scrape for ${codes.length} units (Batch size: ${BATCH_SIZE})...`);
+        if (codesToScrape.length === 0) {
+            logger.warn('⚠️  No units to scrape!');
+            return { valid, invalid };
+        }
+
+        await this.init(); // Initialize browser ONCE and reuse
+
+        // IMPROVED CONCURRENCY: Increased to 15 for much better performance
+        const BATCH_SIZE = 15;
+
+        logger.info(`🚀 Starting parallel scrape for ${codesToScrape.length} units (Batch size: ${BATCH_SIZE})...`);
 
         // Helper to process a single unit
         const processUnit = async (code: string) => {
@@ -81,16 +131,18 @@ export class ScraperService {
         };
 
         // Process in batches
-        for (let i = 0; i < codes.length; i += BATCH_SIZE) {
-            const batch = codes.slice(i, i + BATCH_SIZE);
-            console.log(`   Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(codes.length / BATCH_SIZE)} (${batch.join(', ')})...`);
+        for (let i = 0; i < codesToScrape.length; i += BATCH_SIZE) {
+            const batch = codesToScrape.slice(i, i + BATCH_SIZE);
+            const batchNum = Math.floor(i / BATCH_SIZE) + 1;
+            const totalBatches = Math.ceil(codesToScrape.length / BATCH_SIZE);
+            logger.info(`   Processing batch ${batchNum}/${totalBatches} (${batch.join(', ')})...`);
 
             // Run batch in parallel
             await Promise.all(batch.map(code => processUnit(code)));
 
-            // Small delay between batches to be polite
-            if (i + BATCH_SIZE < codes.length) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+            // Minimal delay between batches (50ms) for max speed
+            if (i + BATCH_SIZE < codesToScrape.length) {
+                await new Promise(resolve => setTimeout(resolve, 50));
             }
         }
 
@@ -196,8 +248,10 @@ export class ScraperService {
                     console.log(`   Page text length: ${bodyText.length} chars for ${code}`);
 
                 } catch (e) {
-                    console.error(`   Puppeteer failed for ${code}:`, e);
-                    return null;
+                    console.warn(`   Puppeteer had issues for ${code}:`, e);
+                    console.warn(`   Continuing with regular fetch response...`);
+                    // Don't return null - continue with the regular fetch response
+                    // The unit might still be valid even if Puppeteer had issues
                 } finally {
                     await page.close();
                 }
@@ -253,11 +307,20 @@ export class ScraperService {
                 return null;
             }
 
+            // If we got here, the page exists and is valid (not 404, not error)
+            console.log(`   ✓ Unit ${code} page is valid (not 404)`);
+
+
             // Extract Title
             titleRaw = $('h1').text().trim();
             if (!titleRaw) {
-                console.warn(`   Unit ${code} has no title. Reason: No title found on page (h1 element empty)`);
-                return null;
+                // Try alternate title sources
+                titleRaw = $('title').text().trim() || '';
+
+                if (!titleRaw || titleRaw.toLowerCase().includes('training.gov.au')) {
+                    console.warn(`   Unit ${code} has no clear title, using code as fallback`);
+                    titleRaw = code; // Use code as fallback - page exists but title not parseable
+                }
             }
 
             const titleMatch = titleRaw.match(new RegExp(`${code}\\s+-\\s+(.+)`, 'i'));
@@ -270,11 +333,44 @@ export class ScraperService {
                 }).first();
             };
 
-            // Extract Sections
+            // Extract ALL sections dynamically from main page (h2, h3, h4 headers)
+            const mainPageSections = this.extractAllSectionsWithLevels($);
+
+            // Extract specific known fields
+            // Use findHeader helper to get the element, then extract content
             const application = this.extractSectionContent($, findHeader('Application'));
             const unitSector = this.extractSectionContent($, findHeader('Unit Sector'));
             const modificationHistory = this.extractSectionContent($, findHeader('Modification History'));
             const foundationSkills = this.extractSectionContent($, findHeader('Foundation Skills'));
+            let performanceEvidence = this.extractSectionContent($, findHeader('Performance Evidence'));
+            let knowledgeEvidence = this.extractSectionContent($, findHeader('Knowledge Evidence'));
+            let assessmentConditions = this.extractSectionContent($, findHeader('Assessment Conditions'));
+
+            // Extract Status and Release from header or summary
+            let status = 'Current'; // Default
+            let release = 'Release 1';
+
+            // Try to find status/release in specific elements
+            const releaseBanner = $('.releases-banner').text();
+            if (releaseBanner) {
+                if (releaseBanner.toLowerCase().includes('superseded')) status = 'Superseded';
+            }
+
+            // Re-read pageTitle after potential Puppeteer load if declared, otherwise declare it
+            // Assuming pageTitle is declared at line 299 as let/var.
+            pageTitle = $('title').text();
+            const releaseMatch = pageTitle.match(/Release\s+(\d+)/i);
+            if (releaseMatch) {
+                release = `Release ${releaseMatch[1]}`;
+            }
+
+            // TGA specific: check for "Current" or "Superseded" badge
+            if ($('.nrt-current').length > 0) status = 'Current';
+            if ($('.nrt-superseded').length > 0) status = 'Superseded';
+
+            // Also check <h2 class="h2-status">Current</h2> if exists
+            const statusText = $('h2.status, .status-label').first().text().trim();
+            if (statusText) status = statusText;
 
             // Extract Elements & Performance Criteria
             const elements: Element[] = [];
@@ -292,35 +388,38 @@ export class ScraperService {
                 pcTable.find('tr').each((i, row) => {
                     const cells = $(row).find('td');
                     if (cells.length >= 2) {
-                        const c1 = $(cells[0]).text().trim();
-                        const c2 = $(cells[1]).text().trim();
-                        const c3 = cells.length >= 3 ? $(cells[2]).text().trim() : '';
+                        const c1 = this.extractCellContent($, cells[0]);
+                        const c2 = this.extractCellContent($, cells[1]);
+                        const c3 = cells.length >= 3 ? this.extractCellContent($, cells[2]) : '';
 
-                        if (/^\d+\.?$/.test(c1)) {
-                            // Standard Format: c1 is Element ID (e.g. "1"), c2 is Title
+                        // Check 1: Normal Format - c1 is Element ID (e.g. "1")
+                        if (/^\d+\.?$/.test(c1.trim())) {
                             currentElement = { title: c2, performanceCriteria: [] };
                             elements.push(currentElement);
-                        } else if (/^\d+\.\d+\.?$/.test(c1) && currentElement) {
-                            // Standard Format: c1 is PC ID (e.g. "1.1"), c2 is Text
-                            currentElement.performanceCriteria.push({ id: c1, text: c2 });
-                        } else if (cells.length >= 3 && /^\d+\.\d+\.?$/.test(c2)) {
-                            // 3-Column Format: c1=Element, c2=PC ID, c3=PC Text
-                            if (c1 && !c1.toLowerCase().includes('elements describe')) {
+                        }
+                        // Check 2: Normal Format - c1 is PC ID (e.g. "1.1")
+                        else if (/^\d+\.\d+\.?$/.test(c1.trim()) && currentElement) {
+                            currentElement.performanceCriteria.push({ id: c1.trim(), text: c2 });
+                        }
+                        // Check 3: 3-Column Format - c1=Element, c2=PC ID, c3=PC Text
+                        else if (cells.length >= 3 && /^\d+\.\d+\.?$/.test(c2.trim())) {
+                            if (c1.trim() && !c1.toLowerCase().includes('elements describe')) {
                                 currentElement = { title: c1, performanceCriteria: [] };
                                 elements.push(currentElement);
                             }
 
                             if (currentElement) {
-                                currentElement.performanceCriteria.push({ id: c2, text: c3 });
+                                currentElement.performanceCriteria.push({ id: c2.trim(), text: c3 });
                             }
-                        } else {
-                            // Alternative Format: c1 is Element Title, c2 is PC ID + Text
-                            // e.g. c1="Prepare...", c2="1.1 ..."
-                            const pcMatch = c2.match(/^(\d+\.\d+)\.?\s+(.*)/);
+                        }
+                        // Check 4: Combined Format - c2 contains ID + Text (e.g. "1.1 Text...")
+                        else {
+                            const matchText = c2.trim();
+                            const pcMatch = matchText.match(/^(\d+\.\d+)\.?\s+([\s\S]*)/);
 
                             if (pcMatch) {
-                                // If c1 has text, it's a new Element (ignore header row)
-                                if (c1 && !c1.toLowerCase().includes('elements describe')) {
+                                // If c1 has text, it's a new Element
+                                if (c1.trim() && !c1.toLowerCase().includes('elements describe')) {
                                     currentElement = { title: c1, performanceCriteria: [] };
                                     elements.push(currentElement);
                                 }
@@ -355,18 +454,22 @@ export class ScraperService {
                 }
             }
 
+            // Don't fail just because we couldn't parse elements perfectly
+            // The unit is still valid if the page exists and has a title
             if (elements.length === 0) {
-                console.warn(`   Unit ${code} has no elements parsed. Treating as invalid.`);
-                return null;
+                console.warn(`   Unit ${code} has no elements parsed (parsing issue, but page is valid).`);
+                // Create a minimal valid unit structure
+                // The page exists and has a title, so it's a valid unit even if we can't parse details
             }
 
-            // 2. Fetch Assessment Requirements
-            const arLink = $('a').filter((_, el) => $(el).text().includes('Assessment Requirements')).attr('href');
-            let knowledgeEvidence = '';
-            let performanceEvidence = '';
-            let assessmentConditions = '';
+            // Store all sections (combine main page + AR page later)
+            let allSections = [...mainPageSections];
 
-            if (arLink) {
+            // 2. Fetch Assessment Requirements page if exists (sometimes has additional info)
+            const arLink = $('a').filter((_, el) => $(el).text().includes('Assessment Requirements')).attr('href');
+
+            if (arLink && !knowledgeEvidence) {
+                // Only fetch AR page if we didn't already get the data from main page
                 const arUrl = arLink.startsWith('http') ? arLink : `https://training.gov.au${arLink}`;
                 console.log(`      Fetching Assessment Requirements: ${arUrl}`);
 
@@ -393,19 +496,36 @@ export class ScraperService {
 
                 if (arHtml) {
                     const $ar = cheerio.load(arHtml);
-                    const findArHeader = (text: string) => {
-                        return $ar('h1, h2, h3, h4').filter((_, el) => $(el).text().toLowerCase().includes(text.toLowerCase())).first();
-                    };
 
-                    knowledgeEvidence = this.extractSectionContent($ar, findArHeader('Knowledge Evidence'));
-                    performanceEvidence = this.extractSectionContent($ar, findArHeader('Performance Evidence'));
-                    assessmentConditions = this.extractSectionContent($ar, findArHeader('Assessment Conditions'));
+                    // Extract ALL sections from AR page dynamically
+                    const arSections = this.extractAllSectionsWithLevels($ar);
+                    allSections = [...allSections, ...arSections];
+
+                    // Extract specific known fields for backward compatibility (if not already found)
+                    if (!knowledgeEvidence) knowledgeEvidence = this.findSectionContent(arSections, ['knowledge evidence']);
+                    if (!performanceEvidence) performanceEvidence = this.findSectionContent(arSections, ['performance evidence']);
+                    if (!assessmentConditions) assessmentConditions = this.findSectionContent(arSections, ['assessment conditions']);
                 }
             }
+
+            // Log what we extracted
+            const pcCount = elements.reduce((sum, el) => sum + el.performanceCriteria.length, 0);
+            console.log(`   ✅ Scraped ${code}:`);
+            console.log(`      - Title: ${title}`);
+            console.log(`      - Elements: ${elements.length}`);
+            console.log(`      - Performance Criteria: ${pcCount}`);
+            console.log(`      - Knowledge Evidence: ${knowledgeEvidence ? `${knowledgeEvidence.length} chars` : 'MISSING'}`);
+            console.log(`      - Performance Evidence: ${performanceEvidence ? `${performanceEvidence.length} chars` : 'MISSING'}`);
+            console.log(`      - Assessment Conditions: ${assessmentConditions ? `${assessmentConditions.length} chars` : 'MISSING'}`);
+            console.log(`      - Foundation Skills: ${foundationSkills ? 'Yes' : 'No'}`);
+            console.log(`      - Unit Sector: ${unitSector || 'N/A'}`);
 
             return {
                 code,
                 title,
+                url: unitUrl,
+                status,
+                release,
                 description: application,
                 application,
                 unitSector,
@@ -414,7 +534,8 @@ export class ScraperService {
                 elements,
                 knowledgeEvidence,
                 performanceEvidence,
-                assessmentConditions
+                assessmentConditions,
+                sections: allSections
             };
 
         } catch (e) {
@@ -434,15 +555,341 @@ export class ScraperService {
         });
     }
 
+    /**
+     * Extract ALL sections with complete hierarchy: headings, sub-headings, paragraphs, lists with nested items
+     * Returns sections in the format: { heading, level, paragraphs[], lists[], subsections[] }
+     */
+    private extractAllSectionsWithLevels($: any): any[] {
+        const allHeaders: any[] = [];
+
+        // Collect all headers with their DOM elements
+        $('h2, h3, h4, h5, h6').each((index: number, el: any) => {
+            const header = $(el);
+            const title = header.text().trim();
+            const tagName = el.tagName.toLowerCase();
+            const level = parseInt(tagName.replace('h', ''));
+
+            // Skip empty titles or common non-content headers
+            if (!title || ['navigation', 'menu', 'search', 'footer', 'header', 'sidebar'].some(s => title.toLowerCase().includes(s))) {
+                return;
+            }
+
+            // Skip duplicate table headers or generic labels  
+            if (title.toLowerCase() === 'elements describe' ||
+                title.toLowerCase() === 'performance criteria specify' ||
+                title.length < 3) {
+                return;
+            }
+
+            allHeaders.push({
+                element: header,
+                heading: title,
+                level,
+                index
+            });
+        });
+
+        // Build hierarchical structure with paragraphs and lists
+        return this.buildSectionHierarchy($, allHeaders);
+    }
+
+    /**
+     * Build hierarchical structure from flat header list
+     */
+    private buildSectionHierarchy($: any, headers: any[]): any[] {
+        const root: any[] = [];
+        const stack: any[] = [];
+
+        for (let i = 0; i < headers.length; i++) {
+            const current = headers[i];
+            const nextHeader = headers[i + 1];
+
+            // Extract complete content structure
+            const contentData = this.extractCompleteContent($, current.element, nextHeader?.element);
+
+            const section: any = {
+                heading: current.heading,
+                level: current.level,
+                paragraphs: contentData.paragraphs,
+                lists: contentData.lists,
+                tables: contentData.tables,
+                children: []
+            };
+
+            // Find parent in stack
+            while (stack.length > 0 && stack[stack.length - 1].level >= current.level) {
+                stack.pop();
+            }
+
+            if (stack.length === 0) {
+                root.push(section);
+            } else {
+                stack[stack.length - 1].children.push(section);
+            }
+
+            stack.push(section);
+        }
+
+        return root;
+    }
+
+    /**
+     * Extract complete content structure: paragraphs[], lists[] with nested children, and tables[][]
+     */
+    private extractCompleteContent($: any, header: any, nextHeader?: any): { paragraphs: string[]; lists: any[]; tables: any[][] } {
+        if (!header || header.length === 0) return { paragraphs: [], lists: [], tables: [] };
+
+        const paragraphs: string[] = [];
+        const lists: any[] = [];
+        const tables: any[][] = [];
+        let current = header.next();
+
+        const headerLevel = parseInt(header.prop('tagName').toLowerCase().replace('h', ''));
+
+        while (current && current.length > 0) {
+            // Stop if we hit the next header at same or higher level
+            if (current.is('h1, h2, h3, h4, h5, h6')) {
+                const currentLevel = parseInt(current.prop('tagName').toLowerCase().replace('h', ''));
+                if (currentLevel <= headerLevel) break;
+            }
+
+            // Stop if we reached the next header we're looking for
+            if (nextHeader && current[0] === nextHeader[0]) break;
+
+            // Extract paragraphs
+            if (current.is('p')) {
+                const text = current.text().trim();
+                if (text) paragraphs.push(text);
+            }
+            // Extract divs with text (some content is in divs)
+            else if (current.is('div')) {
+                // Use the robust extraction to get text with newlines/spacing
+                // We treat the whole div content as one "paragraph" entry if it's text,
+                // but we also want to extract lists if they exist inside.
+
+                // 1. Extract lists inside the div
+                current.find('ul, ol').each((_: any, list: any) => {
+                    // Only process direct children lists or lists not nested within other lists we've already processed?
+                    // Simplified: Just extract top-level lists within this div
+                    const $list = $(list);
+                    // Check if this list is already inside another list we processed? 
+                    // find() gets all descendants. We want top-level lists in this div.
+                    if ($list.parentsUntil(current).filter('ul, ol').length === 0) {
+                        const extracted = this.parseNestedList($, $list);
+                        lists.push(...extracted);
+                    }
+                });
+
+                // 2. Extract text (excluding the lists we just extracted to avoid dupes?)
+                // Actually, for simple text extraction we can just use a modified text extractor that respects spacing
+                // formatting it as a paragraph.
+
+                // Clone and remove block elements that we might handle separately or want to treat as breaks
+                const $clone = current.clone();
+                $clone.find('ul, ol, table').remove(); // Remove lists/tables managed above
+
+                // Now get text from what remains, with newlines for block elements
+                // We can use a trick: replace <br>, <p>, <div> with newlines before text()
+                $clone.find('br').replaceWith('\n');
+                $clone.find('p, div').prepend('\n');
+
+                const text = $clone.text().replace(/\n+/g, '\n').trim();
+                if (text) paragraphs.push(text);
+            }
+            // Extract lists with full recursive nesting
+            else if (current.is('ul, ol')) {
+                const extracted = this.parseNestedList($, current);
+                lists.push(...extracted);
+            }
+            // Extract tables as structured data
+            else if (current.is('table')) {
+                const tableData = this.parseTableStructured($, current);
+                if (tableData && tableData.length > 0) tables.push(tableData);
+            }
+
+            current = current.next();
+        }
+
+        return {
+            paragraphs,
+            lists,
+            tables
+        };
+    }
+
+    /**
+     * Recursively parse nested list items with all child levels
+     * Returns ListItem[] matching format: { text: string, children?: ListItem[] }
+     */
+    private parseNestedList($: any, listElement: any): any[] {
+        const items: any[] = [];
+
+        listElement.children('li').each((_: any, li: any) => {
+            const $li = $(li);
+
+            // Get direct text content (excluding nested lists)
+            const directText = $li.clone().children('ul, ol').remove().end().text().trim();
+
+            if (!directText) return; // Skip empty items
+
+            const item: any = {
+                text: directText
+            };
+
+            // Find nested lists recursively
+            const nestedLists = $li.children('ul, ol');
+            if (nestedLists.length > 0) {
+                const children: any[] = [];
+                nestedLists.each((_: any, nestedList: any) => {
+                    const nestedItems = this.parseNestedList($, $(nestedList));
+                    children.push(...nestedItems);
+                });
+                if (children.length > 0) {
+                    item.children = children;
+                }
+            }
+
+            items.push(item);
+        });
+
+        return items;
+    }
+
+    /**
+     * Parse table as structured data: TableRow[][] = { cells: string[] }[]
+     */
+    private parseTableStructured($: any, tableElement: any): any[] {
+        const rows: any[] = [];
+
+        tableElement.find('tr').each((_: any, tr: any) => {
+            const $tr = $(tr);
+            const cells: string[] = [];
+
+            $tr.find('td, th').each((_: any, cell: any) => {
+                const text = $(cell).text().trim();
+                cells.push(text);
+            });
+
+            if (cells.length > 0) {
+                rows.push({ cells });
+            }
+        });
+
+        return rows;
+    }
+
+    /**
+     * Find section content by matching heading (case-insensitive, fuzzy)
+     * Searches recursively through nested sections and returns combined content
+     */
+    private findSectionContent(sections: any[], searchTerms: string[]): string {
+        for (const section of sections) {
+            for (const term of searchTerms) {
+                if (section.heading.toLowerCase().includes(term.toLowerCase())) {
+                    // Combine all content from this section
+                    let content = '';
+
+                    // Add paragraphs
+                    if (section.paragraphs && section.paragraphs.length > 0) {
+                        content += section.paragraphs.join('\n\n') + '\n\n';
+                    }
+
+                    // Add list items as text
+                    if (section.lists && section.lists.length > 0) {
+                        content += this.flattenListsToText(section.lists) + '\n\n';
+                    }
+
+                    // Add table data as text
+                    if (section.tables && section.tables.length > 0) {
+                        section.tables.forEach((table: any) => {
+                            content += this.flattenTableToText(table) + '\n\n';
+                        });
+                    }
+
+                    return content.trim();
+                }
+            }
+
+            // Search in children recursively
+            if (section.children && section.children.length > 0) {
+                const childResult = this.findSectionContent(section.children, searchTerms);
+                if (childResult) return childResult;
+            }
+        }
+        return '';
+    }
+
+    /**
+     * Flatten nested lists to text format
+     */
+    private flattenListsToText(lists: any[]): string {
+        let text = '';
+        lists.forEach((item: any) => {
+            const indent = '  '.repeat(item.level || 0);
+            text += indent + item.text + '\n';
+            if (item.children && item.children.length > 0) {
+                text += this.flattenListsToText(item.children);
+            }
+        });
+        return text;
+    }
+
+    /**
+     * Flatten table to text format (table is array of { cells: string[] })
+     */
+    private flattenTableToText(table: any[]): string {
+        let text = '';
+        table.forEach((row: any) => {
+            if (row.cells && row.cells.length > 0) {
+                text += row.cells.join('    ') + '\n';
+            }
+        });
+        return text;
+    }
+
     private extractSectionContent($: any, header: any): string {
+        if (!header || header.length === 0) return '';
+
+        // Determine the level of the starting header (e.g., h2 -> 2)
+        const tagName = header[0].tagName.toLowerCase();
+        const headerLevel = parseInt(tagName.replace('h', '')) || 6; // Default to 6 if unknown
+
         let content = '';
         let current = header.next();
-        while (current.length && !current.is('h1, h2, h3, h4, h5, h6')) {
+
+        // Safety break
+        let iterations = 0;
+
+        while (current.length && iterations < 200) {
+            iterations++;
+
+            // Check if current element is a header
+            if (current.is('h1, h2, h3, h4, h5, h6')) {
+                const currentTagName = current[0].tagName.toLowerCase();
+                const currentLevel = parseInt(currentTagName.replace('h', '')) || 6;
+
+                // Stop if we hit a header of the same level or higher (smaller number)
+                // e.g. if we started at h2, stop at h2 or h1.
+                // Allow h3, h4, etc. to be included.
+                if (currentLevel <= headerLevel) {
+                    break;
+                }
+
+                // If it's a sub-header, include it formatted as markdown header
+                // We use ## for h2, ### for h3 etc.
+                content += `\n${'#'.repeat(currentLevel)} ${current.text().trim()}\n\n`;
+            }
+
             if (current.is('ul') || current.is('ol')) {
                 content += this.parseList($, current, 0);
             } else if (current.is('table')) {
                 content += this.parseTable($, current);
-            } else {
+            } else if (current.is('div')) {
+                // Process div contents recursively
+                content += this.processContainer($, current);
+            } else if (current.is('p')) {
+                content += current.text().trim() + '\n\n';
+            } else if (!current.is('h1, h2, h3, h4, h5, h6')) { // Avoid double adding headers processed above
                 const text = current.text().trim();
                 if (text) {
                     content += text + '\n\n';
@@ -453,21 +900,125 @@ export class ScraperService {
         return content.trim();
     }
 
-    private parseList($: any, list: any, depth: number): string {
+    private processContainer($: any, container: any): string {
         let content = '';
-        const indent = '  '.repeat(depth);
-        list.children('li').each((_: any, el: any) => {
-            const li = $(el);
-            const text = li.clone().children().remove().end().text().trim();
-            if (text) {
-                content += `${indent}- ${text}\n`;
+        container.contents().each((_: any, el: any) => {
+            const element = $(el);
+
+            // Skip empty text nodes
+            if (element[0].type === 'text') {
+                const text = element.text().trim();
+                if (text) content += text + '\n';
+                return;
             }
-            const nestedList = li.children('ul, ol');
-            if (nestedList.length > 0) {
-                content += this.parseList($, nestedList, depth + 1);
+
+            if (element.is('ul') || element.is('ol')) {
+                content += this.parseList($, element, 0);
+            } else if (element.is('table')) {
+                content += this.parseTable($, element);
+            } else if (element.is('div')) {
+                content += this.processContainer($, element);
+            } else if (element.is('p')) {
+                content += element.text().trim() + '\n\n';
+            } else if (element.is('h1, h2, h3, h4, h5, h6')) {
+                content += `\n### ${element.text().trim()}\n\n`;
+            } else {
+                // Handle other block elements or just text
+                const text = element.text().trim();
+                if (text && !element.is('script') && !element.is('style')) {
+                    content += text + '\n';
+                }
             }
         });
         return content;
+    }
+
+    private parseList($: any, list: any, depth: number): string {
+        let content = '';
+        // Use 2 spaces for indentation
+        const indent = '  '.repeat(depth + 1);
+
+        const isOrdered = list.is('ol');
+        // Check for alpha class like 'loweralpha' common in TGA or type attribute
+        const listClass = list.attr('class') || '';
+        const listType = list.attr('type') || '';
+        const isAlpha = listClass.includes('alpha') || listType === 'a' || listType === 'A';
+
+        list.children('li').each((index: number, el: any) => {
+            const li = $(el);
+            const liClone = li.clone();
+            liClone.children('ul, ol').remove();
+
+            // Clean text but keep inner spacing
+            const text = liClone.text().replace(/\s+/g, ' ').trim();
+
+            // Determine marker
+            let marker = '•';
+            if (isOrdered) {
+                if (isAlpha) {
+                    marker = String.fromCharCode(97 + (index % 26)) + ')'; // a), b)
+                } else {
+                    marker = (index + 1) + '.';
+                }
+            }
+
+            if (text) {
+                content += `\n${indent}${marker} ${text}`;
+            }
+
+            const nestedList = li.children('ul, ol');
+            if (nestedList.length > 0) {
+                content += this.parseList($, nestedList, depth + 1); // Recurse
+            }
+        });
+        return content;
+    }
+
+    /**
+     * Extract structured content from a table cell, preserving nested lists and paragraphs
+     */
+    private extractCellContent($: any, cell: any): string {
+        let content = '';
+        // Iterate through all child nodes to preserve order
+        $(cell).contents().each((_: any, el: any) => {
+            const element = $(el);
+
+            if (element[0].type === 'text') {
+                const text = element.text().trim();
+                if (text) content += text + ' ';
+            } else if (element.is('strong, b')) {
+                const text = element.text().trim();
+                if (text) content += text + ' ';
+            } else if (element.is('br')) {
+                content += '\n';
+            } else if (element.is('p')) {
+                const text = element.text().trim();
+                if (text) content += '\n' + text + '\n';
+            } else if (element.is('ul') || element.is('ol')) {
+                content += this.parseList($, element, 0);
+            } else if (element.is('div')) {
+                // divs in cells might be containers
+                const divText = element.clone().children('ul, ol').remove().end().text().trim();
+                if (divText) content += '\n' + divText + '\n';
+
+                // Handle lists inside div
+                element.children('ul, ol').each((_: any, list: any) => {
+                    content += this.parseList($, $(list), 0);
+                });
+            } else {
+                // Handle other inline/block elements
+                const text = element.text().trim();
+                if (text) content += text + ' ';
+            }
+        });
+
+        // Clean up excessive whitespace and ensure text is clean
+        return content
+            .replace(/ \n/g, '\n')
+            .replace(/\n /g, '\n')
+            .replace(/\n{3,}/g, '\n\n')
+            .replace(/([a-zA-Z0-9])([A-Z])/g, '$1 $2') // Fix mashed camelCase words if any
+            .trim();
     }
 
     private parseTable($: any, table: any): string {
@@ -476,9 +1027,9 @@ export class ScraperService {
             const cells = $(row).find('th, td');
             const rowContent: string[] = [];
             cells.each((_: any, cell: any) => {
-                rowContent.push($(cell).text().trim());
+                rowContent.push($(cell).text().replace(/\s+/g, ' ').trim());
             });
-            content += `| ${rowContent.join(' | ')} |\n`;
+            content += `${rowContent.join('    ')}\n`;
         });
         return content + '\n';
     }

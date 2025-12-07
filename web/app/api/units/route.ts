@@ -13,6 +13,8 @@ export async function GET(req: NextRequest) {
         let units = loader.getAllUnits();
         const lastUpdated = loader.getLastUpdated();
 
+        const totalCount = units.length;
+
         if (search) {
             units = units.filter(u => {
                 // Basic fields
@@ -36,12 +38,14 @@ export async function GET(req: NextRequest) {
         const simpleList = units.map(u => ({
             code: u.code,
             title: u.title,
+            url: u.url || `https://training.gov.au/Training/Details/${u.code}`,
             elementCount: u.elements.length
         }));
 
         return NextResponse.json({
             units: simpleList,
             count: units.length,
+            totalCount: totalCount,
             lastUpdated: lastUpdated ? lastUpdated.toISOString() : null
         });
     } catch (error) {

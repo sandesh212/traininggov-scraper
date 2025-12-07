@@ -13,32 +13,44 @@ export class StructuredDocxParser {
 
         let currentQuestion = '';
         let currentAnswer = '';
-        let state: 'QUESTION' | 'ANSWER' = 'QUESTION';
+        let state: 'WAITING' | 'QUESTION' | 'ANSWER' = 'WAITING';
 
         // Parse XML to get a stream of text runs with color info
         const runs = this.extractRuns(documentXml);
 
         for (const run of runs) {
             const text = run.text;
-            // Don't skip empty text yet, as newline is empty text but significant
-
             const isRed = run.isRed;
             const isWhitespace = !text.trim();
 
-            if (state === 'QUESTION') {
+            if (state === 'WAITING') {
+                // Skip red text at the start (headings/instructions)
+                if (isRed) {
+                    continue; // Ignore red headings
+                }
+
+                // First black text encountered = start of first question
+                if (!isRed && !isWhitespace) {
+                    state = 'QUESTION';
+                    currentQuestion = text;
+                }
+            } else if (state === 'QUESTION') {
                 if (isRed && !isWhitespace) {
-                    // Found visible red text -> Switch to ANSWER state
-                    state = 'ANSWER';
-                    currentAnswer = text;
+                    // Found visible red text → Switch to ANSWER state
+                    // Only if we have accumulated question text
+                    if (currentQuestion.trim()) {
+                        state = 'ANSWER';
+                        currentAnswer = text;
+                    }
                 } else {
-                    // Black text (or whitespace) -> Append to Question
+                    // Black text (or whitespace) → Append to Question
                     currentQuestion += text;
                 }
             } else { // state === 'ANSWER'
                 if (!isRed && !isWhitespace) {
-                    // Found visible black text -> End of Answer -> Switch to QUESTION state
+                    // Found visible black text → End of Answer → Save pair and start new question
 
-                    // Save previous pair
+                    // Save previous pair (only if both question and answer exist)
                     if (currentQuestion.trim() && currentAnswer.trim()) {
                         pairs.push({
                             question: currentQuestion.trim(),
@@ -52,13 +64,13 @@ export class StructuredDocxParser {
                     currentAnswer = '';
                     state = 'QUESTION';
                 } else {
-                    // Red text (or whitespace) -> Append to Answer
+                    // Red text (or whitespace) → Append to Answer
                     currentAnswer += text;
                 }
             }
         }
 
-        // Handle last pair
+        // Handle last pair (only if both question and answer exist)
         if (state === 'ANSWER' && currentQuestion.trim() && currentAnswer.trim()) {
             pairs.push({
                 question: currentQuestion.trim(),
@@ -67,13 +79,34 @@ export class StructuredDocxParser {
             });
         }
 
-        return pairs;
+        // DEDUPLICATION: Remove exact duplicate Q&A pairs
+        // This prevents the same question-answer from appearing multiple times
+        const uniquePairs: Array<{ question: string; answer: string; isSubQuestion: boolean }> = [];
+        const seenHashes = new Set<string>();
+
+        for (const pair of pairs) {
+            // Create normalized hash
+            const hash = `${pair.question.toLowerCase().replace(/\s+/g, ' ')}|||${pair.answer.toLowerCase().replace(/\s+/g, ' ')}`;
+
+            if (!seenHashes.has(hash)) {
+                seenHashes.add(hash);
+                uniquePairs.push(pair);
+            }
+        }
+
+        return uniquePairs;
     }
 
     private isMainQuestion(text: string): boolean {
         const clean = text.trim();
-        // Check for "Q1", "1.", "1)", "Question 1"
-        return !!(clean.match(/^\d+[\.\)]/) || clean.match(/^Q\d+/i) || clean.match(/^Question\s+\d+/i));
+        // Generic check: Does it start with a number, letter, or common question marker?
+        // This catches: "1.", "1)", "Q1", "a.", "i.", "Question 1", etc.
+        // Main questions typically start with a single-level identifier
+        return !!(
+            clean.match(/^[0-9a-zA-Z]+[\.\)\:]/) ||  // Starts with alphanumeric + punctuation
+            clean.match(/^Q[0-9]+/i) ||               // Q1, Q2, etc.
+            clean.match(/^Question\s+[0-9]+/i)        // Question 1, Question 2, etc.
+        );
     }
 
     private extractRuns(xml: string): Array<{ text: string; isRed: boolean; isBold: boolean; isItalic: boolean; size: number; font: string }> {
@@ -88,6 +121,16 @@ export class StructuredDocxParser {
 
             while ((rMatch = rRegex.exec(pContent)) !== null) {
                 const rContent = rMatch[1];
+
+                // Check for images FIRST (before skipping empty text)
+                const drawingMatch = /<a:blip r:embed="([^"]+)"/i.exec(rContent) || /<v:imagedata r:id="([^"]+)"/i.exec(rContent);
+                if (drawingMatch) {
+                    const rId = drawingMatch[1];
+                    console.log(`Found image rId: ${rId}`);
+                    runs.push({ text: `{{IMAGE:${rId}}}`, isRed: false, isBold: false, isItalic: false, size: 0, font: "" });
+                    continue;
+                }
+
                 const text = this.extractText(rContent);
                 if (!text) continue;
 

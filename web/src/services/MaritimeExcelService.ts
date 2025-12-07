@@ -1,0 +1,983 @@
+import XLSX from 'xlsx-js-style';
+import { Uoc, UocSection, UocElement } from '../models/uoc';
+
+/**
+ * Maritime-style Excel Export Service
+ * Matches the structure of "Maritime-Mapping (Master) 2025 - Uploaded.xlsx"
+ */
+export class MaritimeExcelService {
+
+  /**
+   * Dynamically generate sheet configurations from units data
+   * Infers sheet names, prefixes, and assessment columns from the actual units
+   */
+  private static generateDynamicSheetConfigs(units: Uoc[]): any[] {
+    if (units.length === 0) {
+      return [{
+        name: 'All Units',
+        hasAMPAConditions: true,
+        mappingCountLabel: 'Mapping Count',
+        filterPrefixes: [],
+        assessmentColumns: [],
+        knowledgeColumns: [],
+        showCategories: false
+      }];
+    }
+
+    // Group units by prefix patterns (first 3-4 letters)
+    const prefixGroups = new Map<string, Uoc[]>();
+    const allPrefixes = new Set<string>();
+
+    for (const unit of units) {
+      const code = unit.code;
+      // Extract prefix: 2-4 letters at the start
+      const prefixMatch = code.match(/^[A-Z]{2,4}/);
+      if (prefixMatch) {
+        const prefix = prefixMatch[0];
+        allPrefixes.add(prefix);
+        
+        if (!prefixGroups.has(prefix)) {
+          prefixGroups.set(prefix, []);
+        }
+        prefixGroups.get(prefix)!.push(unit);
+      }
+    }
+
+    // Generate configurations for each prefix group
+    const configs: any[] = [];
+    const sortedPrefixes = Array.from(allPrefixes).sort();
+
+    for (const prefix of sortedPrefixes) {
+      const groupUnits = prefixGroups.get(prefix) || [];
+      
+      // Infer category name from unit sector or title patterns
+      let categoryName = prefix;
+      const sampleUnit = groupUnits[0];
+      if (sampleUnit?.unitSector) {
+        categoryName = sampleUnit.unitSector;
+      }
+
+      configs.push({
+        name: `${categoryName} Mapping`,
+        hasAMPAConditions: true,
+        mappingCountLabel: 'Mapping Count',
+        filterPrefixes: [prefix],
+        assessmentColumns: [],
+        knowledgeColumns: [],
+        showCategories: true
+      });
+    }
+
+    // Add a catch-all sheet for remaining units
+    configs.push({
+      name: 'Other Units',
+      hasAMPAConditions: true,
+      mappingCountLabel: 'Mapping Count',
+      filterPrefixes: Array.from(allPrefixes),
+      assessmentColumns: [],
+      knowledgeColumns: [],
+      showCategories: true
+    });
+
+    // Add Assessment Conditions sheet
+    configs.push({
+      name: 'Assessment Conditions',
+      hasAMPAConditions: false,
+      mappingCountLabel: 'Mapping Count',
+      filterPrefixes: Array.from(allPrefixes),
+      assessmentColumns: [],
+      knowledgeColumns: [],
+      showCategories: false
+    });
+
+    return configs;
+  }
+
+  /**
+   * Convert current Unit model to legacy Uoc model
+   */
+  public static mapUnitToUoc(unit: any): Uoc {
+    return {
+      url: unit.url || '',
+      code: unit.code,
+      title: unit.title,
+      description: unit.description,
+      application: unit.application,
+      unitSector: unit.unitSector,
+      assessmentConditions: unit.assessmentConditions,
+      performanceEvidence: unit.performanceEvidence,
+      knowledgeEvidence: unit.knowledgeEvidence,
+      supersededBy: null,
+      supersedes: null,
+      lastFetchedAt: new Date().toISOString(),
+      elements: unit.elements?.map((el: any) => ({
+        element: el.title,
+        performanceCriteria: el.performanceCriteria.map((pc: any) => `${pc.id} ${pc.text}`)
+      })) || []
+    };
+  }
+
+  /**
+   * Generate complete workbook with all sheets (Dynamic)
+   */
+  public generateExcelWorkbook(units: Uoc[]): any {
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+
+    // Track which units have been used (to avoid duplicates across sheets)
+    const usedUnitCodes = new Set<string>();
+
+    // Generate dynamic sheet configurations from units
+    const sheetConfigs = MaritimeExcelService.generateDynamicSheetConfigs(units);
+
+    // Create each sheet (order matters - more specific filters first)
+    for (const config of sheetConfigs) {
+      // Special handling for Assessment Conditions sheet
+      let ws: XLSX.WorkSheet;
+      if (config.name === 'Assessment Conditions') {
+        ws = this.createAssessmentConditionsSheet(units);
+      } else {
+        ws = this.createSheet(config.name, config, units, usedUnitCodes);
+      }
+
+      XLSX.utils.book_append_sheet(wb, ws, config.name);
+    }
+
+    // Add Sections sheet if any unit has sections
+    const hasSections = units.some(u => u.sections && u.sections.length > 0);
+    if (hasSections) {
+      const wsSections = this.createSectionsSheet(units);
+      XLSX.utils.book_append_sheet(wb, wsSections, "Sections");
+    }
+
+    return wb;
+  }
+
+  /**
+   * Download the workbook in the browser
+   */
+  public static downloadExcel(wb: any, filename: string) {
+    XLSX.writeFile(wb, filename);
+  }
+
+  /**
+   * Parse text into individual lines for PE/KE sections
+   */
+  private parseTextToLines(text: string): string[] {
+    if (!text) return [];
+
+    // Split and normalize bullet markers, trim whitespace
+    const rawLines = text.split('\n').map(l => l.trim());
+
+    const lines: string[] = [];
+    for (const raw of rawLines) {
+      if (!raw) continue;
+
+      // Skip common preamble/header lines (end with ':' and are short headings)
+      // e.g., "Items:", "Knowledge of:", "Evidence of ability to:"
+      const isHeaderLine = /:$/u.test(raw) && raw.length <= 40 && !/^[\-\*•·]/u.test(raw);
+      if (isHeaderLine) continue;
+
+      // Normalize leading bullets like '-', '*', '•', '◦' and extra spaces
+      const cleaned = raw.replace(/^[\s•◦\-*]+/, '').trim();
+      if (cleaned.length === 0) continue;
+      lines.push(cleaned);
+    }
+
+    return lines;
+  }
+
+  /**
+   * Generate data rows for a unit
+   * Elements get sequential numbering (1, 2, 3, ...) in Column B
+   * Performance Evidence and Knowledge Evidence do NOT get numbered
+   * PE/KE with multiple items are consolidated into ONE row with bullet-prefixed text (expanding row height)
+   */
+  private generateUnitRows(unit: Uoc, hasAMPAConditions: boolean, assessmentColumnCount: number): any[][] {
+    const rows: any[][] = [];
+    const fullUnitName = `${unit.code} ${unit.title}`;
+    let elementCounter = 0;
+
+    const capitalizeLead = (text: string): string => {
+      if (!text) return text;
+      return text.replace(/^[a-z]/, c => c.toUpperCase());
+    };
+
+    // Light sentence capitalization: after period + space lowercase letter => uppercase
+    const capitalizeSentences = (text: string): string => {
+      return text
+        .replace(/(^|[\.\?\!]\s+)([a-z])/g, (_m, prefix, char) => prefix + char.toUpperCase());
+    };
+
+    // Helper to append a row with common trailing blank columns
+    const appendRow = (base: any[]) => {
+      if (hasAMPAConditions) base.push(undefined); // leave truly blank
+      base.push(undefined); // Mapping Count (formula later)
+      for (let i = 0; i < assessmentColumnCount; i++) base.push(undefined);
+      rows.push(base);
+    };
+
+    // 1. Performance Criteria rows (with numbered elements)
+    if (unit.elements && unit.elements.length > 0) {
+      for (const element of unit.elements) {
+        let elementHeading = element.element;
+        if (elementHeading && elementHeading.match(/^\d+\.\d+$/)) elementHeading = '';
+        if (elementHeading === 'Elements' || elementHeading === 'Performance Criteria') elementHeading = '';
+        if (elementHeading) {
+          elementCounter++;
+          elementHeading = `${elementCounter}. ${elementHeading.replace(/^\d+\.\s*/, '')}`;
+        }
+        if (element.performanceCriteria && element.performanceCriteria.length > 0) {
+          for (const pc of element.performanceCriteria) {
+            if (pc === 'Performance Criteria' || pc === 'Elements') continue;
+            const pcMatch = pc.match(/^(\d+\.\d+)\s+(.+)$/);
+            const pcNumber = pcMatch ? pcMatch[1] : '';
+            const pcText = pcMatch ? pcMatch[2] : pc;
+            if (!pcNumber) continue;
+            const pcClean = capitalizeLead(capitalizeSentences(pcText));
+            appendRow([
+              fullUnitName,
+              elementHeading || '',
+              pcNumber,
+              pcClean
+            ]);
+          }
+        }
+      }
+    }
+
+    // Grouping logic for Performance / Knowledge Evidence
+    const groupEvidence = (raw: string): { parent: string; children: string[] }[] => {
+      const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      const groups: { parent: string; children: string[] }[] = [];
+      let current: { parent: string; children: string[] } | null = null;
+
+      const cleanTail = (t: string) => t
+        .replace(/\s*(?:including|includes|and):\s*$/i, '')
+        .replace(/\s*:\s*$/, '')
+        .trim();
+
+      for (const lineRaw of lines) {
+        let line = lineRaw;
+        // Determine bullet level: '•' top-level, '◦' child; '-' treat as child if after a parent header
+        const isTopBullet = /^•\s*/.test(line);
+        const isChildBullet = /^◦\s*/.test(line) || (/^-\s*/.test(line) && !!current);
+        if (isTopBullet) {
+          const parentText = cleanTail(line.replace(/^•\s*/, ''));
+          current = { parent: parentText, children: [] };
+          // Deduplicate adjacent identical parents
+          if (groups.length === 0 || groups[groups.length - 1].parent !== current.parent) {
+            groups.push(current);
+          }
+          continue;
+        }
+        if (isChildBullet) {
+          const childText = line.replace(/^(?:◦|-)\s*/, '').trim();
+          if (!current) {
+            current = { parent: childText, children: [] };
+            groups.push(current);
+          } else {
+            // Avoid duplicate adjacent children
+            const last = current.children[current.children.length - 1];
+            if (childText && childText !== last) current.children.push(childText);
+          }
+          continue;
+        }
+
+        // Non-bullet line -> new parent
+        const parentText = cleanTail(line);
+        if (!current || current.parent !== parentText) {
+          current = { parent: parentText, children: [] };
+          groups.push(current);
+        }
+      }
+      return groups;
+    };
+
+    // 2. Performance Evidence rows (P1, P2...) - each parent becomes a row; children bullet items stay inside same cell below
+    if (unit.performanceEvidence) {
+      const groups = groupEvidence(unit.performanceEvidence);
+      groups.forEach((g, idx) => {
+        let parentLine = capitalizeLead(capitalizeSentences(g.parent));
+        const text = g.children.length > 0
+          ? `${parentLine} and:\n${g.children.map(c => `-\t${c}`).join('\n')}`
+          : parentLine;
+        appendRow([
+          fullUnitName,
+          'Performance Evidence',
+          `P${idx + 1 + 0}`, // start at P1
+          text
+        ]);
+      });
+    }
+
+    // 3. Knowledge Evidence rows (K1, K2...) similar grouping
+    if (unit.knowledgeEvidence) {
+      const groups = groupEvidence(unit.knowledgeEvidence);
+      groups.forEach((g, idx) => {
+        let parentLine = capitalizeLead(capitalizeSentences(g.parent));
+        const text = g.children.length > 0
+          ? `${parentLine} includes:\n${g.children.map(c => `-\t${c}`).join('\n')}`
+          : parentLine;
+        appendRow([
+          fullUnitName,
+          'Knowledge Evidence',
+          `K${idx + 1}`,
+          text
+        ]);
+      });
+    }
+
+    return rows;
+  }
+
+  /**
+   * Format Knowledge Evidence lines adding letter suffixes for sub-points beneath a numbered main point.
+   * Logic:
+   * - A line starting with a numbered list marker (e.g. "7." or "7)") becomes base: K7 (main)
+   * - Subsequent bullet/indented lines until the next numbered marker become K7a, K7b, ...
+   * - If there are only bullet lines (no numbering) they become sequential K1, K2...
+   */
+  private formatKnowledgeEvidenceLines(lines: string[]): { code: string; text: string }[] {
+    const results: { code: string; text: string }[] = [];
+    let currentMainIndex = 0;
+    let currentBaseNumber: number | null = null;
+    let suffixCounter = 0;
+
+    const numberedPattern = /^\s*(\d+)\s*[.)]/; // Matches '7.' or '7)' style
+    const bulletPattern = /^\s*[-*•·]/; // Common bullet characters
+
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (!line) continue;
+
+      const numberedMatch = line.match(numberedPattern);
+      if (numberedMatch) {
+        // New main point
+        currentMainIndex = parseInt(numberedMatch[1], 10);
+        currentBaseNumber = currentMainIndex;
+        suffixCounter = 0;
+        // Strip the leading numbering for text cleanliness
+        const cleaned = line.replace(numberedPattern, '').trim();
+        results.push({ code: `K${currentMainIndex}`, text: cleaned });
+        continue;
+      }
+
+      const isBullet = bulletPattern.test(line);
+      if (isBullet && currentBaseNumber !== null) {
+        // Sub-point of current base number
+        const cleaned = line.replace(bulletPattern, '').trim();
+        const suffixLetter = String.fromCharCode('a'.charCodeAt(0) + suffixCounter);
+        results.push({ code: `K${currentBaseNumber}${suffixLetter}`, text: cleaned });
+        suffixCounter++;
+        continue;
+      }
+
+      // Fallback: treat as a new standalone main point with sequential numbering
+      currentMainIndex = (currentMainIndex || results.length) + 1;
+      currentBaseNumber = currentMainIndex;
+      suffixCounter = 0;
+      results.push({ code: `K${currentMainIndex}`, text: line });
+    }
+
+    // If there were no explicit numbered lines at all (only bullets or plain lines), renumber sequentially K1..Kn
+    const hasExplicitNumbering = results.some(r => /^K\d+$/.test(r.code));
+    const anyWithSuffix = results.some(r => /[a-z]$/.test(r.code));
+    if (!hasExplicitNumbering || (!anyWithSuffix && results.every(r => /^K\d+$/.test(r.code)))) {
+      // Simplify: sequential K1..Kn
+      return results.map((r, idx) => ({ code: `K${idx + 1}`, text: r.text }));
+    }
+    return results;
+  }
+
+  /**
+   * Create two-row header structure with merged cells
+   * Row 0: Merged headers for assessment categories
+   * Row 1: Actual column names
+   */
+  private createHeaders(assessmentColumns: string[], hasAMPAConditions: boolean, mappingCountLabel: string, knowledgeColumns: string[] = [], showCategories: boolean = true): { row0: any[], row1: any[], merges: any[] } {
+    // Color constants for header styling (matched to provided screenshot palette approximations)
+    const COLORS = {
+      headerBlue: '4472C4',           // Dark blue for primary headers
+      categoryKnowledge: 'D0CECE',    // Grey for knowledge category
+      categoryPerformance: 'FFD966',  // Yellow for performance category
+      assessmentFont: '00B050',       // Green font for assessment column names
+      borderBlue: '8EA8DB'
+    };
+
+    // Row 0: Category headers & top-level base headers (will be merged vertically)
+    const row0 = ['Unit', 'Element', 'Criteria/Evidence', 'Performance Criteria'];
+    if (hasAMPAConditions) row0.push('AMPA Conditions');
+    row0.push(mappingCountLabel);
+
+    // Determine knowledge vs performance using explicit config list; fallback to 'knowledge' substring if list empty
+    const explicitKnowledge = new Set(knowledgeColumns);
+    const knowledgeCount = assessmentColumns.filter(col => explicitKnowledge.size ? explicitKnowledge.has(col) : /knowledge/i.test(col)).length;
+    const performanceCount = assessmentColumns.length - knowledgeCount;
+
+    // Add category header placeholders (merged horizontally later)
+    if (showCategories) {
+      if (knowledgeCount > 0) {
+        row0.push('Knowledge Assessment/s');
+        for (let i = 1; i < knowledgeCount; i++) row0.push('');
+      }
+      if (performanceCount > 0) {
+        row0.push('Performance Assessment/s');
+        for (let i = 1; i < performanceCount; i++) row0.push('');
+      }
+    } else {
+      // If categories hidden, still append placeholders for assessment columns to keep alignment
+      for (let i = 0; i < assessmentColumns.length; i++) row0.push('');
+    }
+
+    // Row 1: Actual column names below categories
+    const row1: any[] = new Array(4 + (hasAMPAConditions ? 1 : 0) + 1).fill(''); // leave blank; we will duplicate names for clarity
+    // Provide explicit names again for filter usability (Excel filters on second row)
+    row1[0] = 'Unit';
+    row1[1] = 'Element';
+    row1[2] = 'Criteria/Evidence';
+    row1[3] = 'Performance Criteria';
+    let colPtr = 4;
+    if (hasAMPAConditions) {
+      row1[colPtr] = 'AMPA Conditions';
+      colPtr++;
+    }
+    row1[colPtr] = mappingCountLabel;
+    colPtr++;
+    // Assessment column names
+    assessmentColumns.forEach((cName, idx) => {
+      row1.push(cName);
+    });
+
+    // Define merge ranges for the headers
+    const merges: any[] = [];
+    const baseColumnsCount = 4 + (hasAMPAConditions ? 1 : 0) + 1; // core + AMPA + mapping count
+    // Merge vertical for base columns
+    for (let c = 0; c < baseColumnsCount; c++) merges.push({ s: { r: 0, c }, e: { r: 1, c } });
+
+    // Horizontal merges for knowledge/performance category headers (row0 only)
+    let categoryStart = baseColumnsCount;
+    if (showCategories) {
+      if (knowledgeCount > 0) {
+        merges.push({ s: { r: 0, c: categoryStart }, e: { r: 0, c: categoryStart + knowledgeCount - 1 } });
+        categoryStart += knowledgeCount;
+      }
+      if (performanceCount > 0) {
+        merges.push({ s: { r: 0, c: categoryStart }, e: { r: 0, c: categoryStart + performanceCount - 1 } });
+      }
+    }
+
+    return { row0, row1, merges };
+  }
+
+  /**
+   * Apply styling to the worksheet
+   */
+  private applyStyles(ws: XLSX.WorkSheet, dataRowCount: number, columnCount: number): void {
+    // Header styling constants
+    const headerBlue = '4472C4';
+    const categoryKnowledge = '808080';  // Grey #808080
+    const categoryPerformance = 'FFD966';  // Yellow #FFD966
+    const borderBlue = '8EA8DB';
+    const assessmentGreen = '00B050';
+
+    // Determine knowledge/performance column spans from row0 values
+    const row0Values = [] as string[];
+    for (let c = 0; c < columnCount; c++) {
+      const addr = XLSX.utils.encode_cell({ r: 0, c });
+      row0Values.push(ws[addr] ? (ws[addr] as any).v || '' : '');
+    }
+    const knowledgeIndexes: number[] = [];
+    const performanceIndexes: number[] = [];
+    row0Values.forEach((v, idx) => {
+      if (v === 'Knowledge Assessment/s') knowledgeIndexes.push(idx);
+      if (v === 'Performance Assessment/s') performanceIndexes.push(idx);
+    });
+    // Expand merged ranges for category styling
+    const merged = (ws['!merges'] || []) as any[];
+    const categoryCells: { type: 'knowledge' | 'performance'; cells: { r: number; c: number }[] }[] = [];
+    merged.forEach(m => {
+      if (m.s.r === 0 && m.e.r === 0) {
+        const firstVal = ws[XLSX.utils.encode_cell({ r: 0, c: m.s.c })]?.v;
+        if (firstVal === 'Knowledge Assessment/s' || firstVal === 'Performance Assessment/s') {
+          const cells = [] as { r: number; c: number }[];
+          for (let c = m.s.c; c <= m.e.c; c++) cells.push({ r: 0, c });
+          categoryCells.push({ type: firstVal === 'Knowledge Assessment/s' ? 'knowledge' : 'performance', cells });
+        }
+      }
+    });
+
+    // Style row0 (base headers + categories)
+    for (let c = 0; c < columnCount; c++) {
+      const cellAddr = XLSX.utils.encode_cell({ r: 0, c });
+      if (!ws[cellAddr]) continue;
+      let fillColor = headerBlue;
+      let fontColor = 'FFFFFF';
+      const value = (ws[cellAddr] as any).v;
+      if (value === 'Knowledge Assessment/s') {
+        fillColor = categoryKnowledge;
+        fontColor = '000000';  // Black text
+      }
+      if (value === 'Performance Assessment/s') {
+        fillColor = categoryPerformance;
+        fontColor = '000000';  // Black text
+      }
+      (ws[cellAddr] as any).s = {
+        font: { bold: true, sz: 11, color: { rgb: fontColor } },
+        fill: { patternType: 'solid', fgColor: { rgb: fillColor } },
+        alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+        border: {
+          top: { style: 'thin', color: { rgb: borderBlue } },
+          bottom: { style: 'thin', color: { rgb: borderBlue } },
+          left: { style: 'thin', color: { rgb: borderBlue } },
+          right: { style: 'thin', color: { rgb: borderBlue } }
+        }
+      };
+    }
+
+    // Style row1 (column names) - all columns get white font
+    for (let c = 0; c < columnCount; c++) {
+      const cellAddr = XLSX.utils.encode_cell({ r: 1, c });
+      if (!ws[cellAddr]) continue;
+      (ws[cellAddr] as any).s = {
+        font: { bold: true, sz: 11, color: { rgb: 'FFFFFF' } },
+        fill: { patternType: 'solid', fgColor: { rgb: headerBlue } },
+        alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+        border: {
+          top: { style: 'thin', color: { rgb: borderBlue } },
+          bottom: { style: 'thin', color: { rgb: borderBlue } },
+          left: { style: 'thin', color: { rgb: borderBlue } },
+          right: { style: 'thin', color: { rgb: borderBlue } }
+        }
+      };
+    }
+
+    // Style data rows (light borders)
+    for (let r = 2; r < dataRowCount + 2; r++) {
+      // Check if this row is a separator (column 0 has sentinel value)
+      const firstCellAddr = XLSX.utils.encode_cell({ r, c: 0 });
+      const firstCellValue = ws[firstCellAddr] ? (ws[firstCellAddr] as any).v : null;
+      const isSeparatorRow = firstCellValue === '__UNIT_SEPARATOR__';
+
+      for (let c = 0; c < columnCount; c++) {
+        const cellAddr = XLSX.utils.encode_cell({ r, c });
+        if (!ws[cellAddr]) {
+          ws[cellAddr] = { t: 's', v: '' };
+        }
+
+        if (isSeparatorRow) {
+          // Full black row styling for ALL columns
+          (ws[cellAddr] as any).s = {
+            font: { bold: true, color: { rgb: 'FFFFFF' } },
+            fill: { patternType: 'solid', fgColor: { rgb: '000000' } },
+            border: {
+              top: { style: 'thin', color: { rgb: '000000' } },
+              bottom: { style: 'thin', color: { rgb: '000000' } },
+              left: { style: 'thin', color: { rgb: '000000' } },
+              right: { style: 'thin', color: { rgb: '000000' } }
+            },
+            alignment: { vertical: 'center', horizontal: 'center' }
+          };
+          // Clear the sentinel value for cleaner appearance
+          if (c === 0) (ws[cellAddr] as any).v = '';
+        } else {
+          // Normal data cell styling - no borders set here, zebra striping will add them based on row color
+          (ws[cellAddr] as any).s = {
+            alignment: { vertical: 'top', wrapText: true }
+          };
+        }
+      }
+    }
+  }
+
+  /**
+   * Apply zebra striping row-by-row - alternating blue/white for EACH row (not per unit)
+   * Color: RGB(217, 225, 242) = D9E1F2
+   * Alignment: Center all columns EXCEPT Performance Criteria (column 3)
+   * Skip separator rows (they're already styled black)
+   */
+  private applyZebraStriping(ws: XLSX.WorkSheet, dataRowCount: number, columnCount: number): void {
+    // Alternating colors for each row (white and light blue RGB(217, 225, 242))
+    const rowColors = ['FFFFFF', 'D9E1F2']; // white and light blue
+
+    for (let r = 2; r < dataRowCount + 2; r++) {
+      // Check if this is a separator row (already styled black - skip it)
+      const firstCellAddr = XLSX.utils.encode_cell({ r, c: 0 });
+      const isSeparatorRow = ws[firstCellAddr] && (ws[firstCellAddr] as any).s?.fill?.fgColor?.rgb === '000000';
+
+      if (isSeparatorRow) continue; // Skip separator rows
+
+      // Alternate color based on row index
+      const bgColor = rowColors[(r - 2) % 2];
+      const isBlueRow = bgColor === 'D9E1F2';
+
+      for (let c = 0; c < columnCount; c++) {
+        const cellAddr = XLSX.utils.encode_cell({ r, c });
+
+        // Ensure cell exists
+        if (!ws[cellAddr]) {
+          ws[cellAddr] = { t: 's', v: '' };
+        }
+
+        // Preserve existing style and add fill
+        const existingStyle = (ws[cellAddr] as any).s || {};
+
+        // Column 3 (index 3) is Performance Criteria - left align, others center
+        const horizontalAlign = (c === 3) ? 'left' : 'center';
+
+        // Determine borders based on row color:
+        // Blue rows: only EXTERNAL borders (#8EA8DB) - no left/right borders for internal cells
+        // White rows: all borders (#D4D4D4)
+        let border;
+        if (isBlueRow) {
+          // Blue row - only external borders
+          border = {
+            top: { style: 'thin', color: { rgb: '8EA8DB' } },
+            bottom: { style: 'thin', color: { rgb: '8EA8DB' } },
+            left: c === 0 ? { style: 'thin', color: { rgb: '8EA8DB' } } : undefined,
+            right: c === columnCount - 1 ? { style: 'thin', color: { rgb: '8EA8DB' } } : undefined
+          };
+        } else {
+          // White row - all borders (#D4D4D4)
+          border = {
+            top: { style: 'thin', color: { rgb: 'D4D4D4' } },
+            bottom: { style: 'thin', color: { rgb: 'D4D4D4' } },
+            left: { style: 'thin', color: { rgb: 'D4D4D4' } },
+            right: { style: 'thin', color: { rgb: 'D4D4D4' } }
+          };
+        }
+
+        (ws[cellAddr] as any).s = {
+          ...existingStyle,
+          fill: { patternType: 'solid', fgColor: { rgb: bgColor } },
+          border,
+          alignment: {
+            horizontal: horizontalAlign,
+            vertical: 'center',
+            wrapText: true
+          }
+        };
+      }
+    }
+  }
+
+  /**
+   * Set column widths
+   */
+  private setColumnWidthsFromData(ws: XLSX.WorkSheet, allRows: any[][], hasAMPAConditions: boolean, assessmentColumnCount: number): void {
+    // Determine column count from headers
+    const columnCount = (allRows[1] || []).length;
+
+    // Measure max string length per column over data rows (row index >= 2)
+    const maxLen: number[] = new Array(columnCount).fill(0);
+    for (let r = 0; r < allRows.length; r++) {
+      const row = allRows[r] || [];
+      for (let c = 0; c < columnCount; c++) {
+        const v = row[c];
+        const s = v == null ? '' : String(v);
+        // Heuristic: multi-line cells count extra
+        const length = Math.max(...s.split('\n').map(part => part.length));
+        if (length > maxLen[c]) maxLen[c] = length;
+      }
+    }
+
+    // Map measured lengths to Excel widths (wch) with per-column min/max caps
+    const computeWidth = (len: number, { min, max, factor }: { min: number; max: number; factor: number }) => {
+      const w = Math.ceil(len * factor);
+      return Math.max(min, Math.min(max, w));
+    };
+
+    const cols: { wch: number }[] = [];
+    // Base columns
+    cols.push({ wch: computeWidth(maxLen[0], { min: 40, max: 80, factor: 0.9 }) }); // Unit
+    cols.push({ wch: computeWidth(maxLen[1], { min: 25, max: 60, factor: 0.9 }) }); // Element
+    cols.push({ wch: computeWidth(maxLen[2], { min: 10, max: 18, factor: 0.8 }) }); // Criteria/Evidence
+    cols.push({ wch: computeWidth(maxLen[3], { min: 50, max: 100, factor: 0.9 }) }); // Performance Criteria
+
+    let idx = 4;
+    if (hasAMPAConditions) {
+      cols.push({ wch: computeWidth(maxLen[idx], { min: 18, max: 40, factor: 0.9 }) }); // AMPA
+      idx++;
+    }
+    cols.push({ wch: computeWidth(maxLen[idx], { min: 8, max: 14, factor: 0.7 }) }); // Mapping Count
+    idx++;
+    for (let i = 0; i < assessmentColumnCount; i++) {
+      cols.push({ wch: computeWidth(maxLen[idx + i], { min: 20, max: 40, factor: 0.85 }) }); // Assessments
+    }
+
+    ws['!cols'] = cols;
+  }
+
+  /**
+   * Create a special Assessment Conditions sheet with simplified structure
+   */
+  private createAssessmentConditionsSheet(units: Uoc[]): XLSX.WorkSheet {
+    const dataRows: any[][] = [];
+
+    // Add header
+    dataRows.push(['Unit', 'Assessment conditions']);
+
+    // Track where unit conditions end and footer section begins
+    const unitsEndRow = 1; // Will update after loop
+
+    // Add each unit with its assessment conditions
+    for (const unit of units) {
+      if (unit.assessmentConditions) {
+        // Format conditions: add blank line after each sentence ending with period
+        let formattedConditions = unit.assessmentConditions
+          .replace(/\.\s+/g, '.\n\n')  // Add blank line after each sentence
+          .replace(/\n{3,}/g, '\n\n')  // Normalize multiple blank lines to just 2 newlines
+          .trim();
+
+        dataRows.push([
+          `${unit.code} ${unit.title}`,
+          formattedConditions
+        ]);
+        // Add blank row after each unit (matching template pattern)
+        dataRows.push(['', '']);
+      }
+    }
+
+    // Add footer legend if any units have AMPA conditions
+    const hasAMPAUnits = units.some(u => u.assessmentConditions && /AMPA|AMSA/i.test(u.assessmentConditions));
+    if (hasAMPAUnits) {
+      const footerItems = [
+        ['Assessment Legend', 'I= Task is to be completed by each candidate individually'],
+        ['Assessment Legend', 'G= Task may be completed as a group activity with individual assessment. The group must contain no more than five candidates'],
+        ['Assessment Legend', 'V= Task must be completed on a vessel that meets the requirements above while operating in navigable waters'],
+        ['Assessment Legend', 'W= Task may be complete either in a workshop or on a vessel that meets the requirements specified above'],
+        ['Assessment Legend', 'P= Task must be completed in water (pool, or other safe water)'],
+        ['Assessment Legend', 'F= Task must be completed on a fire ground'],
+        ['Assessment Legend', 'S= Task may be completed on an approved simulator where realistic conditions are not feasible aboard a vessel (such as an absence of traffic or navigation marks'],
+        ['Assessment Legend', 'O= Tasks may be completed by observation']
+      ];
+      footerItems.forEach(item => dataRows.push(item));
+    }
+
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(dataRows);
+
+    // Set column widths
+    ws['!cols'] = [
+      { wch: 60 },  // Unit (wide)
+      { wch: 100 }  // Assessment conditions (very wide)
+    ];
+
+    // Style header row - same blue as other sheets
+    for (let c = 0; c < 2; c++) {
+      const cellAddr = XLSX.utils.encode_cell({ r: 0, c });
+      if (!ws[cellAddr]) continue;
+
+      (ws[cellAddr] as any).s = {
+        font: { bold: true, sz: 11 },
+        fill: { patternType: 'solid', fgColor: { rgb: '4472C4' } },
+        alignment: { horizontal: 'center', vertical: 'center' },
+        border: {
+          top: { style: 'thin', color: { rgb: '000000' } },
+          bottom: { style: 'thin', color: { rgb: '000000' } },
+          left: { style: 'thin', color: { rgb: '000000' } },
+          right: { style: 'thin', color: { rgb: '000000' } }
+        }
+      };
+    }
+
+    // Style data rows
+    // Unit conditions section: all rows blue #D9E1F2
+    // Blank separators: black fill
+    // Footer section: zebra striping white/blue
+    const footerRowCount = hasAMPAUnits ? 8 : 0;
+    const unitsEndIndex = dataRows.length - footerRowCount;
+    
+    for (let r = 1; r < dataRows.length; r++) {
+      const isBlankSeparator = !dataRows[r][0] && !dataRows[r][1];
+      const isFooterSection = footerRowCount > 0 && r >= unitsEndIndex;
+
+      // Determine row color
+      let fillColor: string | undefined;
+      if (isBlankSeparator) {
+        fillColor = '000000'; // Black for separators
+      } else if (isFooterSection) {
+        // Zebra striping for footer section (alternating white/blue from start of footer)
+        const footerRowIndex = r - unitsEndIndex;
+        fillColor = footerRowIndex % 2 === 0 ? 'FFFFFF' : 'D9E1F2';
+      } else {
+        // All unit condition rows are blue
+        fillColor = 'D9E1F2';
+      }
+
+      for (let c = 0; c < 2; c++) {
+        const cellAddr = XLSX.utils.encode_cell({ r, c });
+        if (!ws[cellAddr]) continue;
+        (ws[cellAddr] as any).s = {
+          fill: fillColor ? { patternType: 'solid', fgColor: { rgb: fillColor } } : undefined,
+          border: isBlankSeparator ? {
+            top: { style: 'thin', color: { rgb: '000000' } },
+            bottom: { style: 'thin', color: { rgb: '000000' } },
+            left: { style: 'thin', color: { rgb: '000000' } },
+            right: { style: 'thin', color: { rgb: '000000' } }
+          } : {
+            top: { style: 'thin', color: { rgb: 'D3D3D3' } },
+            bottom: { style: 'thin', color: { rgb: 'D3D3D3' } },
+            left: { style: 'thin', color: { rgb: 'D3D3D3' } },
+            right: { style: 'thin', color: { rgb: 'D3D3D3' } }
+          },
+          alignment: c === 0 ? { vertical: 'center', horizontal: 'left', wrapText: true } : { vertical: 'center', horizontal: 'left', wrapText: true }
+        };
+      }
+    }
+
+    // Freeze top row (header)
+    ws['!freeze'] = { xSplit: 0, ySplit: 1 };
+
+    // Enable auto filter
+    ws['!autofilter'] = { ref: `A1:B${dataRows.length}` };
+
+    return ws;
+  }
+
+  /**
+   * Create a single sheet with the given configuration
+   */
+  private createSheet(sheetName: string, config: { hasAMPAConditions: boolean, mappingCountLabel: string, assessmentColumns: string[], filterPrefixes?: string[] }, units: Uoc[], usedUnitCodes: Set<string>): XLSX.WorkSheet {
+    // Generate headers
+    const { row0, row1, merges } = this.createHeaders(
+      config.assessmentColumns,
+      config.hasAMPAConditions,
+      config.mappingCountLabel,
+      (config as any).knowledgeColumns || [],
+      (config as any).showCategories !== false
+    );
+
+    // Generate data rows for all units
+    const dataRows: any[][] = [];
+    // Filter units by prefixes (if provided), else include all remaining unused units
+    const filteredUnits = units.filter(u => {
+      if (!u.code) return false;
+      const code = u.code.toUpperCase();
+
+      // Skip units already used in other sheets (for specificity - most specific sheet wins)
+      if (usedUnitCodes.has(code)) return false;
+
+      if (config.filterPrefixes && config.filterPrefixes.length > 0) {
+        return config.filterPrefixes.some(pref => code.startsWith(pref));
+      }
+      // No prefixes provided: include all remaining units
+      return true;
+    })
+      // Alphabetically sort by code
+      .sort((a, b) => a.code.localeCompare(b.code));
+
+    // Mark these units as used
+    for (let i = 0; i < filteredUnits.length; i++) {
+      const unit = filteredUnits[i];
+      usedUnitCodes.add(unit.code.toUpperCase());
+
+      const unitRows = this.generateUnitRows(
+        unit,
+        config.hasAMPAConditions,
+        config.assessmentColumns.length
+      );
+      dataRows.push(...unitRows);
+
+      // Add separator row between units (except after last unit)
+      if (i < filteredUnits.length - 1) {
+        const totalColumns = 4 + (config.hasAMPAConditions ? 1 : 0) + 1 + config.assessmentColumns.length;
+        const separatorRow = Array(totalColumns).fill('');
+        separatorRow[0] = '__UNIT_SEPARATOR__'; // Sentinel value for styling
+        dataRows.push(separatorRow);
+      }
+    }
+
+    // Combine headers and data
+    const allRows = [row0, row1, ...dataRows];
+
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(allRows);
+
+    // Apply merged cells
+    if (merges.length > 0) {
+      ws['!merges'] = merges;
+    }
+
+    // Set column widths (use actual combined rows so widths are measured from header + data)
+    const totalColumns = 4 + (config.hasAMPAConditions ? 1 : 0) + 1 + config.assessmentColumns.length;
+    this.setColumnWidthsFromData(ws, allRows, config.hasAMPAConditions, config.assessmentColumns.length);
+
+    // Apply styles
+    this.applyStyles(ws, dataRows.length, totalColumns);
+
+    // Apply zebra striping per unit
+    this.applyZebraStriping(ws, dataRows.length, totalColumns);
+
+    // Freeze top 2 rows (headers)
+    ws['!freeze'] = { xSplit: 0, ySplit: 2 };
+
+    // Enable auto filter on row 1 (second header row)
+    const lastCol = XLSX.utils.encode_col(totalColumns - 1);
+    ws['!autofilter'] = { ref: `A2:${lastCol}${dataRows.length + 2}` };
+
+    // Auto-populate Mapping Count: count cells with actual values (exclude empty, null, 0)
+    if (config.assessmentColumns.length > 0) {
+      const mappingCountColIndex = config.hasAMPAConditions ? 5 : 4;
+      const firstAssessmentColIndex = mappingCountColIndex + 1;
+      const lastAssessmentColIndex = mappingCountColIndex + config.assessmentColumns.length;
+      for (let i = 0; i < dataRows.length; i++) {
+        const r = 2 + i;
+        const mappingAddr = XLSX.utils.encode_cell({ r, c: mappingCountColIndex });
+        const startAddr = XLSX.utils.encode_cell({ r, c: firstAssessmentColIndex });
+        const endAddr = XLSX.utils.encode_cell({ r, c: lastAssessmentColIndex });
+        if (!ws[mappingAddr]) (ws as any)[mappingAddr] = { t: 'n' };
+        // Formula: SUMPRODUCT counts cells that are not blank, not 0, and not null
+        // Wrapped in IF to display blank when count is 0
+        (ws[mappingAddr] as any).f = `IF(SUMPRODUCT(--((${startAddr}:${endAddr}<>"")*( ${startAddr}:${endAddr}<>0)))=0,"",SUMPRODUCT(--((${startAddr}:${endAddr}<>"")*( ${startAddr}:${endAddr}<>0))))`;
+      }
+    }
+
+    return ws;
+  }
+
+
+
+  /**
+   * Create a sheet summarizing hierarchical sections for each unit.
+   * Columns: Code, Heading Level, Heading, Paragraphs (joined), List Items (joined).
+   */
+  createSectionsSheet(units: Uoc[]): XLSX.WorkSheet {
+    const header = ['Unit Code', 'Heading Level', 'Heading', 'Paragraphs', 'List Items'];
+    const rows: any[][] = [header];
+    for (const u of units) {
+      if (!u.sections) continue;
+      for (const s of u.sections as UocSection[]) {
+        const paragraphs = (s.paragraphs || []).join('\n');
+        const lists = (s.lists || []).map(list => list.join('; ')).join('\n');
+        rows.push([u.code, s.level, s.heading, paragraphs, lists]);
+      }
+    }
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [
+      { wch: 14 },
+      { wch: 6 },
+      { wch: 50 },
+      { wch: 80 },
+      { wch: 80 }
+    ];
+    // Style header
+    for (let c = 0; c < header.length; c++) {
+      const addr = XLSX.utils.encode_cell({ r: 0, c });
+      if (ws[addr]) (ws[addr] as any).s = {
+        font: { bold: true },
+        fill: { patternType: 'solid', fgColor: { rgb: 'D9E1F2' } },
+        alignment: { horizontal: 'center', vertical: 'center' },
+        border: {
+          top: { style: 'thin', color: { rgb: '8EA8DB' } },
+          bottom: { style: 'thin', color: { rgb: '8EA8DB' } },
+          left: { style: 'thin', color: { rgb: '8EA8DB' } },
+          right: { style: 'thin', color: { rgb: '8EA8DB' } }
+        }
+      };
+    }
+    ws['!freeze'] = { xSplit: 0, ySplit: 1 };
+    ws['!autofilter'] = { ref: `A1:E${rows.length}` };
+    return ws;
+  }
+}

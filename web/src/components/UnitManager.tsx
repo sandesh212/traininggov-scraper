@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Unit } from '../types';
-import { Trash2, RotateCcw, Plus, Search, Info, X, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Trash2, RotateCcw, Plus, Search, Info, X, Loader2, CheckCircle, AlertCircle, Upload } from 'lucide-react';
 
 interface UnitSummary {
     code: string;
@@ -11,6 +11,7 @@ interface UnitSummary {
 
 export function UnitManager({ onClose }: { onClose?: () => void }) {
     const [units, setUnits] = useState<UnitSummary[]>([]);
+    const [totalCount, setTotalCount] = useState<number>(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [lastUpdated, setLastUpdated] = useState<string | null>(null);
@@ -21,6 +22,8 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
     const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
     const [viewingUnit, setViewingUnit] = useState(false);
     const [processingUnit, setProcessingUnit] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const [refreshingAll, setRefreshingAll] = useState(false);
 
@@ -50,12 +53,44 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             const data = await res.json();
             if (data.units) {
                 setUnits(data.units);
+                setTotalCount(data.totalCount !== undefined ? data.totalCount : data.units.length);
                 setLastUpdated(data.lastUpdated);
             }
         } catch (err) {
             setError('Failed to load units');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleUploadFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        setAddResult(null);
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const res = await fetch('/api/units/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                setAddResult({ success: true, message: data.message });
+                fetchUnits();
+            } else {
+                setAddResult({ success: false, message: data.error || 'Upload failed' });
+            }
+        } catch (err) {
+            setAddResult({ success: false, message: 'Network error during upload' });
+        } finally {
+            setUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = ''; // Reset
         }
     };
 
@@ -268,7 +303,7 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
 
                             {/* Stats & Timestamp */}
                             <div className="flex justify-between items-center text-xs text-slate-500">
-                                <span>{units.length} Units Stored</span>
+                                <span>{totalCount} Units Stored</span>
                                 {lastUpdated && <span>Updated: {new Date(lastUpdated).toLocaleString()}</span>}
                             </div>
 
@@ -277,7 +312,7 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                                 <div className="relative flex-1">
                                     <input
                                         type="text"
-                                        placeholder="Codes (e.g. MARN008, MARN009)"
+                                        placeholder="Unit codes (e.g. BSBADM502, HLTAID011)"
                                         className="w-full px-3 py-2 pr-8 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                                         value={newUnitCode}
                                         onChange={e => setNewUnitCode(e.target.value.toUpperCase())}
@@ -301,6 +336,25 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                                     Add
                                 </button>
                             </form>
+
+                            {/* Upload Button */}
+                            <div className="flex gap-2">
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleUploadFile}
+                                    className="hidden"
+                                    accept=".json,.jsonl,.txt"
+                                />
+                                <button
+                                    onClick={() => fileInputRef.current?.click()}
+                                    disabled={uploading}
+                                    className="w-full px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                                >
+                                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                                    Upload Local File (JSON/JSONL)
+                                </button>
+                            </div>
 
                             {/* Inline Notification Area */}
                             {addResult && (
@@ -446,49 +500,175 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                                     </div>
                                 )}
 
-                                <div className="space-y-4">
+                                {/* Elements & Performance Criteria - Unified Table */}
+                                <div className="space-y-3">
                                     <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800">Elements & Performance Criteria</h5>
-                                    {selectedUnit.elements.map((el, idx) => (
-                                        <div key={idx} className="bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800">
-                                            <div className="font-medium text-slate-800 dark:text-slate-200 mb-2">{el.title}</div>
-                                            <ul className="space-y-1">
-                                                {el.performanceCriteria.map((pc, pcIdx) => (
-                                                    <li key={pcIdx} className="text-sm text-slate-600 dark:text-slate-400 pl-4 border-l-2 border-slate-100 dark:border-slate-800">
-                                                        <span className="font-mono text-xs text-slate-400 mr-2">{pc.id}</span>
-                                                        {pc.text}
-                                                    </li>
+                                    <div className="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                                        <table className="w-full text-sm text-left">
+                                            <thead className="bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 font-semibold border-b border-slate-200 dark:border-slate-700">
+                                                <tr>
+                                                    <th className="px-4 py-2 w-28">Criteria</th>
+                                                    <th className="px-4 py-2">Performance Criteria</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                                                {selectedUnit.elements.map((el, elIdx) => (
+                                                    <React.Fragment key={elIdx}>
+                                                        {/* Element Title Row */}
+                                                        <tr className="bg-slate-100/80 dark:bg-slate-800/80">
+                                                            <td colSpan={2} className="px-4 py-2 font-semibold text-slate-800 dark:text-slate-200">
+                                                                {el.title}
+                                                            </td>
+                                                        </tr>
+                                                        {/* PC Rows */}
+                                                        {el.performanceCriteria.map((pc, pcIdx) => {
+                                                            let cleanText = pc.text.trim();
+                                                            // Aggressively strip ID if the text starts with it (e.g. "1.1" in "1.1 Nature...")
+                                                            if (cleanText.startsWith(pc.id)) {
+                                                                cleanText = cleanText.substring(pc.id.length).trim();
+                                                            }
+                                                            // Also cleanup common leading separators users might have put in text column
+                                                            // e.g. "1.1. Nature" -> "Nature", or just "Nature"
+                                                            cleanText = cleanText.replace(/^[\.\-\:\)\s]+/, '');
+
+                                                            return (
+                                                                <tr key={`${elIdx}-${pcIdx}`} className="border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                                                    <td className="px-4 py-2 font-mono text-xs text-slate-500 align-top border-r border-slate-100 dark:border-slate-800/50">
+                                                                        {pc.id}
+                                                                    </td>
+                                                                    <td className="px-4 py-2 text-slate-700 dark:text-slate-300">
+                                                                        {cleanText}
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        })}
+                                                    </React.Fragment>
                                                 ))}
-                                            </ul>
-                                        </div>
-                                    ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
 
-                                {selectedUnit.foundationSkills && (
-                                    <div>
-                                        <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800 mb-3">Foundation Skills</h5>
-                                        <div className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800 font-mono text-xs">
-                                            {selectedUnit.foundationSkills}
-                                        </div>
-                                    </div>
-                                )}
+                                {/* Helper for rendering evidence strings as tables */}
+                                {(() => {
+                                    const renderEvidenceTable = (title: string, content?: string) => {
+                                        if (!content) return null;
 
-                                {selectedUnit.knowledgeEvidence && (
-                                    <div>
-                                        <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800 mb-3">Knowledge Evidence</h5>
-                                        <div className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-                                            {selectedUnit.knowledgeEvidence}
-                                        </div>
-                                    </div>
-                                )}
+                                        // Split by newline. We could also try splitting by strict bullet patterns if text is clumped,
+                                        // but usually newlines are the reliable delimiter.
+                                        const lines = content.split('\n').filter(line => line.trim());
 
-                                {selectedUnit.assessmentConditions && (
-                                    <div>
-                                        <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800 mb-3">Assessment Conditions</h5>
-                                        <div className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-                                            {selectedUnit.assessmentConditions}
+                                        return (
+                                            <div>
+                                                <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800 mb-3">{title}</h5>
+                                                <div className="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                                                    <table className="w-full text-sm text-left">
+                                                        <thead className="bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 font-semibold border-b border-slate-200 dark:border-slate-700">
+                                                            <tr>
+                                                                <th className="px-4 py-2 w-28">ID</th>
+                                                                <th className="px-4 py-2">Evidence</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                                                            {lines.map((line, idx) => {
+                                                                let id = '';
+                                                                let text = line.trim();
+
+                                                                // Capture first "word" token as probable ID. Allow it to be mashed with text (no space required in regex, though we prefer it).
+                                                                // e.g. "1.1Nature" -> id="1.1", text="Nature"
+                                                                const match = line.match(/^\s*([^\s]{1,15})\s*(.*)$/);
+
+                                                                let candidateId = match ? match[1] : '';
+                                                                let remainder = match ? match[2] : line;
+
+                                                                const looksLikeId = candidateId && (
+                                                                    /^[\d\.\-\•\)\(\*\>]+$/.test(candidateId) || // 1.1, -, •
+                                                                    /^([A-Z]{1,2}|KE|PE|AC|PC)[\d\.]*$/i.test(candidateId) || // P1, K12, KE1.0
+                                                                    (candidateId.length < 6 && /[\d]/.test(candidateId)) // Short & has digit
+                                                                );
+
+                                                                if (looksLikeId) {
+                                                                    id = candidateId;
+                                                                    text = remainder;
+                                                                } else {
+                                                                    // If no separated ID found, check if the line ITSELF starts with a bullet pattern that wasn't separated
+                                                                    // e.g. "Values of X" (Values looks like ID? No.)
+                                                                    // But if user wants to strip bullets that are embedded:
+                                                                    const embeddedBullet = line.match(/^(\s*[\•\-\u2022]\s+)(.*)/);
+                                                                    if (embeddedBullet) {
+                                                                        id = "•";
+                                                                        text = embeddedBullet[2];
+                                                                    }
+                                                                }
+
+                                                                // Final polish: Strip repeating ID or leading punctuation from text
+                                                                if (id && text.startsWith(id)) {
+                                                                    text = text.substring(id.length).trim();
+                                                                }
+                                                                text = text.replace(/^[\.\-\:\)\s]+/, '');
+
+                                                                // If we found an ID, render as split row. 
+                                                                // If text is effectively empty but id exists (rare), behave carefully.
+                                                                if (id) {
+                                                                    return (
+                                                                        <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                                                            <td className="px-4 py-2 font-mono text-xs text-slate-500 align-top whitespace-nowrap">{id}</td>
+                                                                            <td className="px-4 py-2 text-slate-700 dark:text-slate-300">{text}</td>
+                                                                        </tr>
+                                                                    );
+                                                                } else {
+                                                                    return (
+                                                                        <tr key={idx} className="bg-slate-50/50 dark:bg-slate-800/30">
+                                                                            <td colSpan={2} className="px-4 py-2 text-slate-800 dark:text-slate-200 font-medium">
+                                                                                {line}
+                                                                            </td>
+                                                                        </tr>
+                                                                    );
+                                                                }
+                                                            })}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        );
+                                    };
+
+                                    return (
+                                        <>
+                                            {renderEvidenceTable('Performance Evidence', selectedUnit.performanceEvidence)}
+                                            {renderEvidenceTable('Knowledge Evidence', selectedUnit.knowledgeEvidence)}
+                                            {renderEvidenceTable('Assessment Conditions', selectedUnit.assessmentConditions)}
+                                        </>
+                                    );
+                                })()}
+
+                                {/* Dynamic Sections (Any other sections not explicitly handled) */}
+                                {selectedUnit.dynamicSections?.map((section, idx) => {
+                                    const standardSections = [
+                                        'Modification History',
+                                        'Application',
+                                        'Unit Sector',
+                                        'Elements and Performance Criteria',
+                                        'Foundation Skills',
+                                        'Knowledge Evidence',
+                                        'Performance Evidence',
+                                        'Assessment Conditions'
+                                    ];
+
+                                    // Skip if it's a standard section we already showed
+                                    if (standardSections.some(s => section.title.toLowerCase().includes(s.toLowerCase()))) {
+                                        return null;
+                                    }
+
+                                    return (
+                                        <div key={idx}>
+                                            <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800 mb-3">{section.title}</h5>
+                                            <div className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+                                                {section.content}
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    );
+                                })}
                             </div>
                         ) : (
                             <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-4">

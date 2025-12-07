@@ -87,7 +87,31 @@ export class UocLoader {
         const stream = fs.createWriteStream(absolutePath);
 
         for (const unit of this.uocMap.values()) {
-            stream.write(JSON.stringify(unit) + '\n');
+            // Transform to user's desired persistence format
+            const persistenceUnit: any = { ...unit };
+
+            // Transform elements to string-based format if needed
+            if (unit.elements) {
+                persistenceUnit.elements = unit.elements.map((el, i) => {
+                    // Try to reconstruct "Element X. Title" if ID is not available, or just use Title
+                    // If we have access to the original element ID (e.g. "1"), we should use it.
+                    // But our internal model only stores title. 
+                    // Let's assume title contains the full string "Prepare..." and we might need to add number.
+                    // However, user output shows "1. Prepare...". 
+                    // Let's just use the title as 'element' field.
+
+                    const pcStrings = el.performanceCriteria.map(pc => {
+                        return pc.id ? `${pc.id} ${pc.text}` : pc.text;
+                    });
+
+                    return {
+                        element: el.title,
+                        performanceCriteria: pcStrings
+                    };
+                });
+            }
+
+            stream.write(JSON.stringify(persistenceUnit) + '\n');
         }
 
         stream.end();
@@ -143,6 +167,9 @@ export class UocLoader {
         return {
             code: raw.code,
             title: raw.title,
+            url: raw.url,
+            status: raw.status,
+            release: raw.release,
             description: raw.description || raw.application || '',
             application: raw.application || '',
             unitSector: raw.unitSector || '',
@@ -151,7 +178,9 @@ export class UocLoader {
             elements,
             performanceEvidence: raw.performanceEvidence || '',
             knowledgeEvidence: raw.knowledgeEvidence || '',
-            assessmentConditions: raw.assessmentConditions || ''
+            assessmentConditions: raw.assessmentConditions || '',
+            sections: raw.sections || [],
+            lastFetchedAt: raw.lastFetchedAt
         };
     }
 }

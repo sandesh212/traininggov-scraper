@@ -5,6 +5,8 @@ export interface AssessmentQuestion {
     images?: string[];
     imageDescription?: string;
     mappingHint?: string;
+    subQuestions?: AssessmentQuestion[];
+    parentQuestionId?: string;
 }
 
 export interface ValidationResult {

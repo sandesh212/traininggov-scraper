@@ -137,44 +137,79 @@ export function generateExcelReport(report: ReportData) {
     XLSX.writeFile(wb, "Compliance_Report.xlsx");
 }
 
-export function generateUnitDataExcel(units: ReportData['mappedUnits']) {
+export function generateUnitDataExcel(units: any[]) {
     const wb = XLSX.utils.book_new();
-    const rows = [['Unit Code', 'Unit Title', 'Type', 'ID', 'Text']];
 
-    units.forEach(unit => {
-        // Performance Criteria
-        unit.elements?.forEach(el => {
-            el.performanceCriteria.forEach(pc => {
-                rows.push([unit.code, unit.title, 'Performance Criteria', pc.id, pc.text]);
+    // 1. Units Summary Sheet
+    const summaryRows = [['Unit Code', 'Unit Title', 'Sector', 'Application', 'Description', 'Assessment Conditions', 'Modification History']];
+    units.forEach(u => {
+        summaryRows.push([
+            u.code,
+            u.title,
+            u.unitSector || '',
+            u.application || '',
+            u.description || '',
+            u.assessmentConditions || '',
+            u.modificationHistory || ''
+        ]);
+    });
+    const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
+    wsSummary['!cols'] = [
+        { wch: 15 }, // Code
+        { wch: 40 }, // Title
+        { wch: 20 }, // Sector
+        { wch: 50 }, // Application
+        { wch: 50 }, // Description
+        { wch: 50 }, // Assessment Conditions
+        { wch: 30 }  // History
+    ];
+    XLSX.utils.book_append_sheet(wb, wsSummary, "Units Summary");
+
+    // 2. Elements & PC Sheet
+    const pcRows = [['Unit Code', 'Element Title', 'PC ID', 'Performance Criteria']];
+    units.forEach(u => {
+        u.elements?.forEach((el: any) => {
+            el.performanceCriteria.forEach((pc: any) => {
+                pcRows.push([u.code, el.title, pc.id, pc.text]);
             });
         });
-
-        // Knowledge Evidence
-        if (unit.knowledgeEvidence) {
-            // Simple parsing for Excel export (flat list)
-            const lines = unit.knowledgeEvidence.split('\n').map(l => l.trim()).filter(l => l);
-            lines.forEach((line, i) => {
-                rows.push([unit.code, unit.title, 'Knowledge Evidence', `K${i + 1}`, line]);
-            });
-        }
-
-        // Performance Evidence
-        if (unit.performanceEvidence) {
-            const lines = unit.performanceEvidence.split('\n').map(l => l.trim()).filter(l => l);
-            lines.forEach((line, i) => {
-                rows.push([unit.code, unit.title, 'Performance Evidence', `PE${i + 1}`, line]);
-            });
-        }
     });
-
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [
-        { wch: 15 }, // Unit Code
-        { wch: 40 }, // Unit Title
-        { wch: 20 }, // Type
+    const wsPC = XLSX.utils.aoa_to_sheet(pcRows);
+    wsPC['!cols'] = [
+        { wch: 15 }, // Code
+        { wch: 30 }, // Element
         { wch: 10 }, // ID
         { wch: 80 }  // Text
     ];
-    XLSX.utils.book_append_sheet(wb, ws, "Units Data");
-    XLSX.writeFile(wb, "Units_Data.xlsx");
+    XLSX.utils.book_append_sheet(wb, wsPC, "Elements & PC");
+
+    // 3. Knowledge Evidence Sheet
+    const keRows = [['Unit Code', 'Knowledge Evidence Item']];
+    units.forEach(u => {
+        if (u.knowledgeEvidence) {
+            const lines = u.knowledgeEvidence.split('\n').map((l: string) => l.trim()).filter((l: string) => l);
+            lines.forEach((line: string) => {
+                keRows.push([u.code, line]);
+            });
+        }
+    });
+    const wsKE = XLSX.utils.aoa_to_sheet(keRows);
+    wsKE['!cols'] = [{ wch: 15 }, { wch: 100 }];
+    XLSX.utils.book_append_sheet(wb, wsKE, "Knowledge Evidence");
+
+    // 4. Performance Evidence Sheet
+    const peRows = [['Unit Code', 'Performance Evidence Item']];
+    units.forEach(u => {
+        if (u.performanceEvidence) {
+            const lines = u.performanceEvidence.split('\n').map((l: string) => l.trim()).filter((l: string) => l);
+            lines.forEach((line: string) => {
+                peRows.push([u.code, line]);
+            });
+        }
+    });
+    const wsPE = XLSX.utils.aoa_to_sheet(peRows);
+    wsPE['!cols'] = [{ wch: 15 }, { wch: 100 }];
+    XLSX.utils.book_append_sheet(wb, wsPE, "Performance Evidence");
+
+    XLSX.writeFile(wb, "Units_Data_Full.xlsx");
 }

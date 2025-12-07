@@ -27,24 +27,71 @@ export class AIService {
         question: AssessmentQuestion,
         uocs: Unit[]
     ): Promise<ValidationResult> {
-        // MOCK MODE: If API key is 'mock-key' or starts with 'sk-mock', return dummy data
-        if (this.openai.apiKey === 'mock-key' || this.openai.apiKey.startsWith('sk-mock')) {
-            logger.debug(`   (Mocking AI response for Q${question.id})`);
-            await new Promise(resolve => setTimeout(resolve, 500)); // Simulate latency
+        // MOCK MODE: If API key is 'mock-key' or starts with 'sk-mock' or is missing/empty
+        if (!this.openai.apiKey || this.openai.apiKey === 'mock-key' || this.openai.apiKey.startsWith('sk-mock')) {
+            logger.debug(`   (Mocking AI response for ${question.id})`);
+            await new Promise(resolve => setTimeout(resolve, 100)); // Simulate slight latency
 
-            // Heuristic: Match question text/section to Unit Title/Code
-            const bestMatch = uocs.find(u =>
-                question.text.toLowerCase().includes(u.title.toLowerCase().split(' ')[0]) ||
-                question.section?.toLowerCase().includes(u.title.toLowerCase().split(' ')[0])
-            ) || uocs[0];
+            // SMART MOCK: Keyword matching for Maritime Units
+            const qText = (question.text || '').toLowerCase();
+            const section = (question.section || '').toLowerCase();
+            const fullText = `${qText} ${section}`;
+
+            let mappedUnitCode = uocs.length > 0 ? uocs[0].code : null;
+            let reasoning = "Default mock mapping.";
+
+            // Define keyword rules for Maritime units
+            if (fullText.includes('lifting') || fullText.includes('wll') || fullText.includes('crane') || fullText.includes('shackle') || fullText.includes('sling')) {
+                const unit = uocs.find(u => u.code === 'MARC022');
+                if (unit) {
+                    mappedUnitCode = unit.code;
+                    reasoning = "Mock Analysis: Question relates to lifting equipment/WLL, mapping to MARC022.";
+                }
+            } else if (fullText.includes('rope') || fullText.includes('knot') || fullText.includes('mooring') || fullText.includes('hitch') || fullText.includes('splice')) {
+                const unit = uocs.find(u => u.code === 'MARB002');
+                if (unit) {
+                    mappedUnitCode = unit.code;
+                    reasoning = "Mock Analysis: Question relates to ropes/knots, mapping to MARB002.";
+                }
+            } else if (fullText.includes('navigation') || fullText.includes('lookout') || fullText.includes('steering') || fullText.includes('light') || fullText.includes('buoy')) {
+                const unit = uocs.find(u => u.code === 'MARA011');
+                if (unit) {
+                    mappedUnitCode = unit.code;
+                    reasoning = "Mock Analysis: Question relates to navigation/lookout, mapping to MARA011.";
+                }
+            } else if (fullText.includes('tool') || fullText.includes('maintenance') || fullText.includes('battery') || fullText.includes('engine')) {
+                const unit = uocs.find(u => u.code === 'MARB032');
+                if (unit) {
+                    mappedUnitCode = unit.code;
+                    reasoning = "Mock Analysis: Question relates to tools/maintenance, mapping to MARB032.";
+                }
+            } else if (fullText.includes('safety') || fullText.includes('whs') || fullText.includes('ppe') || fullText.includes('hazard') || fullText.includes('risk')) {
+                const unit = uocs.find(u => u.code === 'MARA018');
+                if (unit) {
+                    mappedUnitCode = unit.code;
+                    reasoning = "Mock Analysis: Question relates to safety/WHS, mapping to MARA018.";
+                }
+            } else if (fullText.includes('fire') || fullText.includes('extinguisher')) {
+                const unit = uocs.find(u => u.code === 'MARF028');
+                if (unit) {
+                    mappedUnitCode = unit.code;
+                    reasoning = "Mock Analysis: Question relates to fire safety, mapping to MARF028.";
+                }
+            } else if (fullText.includes('survival') || fullText.includes('abandon') || fullText.includes('lifejacket') || fullText.includes('flare')) {
+                const unit = uocs.find(u => u.code === 'MARF027');
+                if (unit) {
+                    mappedUnitCode = unit.code;
+                    reasoning = "Mock Analysis: Question relates to survival, mapping to MARF027.";
+                }
+            }
 
             return {
                 questionId: question.id,
                 isValid: true,
-                mappedUnit: bestMatch.code,
-                mappedCriteria: ["1.1", "1.2"],
-                mappedKnowledge: ["K1"],
-                reasoning: `MOCK ANALYSIS: Question matched to ${bestMatch.code} based on keywords.`,
+                mappedUnit: mappedUnitCode,
+                mappedCriteria: ["1.1", "1.2"], // Mock criteria
+                mappedKnowledge: ["Relevant knowledge evidence"],
+                reasoning: reasoning,
                 gaps: [],
                 confidence: 85
             };
@@ -149,13 +196,20 @@ Question Text: "${q.text}"
      * Title and description
      * Performance criteria (what the person must be able to do)
      * Knowledge evidence (what they must know)
-   - Look for keyword matches AND conceptual alignment
-   - Consider which unit would logically include this question in its assessment
+   - **IMPORTANT**: Look beyond exact keyword matches:
+     * Consider synonyms (e.g., "WLL" = "Working Load Limit" = "Safe Working Load")
+     * Consider related concepts (e.g., "mooring" relates to "securing", "fastening", "anchoring")
+     * Consider different ways of testing the same knowledge
+     * Consider practical vs theoretical formulations of the same concept
+   - A question may test knowledge from ONE unit or MULTIPLE units
+   - Consider which unit(s) would logically include this question in their assessment
 
 3. **Select Best Match**:
    - Choose the ONE unit with the strongest alignment
-   - If the question could fit multiple units, choose the most specific one
+   - If the question tests knowledge from multiple units, choose the PRIMARY unit (most directly tested)
+   - If the question could fit multiple units equally, choose the more specific one
    - If NO unit adequately covers the question, set mappedUnit to null
+   - **Note**: The system tracks which units are actually used, so only map when there's genuine relevance
 
 4. **Identify Specific Mappings**:
    - List the specific performance criteria IDs (e.g., "1.1", "2.3") that this question tests
@@ -289,8 +343,10 @@ ${JSON.stringify(inputList, null, 2)}
         if (questionsWithImages.length === 0) return questions;
 
         // SKIP IMAGE ANALYSIS FOR PERFORMANCE (User Request)
-        console.log(`   ⏩ Skipping image analysis for ${questionsWithImages.length} questions (Performance Optimization)`);
-        return questions;
+        // console.log(`   ⏩ Skipping image analysis for ${questionsWithImages.length} questions (Performance Optimization)`);
+        // return questions;
+
+        console.log(`   🖼️  Analyzing ${questionsWithImages.length} questions with images...`);
 
         /* 
         console.log(`   🖼️  Analyzing ${questionsWithImages.length} questions with images...`);

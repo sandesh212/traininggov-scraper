@@ -9,8 +9,7 @@ import { ConfirmationModal } from '@/components/ConfirmationModal';
 import { ReportData } from '@/types';
 import { generateExcelReport, generateUnitDataExcel } from '@/utils/excelExport';
 
-const UnifiedReportView = dynamic(() => import('@/components/UnifiedReportView').then(mod => mod.UnifiedReportView), { ssr: false });
-const RedTextColumn = dynamic(() => import('@/components/RedTextColumn').then(mod => mod.RedTextColumn), { ssr: false });
+const QuestionAnswerTable = dynamic(() => import('@/components/QuestionAnswerTable').then(mod => mod.QuestionAnswerTable), { ssr: false });
 const UnitManager = dynamic(() => import('@/components/UnitManager').then(mod => mod.UnitManager), { ssr: false });
 
 export default function Home() {
@@ -19,7 +18,6 @@ export default function Home() {
     const [unitCount, setUnitCount] = useState<number>(0);
     const [loading, setLoading] = useState(false);
     const [report, setReport] = useState<ReportData | null>(null);
-    const [activeTab, setActiveTab] = useState<'report' | 'redtext'>('report');
     const [showUnitManager, setShowUnitManager] = useState(false);
     const [showInvalidModal, setShowInvalidModal] = useState(false); // New state
     const [invalidUnitsList, setInvalidUnitsList] = useState<{ code: string; url: string; reason?: string }[]>([]); // Updated with reason
@@ -151,7 +149,6 @@ export default function Home() {
         setReport(null);
         setAssessmentFile(null);
         setUnitsFile(null); // Reset units file
-        setActiveTab('report');
     };
 
     // Determine if analyze button should be enabled
@@ -549,7 +546,14 @@ export default function Home() {
                                         <span className="inline sm:hidden">JSON</span>
                                     </button>
                                     <button
-                                        onClick={() => generateUnitDataExcel(report.mappedUnits)}
+                                        onClick={async () => {
+                                            const { MaritimeExcelService } = await import('@/services/MaritimeExcelService');
+                                            const units = report.fetchedUnits || report.mappedUnits;
+                                            const uocs = units.map((u: any) => MaritimeExcelService.mapUnitToUoc(u));
+                                            const service = new MaritimeExcelService();
+                                            const wb = service.generateExcelWorkbook(uocs);
+                                            MaritimeExcelService.downloadExcel(wb, 'Maritime_Units_Export.xlsx');
+                                        }}
                                         className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                     >
                                         <FileSpreadsheet size={14} className="sm:w-4 sm:h-4" />
@@ -574,7 +578,6 @@ export default function Home() {
                                     value={report.questionsCount}
                                     color="blue"
                                     delay={0.1}
-                                    onClick={() => setActiveTab('report')}
                                 />
                                 <StatsCard
                                     icon={<Award size={24} />}
@@ -582,7 +585,6 @@ export default function Home() {
                                     value={report.mappedUnits?.length || 0}
                                     color="purple"
                                     delay={0.2}
-                                    onClick={() => setActiveTab('report')}
                                 />
                                 <StatsCard
                                     icon={<TrendingUp size={24} />}
@@ -590,74 +592,65 @@ export default function Home() {
                                     value={`${Math.round(((report.results?.filter(r => r.isValid).length || 0) / (report.questionsCount || 1)) * 100)}%`}
                                     color="green"
                                     delay={0.3}
-                                    onClick={() => setActiveTab('report')}
                                 />
                             </div>
 
-                            {/* Tabs Navigation */}
+                            {/* Simplified View - Q&A Table Only */}
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.4 }}
                                 className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden"
                             >
-                                <div className="flex border-b border-gray-200">
-                                    <button
-                                        onClick={() => setActiveTab('report')}
-                                        className={`flex-1 py-4 text-sm font-bold flex items-center justify-center gap-2 transition-all relative ${activeTab === 'report' ? 'text-blue-600' : 'text-gray-500 hover:bg-gray-50'}`}
-                                    >
-                                        <List size={18} />
-                                        Unified Report
-                                        {activeTab === 'report' && (
-                                            <motion.div
-                                                layoutId="activeTab"
-                                                className="absolute bottom-0 left-0 right-0 h-1 bg-blue-600"
-                                            />
-                                        )}
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab('redtext')}
-                                        className={`flex-1 py-4 text-sm font-bold flex items-center justify-center gap-2 transition-all relative ${activeTab === 'redtext' ? 'text-red-600' : 'text-gray-500 hover:bg-gray-50'}`}
-                                    >
-                                        <FileText size={18} />
-                                        Red Text Debug
-                                        {activeTab === 'redtext' && (
-                                            <motion.div
-                                                layoutId="activeTab"
-                                                className="absolute bottom-0 left-0 right-0 h-1 bg-red-600"
-                                            />
-                                        )}
-                                    </button>
+                                {/* Document Title & Instructions */}
+                                <div className="p-6 border-b border-gray-200 bg-white">
+                                    <h1 className="text-3xl font-extrabold text-red-600 mb-6 text-center leading-tight">
+                                        {report.title || 'Assessment Document'}
+                                    </h1>
+
+                                    {report.instructions && report.instructions.length > 0 && (
+                                        <div className="mt-8 border-2 border-black rounded-sm overflow-hidden">
+                                            <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] divide-y md:divide-y-0 md:divide-x-2 divide-black">
+                                                {/* Left Column - Header */}
+                                                <div className="bg-white p-4 font-bold text-black text-sm flex items-start">
+                                                    Instructions
+                                                </div>
+                                                {/* Right Column - Content */}
+                                                <div className="bg-white p-4">
+                                                    <ul className="list-disc pl-5 space-y-2">
+                                                        {report.instructions.map((inst: string, i: number) => (
+                                                            <li key={i} className="text-sm text-black leading-relaxed">{inst}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="p-6 bg-gray-50 min-h-[500px]">
-                                    <AnimatePresence mode="wait">
-                                        {activeTab === 'report' ? (
-                                            <motion.div
-                                                key="report"
-                                                initial={{ opacity: 0, x: -20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: 20 }}
-                                                transition={{ duration: 0.3 }}
-                                            >
-                                                <UnifiedReportView
-                                                    results={report.results}
-                                                    mappedUnits={report.mappedUnits}
-                                                    instructions={report.instructions}
-                                                />
-                                            </motion.div>
-                                        ) : (
-                                            <motion.div
-                                                key="redtext"
-                                                initial={{ opacity: 0, scale: 0.95 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0.95 }}
-                                                transition={{ duration: 0.3 }}
-                                            >
-                                                <RedTextColumn segments={report.redTextSegments || []} results={report.results} />
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+                                    <QuestionAnswerTable
+                                        instructions={report.instructions}
+                                        pairs={(report.redTextAnswers || []).map((answer: any, idx: number) => {
+                                            // Find corresponding validation result for this question
+                                            const result = report.results?.find((r: any) => r.questionId === answer.questionId);
+
+                                            return {
+                                                questionId: answer.questionId || `Q${idx + 1}`,
+                                                questionText: answer.questionText || report.results?.[idx]?.questionText || 'N/A',
+                                                answerText: answer.text || '',
+                                                index: idx + 1,
+                                                mappedUnit: result?.mappedUnit,
+                                                mappedCriteria: result?.mappedCriteria || [],
+                                                mappedKnowledge: result?.mappedKnowledge || [],
+                                                detailedMapping: result?.detailedMapping,
+                                                section: answer.section || result?.questionSection || 'General',
+                                                parentQuestionId: result?.parentQuestionId,
+                                                images: result?.images,
+                                                imageDescription: result?.imageDescription
+                                            };
+                                        })}
+                                    />
                                 </div>
                             </motion.div>
                         </motion.div>

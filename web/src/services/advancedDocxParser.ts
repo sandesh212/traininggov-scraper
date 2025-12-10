@@ -272,6 +272,12 @@ export class AdvancedDocxParser extends StructuredDocxParser {
 
             if (isInstructionTable) {
                 console.log(`📋 Detected as INSTRUCTION BLOCK`);
+
+                // Capture Q-text as potential heading if it's not just "Instructions"
+                if (qText.length < 100 && !/^instructions/i.test(qText)) {
+                    instructions.push(qText.toUpperCase()); // Emphasize heading
+                }
+
                 // The instructions are likely in the Answer text (right column)
                 // Split by newlines or bullets
                 const instLines = aText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
@@ -285,7 +291,18 @@ export class AdvancedDocxParser extends StructuredDocxParser {
 
             if (isInstruction) {
                 console.log(`📋 Detected as BLACK INSTRUCTION (guideline)`);
-                instructions.push(qText);
+                // Format as heading if short, otherwise just text
+                if (qText.length < 100) {
+                    instructions.push(qText.toUpperCase());
+                } else {
+                    instructions.push(qText);
+                }
+
+                // Capture accompanying Answer text too (often the body of the instruction)
+                if (aText && aText.length > 0) {
+                    const lines = aText.split('\n').map(l => l.trim()).filter(l => l);
+                    instructions.push(...lines);
+                }
                 continue;  // Don't process as Q&A
             }
 

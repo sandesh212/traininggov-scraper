@@ -613,9 +613,17 @@ export default function Home() {
                                                 {/* Right Column - Content */}
                                                 <div className="bg-white p-4">
                                                     <ul className="list-disc pl-5 space-y-2">
-                                                        {report.instructions.map((inst: string, i: number) => (
-                                                            <li key={i} className="text-sm text-black leading-relaxed">{inst}</li>
-                                                        ))}
+                                                        {report.instructions.map((inst: string, i: number) => {
+                                                            const isHeading = inst === inst.toUpperCase() && inst.length < 100 && inst.length > 3 && /[A-Z]/.test(inst);
+                                                            return (
+                                                                <li
+                                                                    key={i}
+                                                                    className={`text-sm text-black leading-relaxed ${isHeading ? 'font-bold mt-4 mb-2 list-none -ml-5 text-base' : ''}`}
+                                                                >
+                                                                    {inst}
+                                                                </li>
+                                                            );
+                                                        })}
                                                     </ul>
                                                 </div>
                                             </div>

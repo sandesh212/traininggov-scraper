@@ -1,7 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { Unit } from '../types';
-import { Trash2, RotateCcw, Plus, Search, Info, X, Loader2, CheckCircle, AlertCircle, Upload } from 'lucide-react';
+import { Trash2, RotateCcw, RefreshCw, Plus, Search, Info, X, Loader2, CheckCircle, AlertCircle, Upload, Table, LayoutGrid, ChevronRight, ChevronDown, Filter, Download, PanelLeft } from 'lucide-react';
+import { MaritimeView } from './MaritimeView';
+import { SHEET_CONFIGS } from '../config/maritimeConfig';
 
 interface UnitSummary {
     code: string;
@@ -18,11 +19,13 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [newUnitCode, setNewUnitCode] = useState('');
     const [adding, setAdding] = useState(false);
-    const [addResult, setAddResult] = useState<{ success: boolean; message: string; added?: string[]; failed?: { code: string; reason: string }[] } | null>(null);
+
     const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
     const [viewingUnit, setViewingUnit] = useState(false);
     const [processingUnit, setProcessingUnit] = useState<string | null>(null);
     const [uploading, setUploading] = useState(false);
+    const [headerMessage, setHeaderMessage] = useState<{ type: 'success' | 'error' | 'loading'; text: string } | null>(null);
+    const [showMaritimeView, setShowMaritimeView] = useState(false);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const [refreshingAll, setRefreshingAll] = useState(false);
@@ -31,9 +34,17 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
     const [confirmClear, setConfirmClear] = useState(false);
     const [confirmRefreshAll, setConfirmRefreshAll] = useState(false);
 
+    // Sidebar toggle state
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+    // New grouping states
+    const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+    const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
+    const [searchScope, setSearchScope] = useState<string>('all');
+
     useEffect(() => {
         fetchUnits();
-    }, []);
+    }, [searchScope]); // Reload when scope changes
 
     // Debounce search
     useEffect(() => {
@@ -48,6 +59,7 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         try {
             const params = new URLSearchParams();
             if (searchTerm) params.set('search', searchTerm);
+            if (searchScope !== 'all') params.set('scope', searchScope);
 
             const res = await fetch(`/api/units?${params.toString()}`, { cache: 'no-store' });
             const data = await res.json();
@@ -68,26 +80,36 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         if (!file) return;
 
         setUploading(true);
-        setAddResult(null);
 
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-            const res = await fetch('/api/units/upload', {
+            // Determine endpoint based on file type
+            const isScrapeFile = file.name.match(/\.(xlsx|xls|txt|csv)$/i);
+            const endpoint = isScrapeFile
+                ? '/api/units/scrape-from-file'
+                : '/api/units/upload';
+
+            setHeaderMessage({ type: 'loading', text: isScrapeFile ? 'Scraping started...' : 'Uploading...' });
+
+            const res = await fetch(endpoint, {
                 method: 'POST',
                 body: formData
             });
             const data = await res.json();
 
             if (res.ok) {
-                setAddResult({ success: true, message: data.message });
+                setHeaderMessage({ type: 'success', text: data.message || 'Success' });
                 fetchUnits();
+                setTimeout(() => setHeaderMessage(null), 5000);
             } else {
-                setAddResult({ success: false, message: data.error || 'Upload failed' });
+                setHeaderMessage({ type: 'error', text: data.error || 'Upload failed' });
+                setTimeout(() => setHeaderMessage(null), 5000);
             }
         } catch (err) {
-            setAddResult({ success: false, message: 'Network error during upload' });
+            setHeaderMessage({ type: 'error', text: 'Network error during upload' });
+            setTimeout(() => setHeaderMessage(null), 5000);
         } finally {
             setUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = ''; // Reset
@@ -98,13 +120,22 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         e.preventDefault();
         if (!newUnitCode.trim()) return;
 
+        const codeToCheck = newUnitCode.trim().toUpperCase();
+
+        const existingUnit = units.find(u => u.code === codeToCheck);
+        if (existingUnit) {
+            handleViewDetails(existingUnit.code);
+            setNewUnitCode('');
+            return;
+        }
+
         setAdding(true);
-        setAddResult(null);
+        setHeaderMessage({ type: 'loading', text: 'Adding unit...' });
         try {
             const res = await fetch('/api/units', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: newUnitCode.trim() })
+                body: JSON.stringify({ code: codeToCheck })
             });
             const data = await res.json();
 
@@ -115,28 +146,33 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                 let success = true;
                 let message = data.message;
 
-                // If nothing was added but there were failures, mark as failed
                 if (hasFailed && !hasAdded) {
                     success = false;
                     message = 'Failed to add units';
                 }
 
-                setAddResult({
-                    success,
-                    message,
-                    added: data.added,
-                    failed: data.failed
-                });
+                if (success) {
+                    setHeaderMessage({ type: 'success', text: message });
+                    setTimeout(() => setHeaderMessage(null), 5000);
+                } else {
+                    setHeaderMessage({ type: 'error', text: message });
+                    setTimeout(() => setHeaderMessage(null), 8000); // Longer for errors
+                }
 
                 if (hasAdded) {
                     setNewUnitCode('');
-                    fetchUnits(); // Refresh list
+                    await fetchUnits();
+                    if (data.added.length === 1) {
+                        handleViewDetails(data.added[0]);
+                    }
                 }
             } else {
-                setAddResult({ success: false, message: data.error || 'Failed to add unit' });
+                setHeaderMessage({ type: 'error', text: data.error || 'Failed to add unit' });
+                setTimeout(() => setHeaderMessage(null), 5000);
             }
         } catch (err) {
-            setAddResult({ success: false, message: 'Network error' });
+            setHeaderMessage({ type: 'error', text: 'Network error' });
+            setTimeout(() => setHeaderMessage(null), 5000);
         } finally {
             setAdding(false);
         }
@@ -195,20 +231,21 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
 
         setConfirmRefreshAll(false);
         setRefreshingAll(true);
+        setHeaderMessage({ type: 'loading', text: 'Refreshing all...' });
         try {
             const res = await fetch('/api/units/refresh', { method: 'POST' });
             const data = await res.json();
             if (res.ok) {
-                // Show success via addResult or similar toast mechanism if we had one, 
-                // for now we can just rely on the list updating or use a temporary success state.
-                // Re-using addResult for generic feedback:
-                setAddResult({ success: true, message: data.message });
+                setHeaderMessage({ type: 'success', text: data.message || 'Refreshed' });
                 fetchUnits();
+                setTimeout(() => setHeaderMessage(null), 4000);
             } else {
-                setAddResult({ success: false, message: 'Failed to refresh units' });
+                setHeaderMessage({ type: 'error', text: 'Failed to refresh units' });
+                setTimeout(() => setHeaderMessage(null), 4000);
             }
         } catch (err) {
-            setAddResult({ success: false, message: 'Failed to refresh units' });
+            setHeaderMessage({ type: 'error', text: 'Failed to refresh units' });
+            setTimeout(() => setHeaderMessage(null), 4000);
         } finally {
             setRefreshingAll(false);
         }
@@ -227,9 +264,11 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             await fetch('/api/units', { method: 'DELETE' });
             fetchUnits();
             setSelectedUnit(null);
-            setAddResult({ success: true, message: 'All units cleared' });
+            setHeaderMessage({ type: 'success', text: 'All units cleared' });
+            setTimeout(() => setHeaderMessage(null), 3000);
         } catch (err) {
-            setAddResult({ success: false, message: 'Failed to clear units' });
+            setHeaderMessage({ type: 'error', text: 'Failed to clear units' });
+            setTimeout(() => setHeaderMessage(null), 3000);
         } finally {
             setLoading(false);
         }
@@ -241,12 +280,15 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             const res = await fetch('/api/units/restore', { method: 'POST' });
             if (res.ok) {
                 fetchUnits();
-                setAddResult({ success: true, message: 'Units restored' });
+                setHeaderMessage({ type: 'success', text: 'Units restored' });
+                setTimeout(() => setHeaderMessage(null), 3000);
             } else {
-                setAddResult({ success: false, message: 'Nothing to undo' });
+                setHeaderMessage({ type: 'error', text: 'Nothing to undo' });
+                setTimeout(() => setHeaderMessage(null), 3000);
             }
         } catch (err) {
-            setAddResult({ success: false, message: 'Failed to restore' });
+            setHeaderMessage({ type: 'error', text: 'Failed to restore' });
+            setTimeout(() => setHeaderMessage(null), 3000);
         } finally {
             setLoading(false);
         }
@@ -269,412 +311,409 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         }
     };
 
-    // Filtering is now done server-side
-    // const filteredUnits = units.filter(u =>
-    //     u.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //     u.title.toLowerCase().includes(searchTerm.toLowerCase())
-    // );
+    const toggleCategory = (cat: string) => {
+        const next = new Set(expandedCategories);
+        if (next.has(cat)) next.delete(cat);
+        else next.add(cat);
+        setExpandedCategories(next);
+    };
+
+    // Group units logic
+    const groupedUnits = React.useMemo(() => {
+        const groups: Record<string, UnitSummary[]> = {};
+        const assignedCodes = new Set<string>();
+
+        // 1. Initialize Maritime Groups
+        SHEET_CONFIGS.forEach(c => {
+            if (c.name !== 'Assessment Conditions') groups[c.name] = [];
+        });
+
+        // 2. Assign to Predefined Maritime Groups
+        units.forEach(u => {
+            const code = u.code.toUpperCase();
+            for (const cfg of SHEET_CONFIGS) {
+                if (cfg.name === 'Assessment Conditions') continue;
+
+                if (cfg.filterPrefixes && cfg.filterPrefixes.some(p => code.startsWith(p))) {
+                    groups[cfg.name].push(u);
+                    assignedCodes.add(code);
+                    break;
+                }
+            }
+        });
+
+        // 3. Dynamic Grouping for Remaining Units
+        units.forEach(u => {
+            if (assignedCodes.has(u.code.toUpperCase())) return;
+
+            // Extract Training Package Prefix (first 3 letters are standard, e.g. BSB, CPC, TLI)
+            // We use 3 letters to group broadly by package rather than sub-sector
+            const match = u.code.match(/^([A-Z]{3})/i);
+            const prefix = match ? match[1].toUpperCase() : 'Other';
+
+            const categoryName = prefix;
+
+            if (!groups[categoryName]) {
+                groups[categoryName] = [];
+            }
+            groups[categoryName].push(u);
+        });
+
+        // 4. Sort Groups: Maritime First, then alphabetical
+        const sortedGroups: Record<string, UnitSummary[]> = {};
+
+        // Add predefined configs in order
+        SHEET_CONFIGS.forEach(c => {
+            if (groups[c.name]) sortedGroups[c.name] = groups[c.name];
+        });
+
+        // Add dynamic groups sorted alphabetically
+        Object.keys(groups)
+            .filter(k => !sortedGroups[k] && k !== 'Other')
+            .sort()
+            .forEach(k => sortedGroups[k] = groups[k]);
+
+        // Add 'Other' last if it exists
+        if (groups['Other'] && groups['Other'].length > 0) {
+            sortedGroups['Other'] = groups['Other'];
+        }
+
+        return sortedGroups;
+    }, [units]);
+
+    // Initialize expanded state once units are loaded or first time
+    useEffect(() => {
+        if (units.length > 0 && expandedCategories.size === 0) {
+            // Expand all by default as requested implicitly ("show all units from all categories")
+            setExpandedCategories(new Set(Object.keys(groupedUnits)));
+        }
+    }, [units.length, groupedUnits]);
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden border border-slate-200 dark:border-slate-800">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 md:p-4">
+            <div className="bg-white dark:bg-slate-900 w-full h-full md:w-[95vw] md:h-[90vh] md:max-w-[1800px] md:rounded-xl shadow-2xl flex flex-col overflow-hidden border border-slate-200 dark:border-slate-800">
 
-                {/* Header */}
-                <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
-                    <div>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Unit Management</h2>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                            Manage your local database of Units of Competency
-                        </p>
+                {/* Header: Centered Title, Global Actions on Right */}
+                <div className="h-16 px-4 md:px-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-between shrink-0 relative gap-4">
+
+                    {/* Left: Toggle & Stats */}
+                    <div className="hidden md:flex items-center gap-4 text-xs text-slate-500 w-1/3 min-w-0 flex-1">
+                        <button
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className={`p-2 rounded-lg transition-colors ${!isSidebarOpen ? 'bg-blue-50 text-blue-700' : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500'}`}
+                            title={isSidebarOpen ? "Collapse List" : "Expand List"}
+                        >
+                            <PanelLeft className="w-5 h-5" />
+                        </button>
+
+                        <div className="h-4 w-px bg-slate-300 dark:bg-slate-700 mx-1"></div>
+
+                        <span className="font-medium bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded-full text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                            {totalCount} Units
+                        </span>
+                        {lastUpdated && <span className="truncate">Updated {new Date(lastUpdated).toLocaleDateString()} {new Date(lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>}
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors">
-                        <X className="w-6 h-6 text-slate-500" />
-                    </button>
+
+                    {/* Center: Title (Flex item, not absolute) */}
+                    <div className="text-center flex-shrink-0">
+                        <h2 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white tracking-tight whitespace-nowrap">The Validator by SMT</h2>
+                    </div>
+
+                    {/* Right: Global Actions */}
+                    <div className="flex items-center gap-2 w-1/3 justify-end flex-1 min-w-0">
+
+                        <div className="flex items-center gap-1 mr-4 border-r border-slate-300 dark:border-slate-700 pr-4 shrink-0">
+                            {/* Hidden File Input */}
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleUploadFile}
+                                className="hidden"
+                                accept=".json,.jsonl,.txt,.xlsx,.xls"
+                            />
+
+                            {/* Dynamic Upload/Status Button */}
+                            {headerMessage ? (
+                                <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold animate-in fade-in zoom-in-95 transition-all
+                                    ${headerMessage.type === 'loading' ? 'bg-blue-100 text-blue-700' :
+                                        headerMessage.type === 'success' ? 'bg-green-100 text-green-700' :
+                                            'bg-red-100 text-red-700'}`}>
+                                    {headerMessage.type === 'loading' && <Loader2 className="w-4 h-4 animate-spin shrink-0" />}
+                                    {headerMessage.type === 'success' && <CheckCircle className="w-4 h-4 shrink-0" />}
+                                    {headerMessage.type === 'error' && <AlertCircle className="w-4 h-4 shrink-0" />}
+                                    <span className="whitespace-nowrap">{headerMessage.text}</span>
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={() => fileInputRef.current?.click()}
+                                    disabled={uploading}
+                                    className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-600 dark:text-slate-400"
+                                    title="Upload / Scrape File"
+                                >
+                                    <Upload className="w-5 h-5" />
+                                </button>
+                            )}
+
+                            {units.length > 0 && (
+                                <>
+                                    <button
+                                        onClick={handleRefreshAll}
+                                        disabled={refreshingAll}
+                                        className={`p-2 rounded-lg transition-colors ${confirmRefreshAll ? 'text-amber-600 bg-amber-50 dark:text-amber-400 dark:bg-amber-900/20' : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+                                        title="Refresh All"
+                                    >
+                                        {refreshingAll ? <Loader2 className="w-5 h-5 animate-spin" /> : <RefreshCw className="w-5 h-5" />}
+                                    </button>
+
+                                    <button
+                                        onClick={handleClearAll}
+                                        className={`p-2 rounded-lg transition-colors ${confirmClear ? 'text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20' : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+                                        title="Clear All"
+                                    >
+                                        <Trash2 className="w-5 h-5" />
+                                    </button>
+                                </>
+                            )}
+                        </div>
+
+                        <button onClick={onClose} className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors shrink-0">
+                            <X className="w-6 h-6 text-slate-500" />
+                        </button>
+                    </div>
                 </div>
 
-                {/* Content */}
-                <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
+                {/* Content Area */}
+                <div className="flex-1 min-h-0 flex flex-col md:flex-row relative transition-all">
 
-                    {/* Left Panel: List & Actions */}
-                    <div className="flex-1 flex flex-col border-r border-slate-200 dark:border-slate-800 min-w-[300px]">
+                    {/* Left Panel: Sidebar */}
+                    <div className={`${(selectedUnit && viewingUnit) ? 'hidden md:flex' : 'flex'} w-full border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 z-20 md:flex-none transition-all duration-300 ease-in-out
+                        ${isSidebarOpen ? 'md:w-[320px] opacity-100' : 'md:w-0 md:border-r-0 opacity-100 md:opacity-0 overflow-hidden'}`}>
 
-                        {/* Toolbar */}
-                        <div className="p-4 border-b border-slate-200 dark:border-slate-800 space-y-4">
+                        {/* Fixed Width Inner Container to prevent layout squishing during transition */}
+                        <div className="w-full md:w-[320px] h-full flex flex-col">
 
-                            {/* Stats & Timestamp */}
-                            <div className="flex justify-between items-center text-xs text-slate-500">
-                                <span>{totalCount} Units Stored</span>
-                                {lastUpdated && <span>Updated: {new Date(lastUpdated).toLocaleString()}</span>}
-                            </div>
-
-                            {/* Add Unit Form */}
-                            <form onSubmit={handleAddUnit} className="flex gap-2">
-                                <div className="relative flex-1">
+                            {/* Top: Search & Filter */}
+                            <div className="p-4 border-b border-slate-100 dark:border-slate-800 space-y-3 bg-slate-50/50 dark:bg-slate-900/50">
+                                {/* Search Bar */}
+                                <div className="relative group flex items-center border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 focus-within:ring-2 focus-within:ring-blue-500 shadow-sm transition-shadow">
+                                    <div className="pl-3 flex items-center pointer-events-none">
+                                        <Search className="w-4 h-4 text-slate-400" />
+                                    </div>
                                     <input
                                         type="text"
-                                        placeholder="Unit codes (e.g. BSBADM502, HLTAID011)"
-                                        className="w-full px-3 py-2 pr-8 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                                        value={newUnitCode}
-                                        onChange={e => setNewUnitCode(e.target.value.toUpperCase())}
+                                        placeholder="Search units..."
+                                        className="flex-1 w-full min-w-0 bg-transparent border-none text-sm px-2 py-2.5 focus:ring-0 outline-none placeholder:text-slate-400 text-slate-900 dark:text-slate-100 font-medium"
+                                        value={searchTerm}
+                                        onChange={e => setSearchTerm(e.target.value)}
+                                        autoComplete="off"
                                     />
-                                    {newUnitCode && (
-                                        <button
-                                            type="button"
-                                            onClick={() => setNewUnitCode('')}
-                                            className="absolute right-2 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
-                                        >
+                                    {searchTerm && (
+                                        <button onClick={() => setSearchTerm('')} className="px-2 text-slate-400 hover:text-slate-600">
                                             <X className="w-4 h-4" />
                                         </button>
                                     )}
                                 </div>
-                                <button
-                                    type="submit"
-                                    disabled={adding || !newUnitCode}
-                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center gap-2 disabled:opacity-50 transition-colors"
-                                >
-                                    {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                                    Add
-                                </button>
-                            </form>
 
-                            {/* Upload Button */}
-                            <div className="flex gap-2">
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    onChange={handleUploadFile}
-                                    className="hidden"
-                                    accept=".json,.jsonl,.txt"
-                                />
-                                <button
-                                    onClick={() => fileInputRef.current?.click()}
-                                    disabled={uploading}
-                                    className="w-full px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
-                                >
-                                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                                    Upload Local File (JSON/JSONL)
-                                </button>
+                                {/* Filters Row */}
+                                <div className="flex gap-2">
+                                    {/* Scope */}
+                                    <div className="relative flex-1">
+                                        <select
+                                            value={searchScope}
+                                            onChange={e => setSearchScope(e.target.value)}
+                                            className="w-full appearance-none bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-3 pr-8 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer outline-none hover:border-slate-400 focus:ring-1 focus:ring-blue-500"
+                                        >
+                                            <option value="all">Check All Fields</option>
+                                            <option value="code">Check Code</option>
+                                            <option value="title">Check Title</option>
+                                            <option value="content">Check Content</option>
+                                        </select>
+                                        <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
+                                    </div>
+
+                                    {/* Category */}
+                                    <div className="relative w-1/3 min-w-[100px]" title="Filter Categories">
+                                        <select
+                                            value={categoryFilter}
+                                            onChange={e => setCategoryFilter(e.target.value)}
+                                            className="w-full h-full opacity-0 absolute inset-0 cursor-pointer z-10"
+                                        >
+                                            <option value="ALL">All Tags</option>
+                                            {Object.keys(groupedUnits).map(cat => (
+                                                <option key={cat} value={cat}>{cat}</option>
+                                            ))}
+                                        </select>
+                                        <div className={`w-full h-full flex items-center justify-between px-3 py-1.5 rounded-lg border transition-colors ${categoryFilter !== 'ALL' ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-600'}`}>
+                                            <span className="text-xs font-medium truncate">{categoryFilter === 'ALL' ? 'Tags' : categoryFilter}</span>
+                                            <Filter className="w-3 h-3 opacity-50 ml-1" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* Inline Notification Area */}
-                            {addResult && (
-                                <div className={`text-xs p-2 rounded border ${addResult.success ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400' : 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400'}`}>
-                                    <div className="flex items-center gap-2 font-medium">
-                                        {addResult.success ? <CheckCircle className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
-                                        {addResult.message}
-                                    </div>
-                                    {addResult.failed && addResult.failed.length > 0 && (
-                                        <div className="mt-1 pl-5 space-y-0.5 opacity-90">
-                                            {addResult.failed.map((f, i) => (
-                                                <div key={i}>• {f.code}: {f.reason}</div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
+                            {/* Middle: Unit List */}
+                            <div className="flex-1 overflow-y-auto p-2 space-y-1">
+                                {loading && units.length === 0 ? (
+                                    <div className="flex justify-center p-8 text-slate-400"><Loader2 className="w-6 h-6 animate-spin" /></div>
+                                ) : units.length === 0 ? (
+                                    <div className="text-center p-8 text-slate-400 text-sm">No units found.</div>
+                                ) : (
+                                    Object.entries(groupedUnits).map(([category, categoryUnits]) => {
+                                        if (categoryFilter !== 'ALL' && category !== categoryFilter) return null;
+                                        if (categoryUnits.length === 0) return null;
 
-                            {/* Search */}
-                            <div className="relative">
-                                <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="text"
-                                    placeholder="Search units & content..."
-                                    className="w-full pl-9 pr-8 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                                    value={searchTerm}
-                                    onChange={e => setSearchTerm(e.target.value)}
-                                />
-                                {searchTerm && (
-                                    <button
-                                        type="button"
-                                        onClick={() => setSearchTerm('')}
-                                        className="absolute right-2 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
+                                        const isExpanded = expandedCategories.has(category) || categoryFilter !== 'ALL';
+
+                                        return (
+                                            <div key={category} className="mb-3">
+                                                {categoryFilter === 'ALL' && (
+                                                    <button
+                                                        onClick={() => toggleCategory(category)}
+                                                        className="w-full flex items-center justify-between px-2 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors"
+                                                    >
+                                                        <span className="flex items-center gap-1">
+                                                            {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+                                                            {category}
+                                                        </span>
+                                                    </button>
+                                                )}
+
+                                                {isExpanded && (
+                                                    <div className="space-y-1 mt-1">
+                                                        {categoryUnits.map(unit => (
+                                                            <div
+                                                                key={unit.code}
+                                                                onClick={() => handleViewDetails(unit.code)}
+                                                                className={`px-3 py-3 rounded-lg cursor-pointer transition-all border ${selectedUnit?.code === unit.code ? 'bg-blue-50 border-blue-200 shadow-sm z-10' : 'bg-white border-transparent hover:bg-slate-50 hover:border-slate-100'} dark:bg-slate-900/50 dark:hover:bg-slate-800`}
+                                                            >
+                                                                <div className="flex justify-between items-start mb-0.5">
+                                                                    <span className={`font-bold text-sm leading-none ${selectedUnit?.code === unit.code ? 'text-blue-700' : 'text-slate-700 dark:text-slate-200'}`}>
+                                                                        {unit.code}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="text-xs text-slate-500 dark:text-slate-400 leading-tight line-clamp-2">
+                                                                    {unit.title}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })
                                 )}
                             </div>
 
-                            {/* Global Actions */}
-                            <div className="flex gap-2 pt-2">
-                                <button
-                                    onClick={handleRefreshAll}
-                                    disabled={refreshingAll}
-                                    className={`flex-1 px-3 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50 ${confirmRefreshAll ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' : 'bg-blue-50 hover:bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30'}`}
-                                >
-                                    {refreshingAll ? <Loader2 className="w-3 h-3 animate-spin" /> : <RotateCcw className="w-3 h-3" />}
-                                    {confirmRefreshAll ? 'Confirm?' : 'Refresh All'}
-                                </button>
-                                <button
-                                    onClick={handleClearAll}
-                                    className={`flex-1 px-3 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-2 transition-colors ${confirmClear ? 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300' : 'bg-red-50 hover:bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'}`}
-                                >
-                                    <Trash2 className="w-3 h-3" />
-                                    {confirmClear ? 'Confirm?' : 'Clear All'}
-                                </button>
-                            </div>
-                            <button
-                                onClick={handleUndo}
-                                className="w-full px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 rounded-lg text-xs font-medium flex items-center justify-center gap-2 transition-colors"
-                            >
-                                <RotateCcw className="w-3 h-3" /> Undo Delete
-                            </button>
-                        </div>
-
-                        {/* Unit List */}
-                        <div className="flex-1 overflow-y-auto p-2 space-y-1">
-                            {loading && units.length === 0 ? (
-                                <div className="flex justify-center p-8 text-slate-400"><Loader2 className="w-6 h-6 animate-spin" /></div>
-                            ) : units.length === 0 ? (
-                                <div className="text-center p-8 text-slate-400 text-sm">No units found.</div>
-                            ) : (
-                                units.map(unit => (
-                                    <div
-                                        key={unit.code}
-                                        onClick={() => handleViewDetails(unit.code)}
-                                        className={`p-3 rounded-lg cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 ${selectedUnit?.code === unit.code ? 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}
-                                    >
-                                        <div className="flex justify-between items-start">
-                                            <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm">{unit.code}</span>
-                                            <span className="text-xs text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{unit.elementCount} Elements</span>
-                                        </div>
-                                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{unit.title}</div>
+                            {/* Bottom: Add Unit Section (Distinct Footer) */}
+                            <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+                                <form onSubmit={handleAddUnit} className="flex gap-2">
+                                    <div className="relative flex-1">
+                                        <input
+                                            type="text"
+                                            placeholder="Add Unit Code..."
+                                            className="w-full pl-3 pr-8 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                            value={newUnitCode}
+                                            onChange={e => setNewUnitCode(e.target.value.toUpperCase())}
+                                        />
+                                        {newUnitCode && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setNewUnitCode('')}
+                                                className="absolute right-2 top-2.5 text-slate-400 hover:text-slate-600"
+                                            >
+                                                <X className="w-4 h-4" />
+                                            </button>
+                                        )}
                                     </div>
-                                ))
-                            )}
+                                    <button
+                                        type="submit"
+                                        disabled={adding || !newUnitCode}
+                                        className="px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center disabled:opacity-50"
+                                    >
+                                        {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-5 h-5" />}
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
 
                     {/* Right Panel: Details View */}
-                    <div className="flex-[1.5] bg-slate-50 dark:bg-slate-950/50 overflow-y-auto p-6">
+                    <div className={`${(selectedUnit && viewingUnit) ? 'flex' : 'hidden md:flex'} flex-1 bg-white dark:bg-slate-950 p-0 flex-col min-h-0 overflow-hidden w-full relative z-10`}>
                         {selectedUnit ? (
-                            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{selectedUnit.code}</h3>
-                                        <h4 className="text-lg text-slate-700 dark:text-slate-300 mt-1">{selectedUnit.title}</h4>
+                            <>
+                                {/* Mobile Back Button */}
+                                <div className="md:hidden p-2 border-b border-slate-200 flex items-center bg-white z-20">
+                                    <button
+                                        onClick={() => { setViewingUnit(false); setSelectedUnit(null); }}
+                                        className="flex items-center gap-2 text-sm font-medium text-slate-600 px-2 py-1"
+                                    >
+                                        <ChevronDown className="w-4 h-4 rotate-90" /> Back to List
+                                    </button>
+                                </div>
+
+                                {/* Unit Header Actions */}
+                                <div className="p-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col items-start gap-3 shrink-0 z-10 relative">
+                                    <div className="flex w-full justify-between items-start">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                                                {selectedUnit.code}
+                                            </span>
+                                            {SHEET_CONFIGS.find(cfg => (cfg.filterPrefixes || []).some(prefix => selectedUnit?.code.startsWith(prefix))) && (
+                                                <span className="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-blue-50 text-blue-700 border border-blue-100">
+                                                    {SHEET_CONFIGS.find(cfg => (cfg.filterPrefixes || []).some(prefix => selectedUnit?.code.startsWith(prefix)))?.name}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => window.location.href = `/api/units/export?unit=${selectedUnit.code}`}
+                                                className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                                title="Download Excel"
+                                            >
+                                                <Download className="w-5 h-5" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleRefreshUnit(selectedUnit.code)}
+                                                disabled={processingUnit === selectedUnit.code}
+                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                            >
+                                                {processingUnit === selectedUnit.code ? <Loader2 className="w-5 h-5 animate-spin" /> : <RotateCcw className="w-5 h-5" />}
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteUnit(selectedUnit.code)}
+                                                disabled={processingUnit === selectedUnit.code}
+                                                className={`p-2 rounded-lg transition-colors ${confirmDelete === selectedUnit.code ? 'text-red-600 bg-red-50' : 'text-slate-400 hover:text-red-600 hover:bg-red-50'}`}
+                                            >
+                                                <Trash2 className="w-5 h-5" />
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => handleRefreshUnit(selectedUnit.code)}
-                                            disabled={processingUnit === selectedUnit.code}
-                                            className="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                                            title="Update from training.gov.au"
-                                        >
-                                            {processingUnit === selectedUnit.code ? <Loader2 className="w-5 h-5 animate-spin" /> : <RotateCcw className="w-5 h-5" />}
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteUnit(selectedUnit.code)}
-                                            disabled={processingUnit === selectedUnit.code}
-                                            className={`p-2 rounded-lg transition-colors ${confirmDelete === selectedUnit.code ? 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400' : 'text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'}`}
-                                            title="Delete Unit"
-                                        >
-                                            {processingUnit === selectedUnit.code ? <Loader2 className="w-5 h-5 animate-spin" /> : confirmDelete === selectedUnit.code ? <span className="text-xs font-bold px-1">Confirm?</span> : <Trash2 className="w-5 h-5" />}
-                                        </button>
+
+                                    <div className="flex items-center gap-3">
+                                        <h1 className="text-lg font-medium text-slate-700 dark:text-slate-200 leading-snug max-w-2xl">
+                                            {selectedUnit.title}
+                                        </h1>
+                                        <a href={`https://training.gov.au/Training/Details/${selectedUnit.code}`} target="_blank" rel="noreferrer" className="text-slate-300 hover:text-blue-500 transition-colors">
+                                            <span className="sr-only">External Link</span>
+                                            <div className="w-5 h-5 rounded-full border border-current flex items-center justify-center text-[10px]">↗</div>
+                                        </a>
                                     </div>
                                 </div>
 
-                                {selectedUnit.modificationHistory && (
-                                    <div>
-                                        <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800 mb-3">Modification History</h5>
-                                        <div className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800 font-mono text-xs">
-                                            {selectedUnit.modificationHistory}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {selectedUnit.application && (
-                                    <div>
-                                        <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800 mb-3">Application</h5>
-                                        <div className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-                                            {selectedUnit.application}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {selectedUnit.unitSector && (
-                                    <div>
-                                        <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800 mb-3">Unit Sector</h5>
-                                        <div className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-                                            {selectedUnit.unitSector}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Elements & Performance Criteria - Unified Table */}
-                                <div className="space-y-3">
-                                    <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800">Elements & Performance Criteria</h5>
-                                    <div className="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
-                                        <table className="w-full text-sm text-left">
-                                            <thead className="bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 font-semibold border-b border-slate-200 dark:border-slate-700">
-                                                <tr>
-                                                    <th className="px-4 py-2 w-28">Criteria</th>
-                                                    <th className="px-4 py-2">Performance Criteria</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                                                {selectedUnit.elements.map((el, elIdx) => (
-                                                    <React.Fragment key={elIdx}>
-                                                        {/* Element Title Row */}
-                                                        <tr className="bg-slate-100/80 dark:bg-slate-800/80">
-                                                            <td colSpan={2} className="px-4 py-2 font-semibold text-slate-800 dark:text-slate-200">
-                                                                {el.title}
-                                                            </td>
-                                                        </tr>
-                                                        {/* PC Rows */}
-                                                        {el.performanceCriteria.map((pc, pcIdx) => {
-                                                            let cleanText = pc.text.trim();
-                                                            // Aggressively strip ID if the text starts with it (e.g. "1.1" in "1.1 Nature...")
-                                                            if (cleanText.startsWith(pc.id)) {
-                                                                cleanText = cleanText.substring(pc.id.length).trim();
-                                                            }
-                                                            // Also cleanup common leading separators users might have put in text column
-                                                            // e.g. "1.1. Nature" -> "Nature", or just "Nature"
-                                                            cleanText = cleanText.replace(/^[\.\-\:\)\s]+/, '');
-
-                                                            return (
-                                                                <tr key={`${elIdx}-${pcIdx}`} className="border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                                                                    <td className="px-4 py-2 font-mono text-xs text-slate-500 align-top border-r border-slate-100 dark:border-slate-800/50">
-                                                                        {pc.id}
-                                                                    </td>
-                                                                    <td className="px-4 py-2 text-slate-700 dark:text-slate-300">
-                                                                        {cleanText}
-                                                                    </td>
-                                                                </tr>
-                                                            );
-                                                        })}
-                                                    </React.Fragment>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                {/* Scrollable Maritime Format View */}
+                                <div className="flex-1 overflow-y-auto bg-slate-50/50 dark:bg-slate-950/50 scroll-smooth">
+                                    <div className="min-h-full pb-20">
+                                        <MaritimeView
+                                            isEmbedded={true}
+                                            selectedUnit={selectedUnit}
+                                        />
                                     </div>
                                 </div>
-
-                                {/* Helper for rendering evidence strings as tables */}
-                                {(() => {
-                                    const renderEvidenceTable = (title: string, content?: string) => {
-                                        if (!content) return null;
-
-                                        // Split by newline. We could also try splitting by strict bullet patterns if text is clumped,
-                                        // but usually newlines are the reliable delimiter.
-                                        const lines = content.split('\n').filter(line => line.trim());
-
-                                        return (
-                                            <div>
-                                                <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800 mb-3">{title}</h5>
-                                                <div className="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
-                                                    <table className="w-full text-sm text-left">
-                                                        <thead className="bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 font-semibold border-b border-slate-200 dark:border-slate-700">
-                                                            <tr>
-                                                                <th className="px-4 py-2 w-28">ID</th>
-                                                                <th className="px-4 py-2">Evidence</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                                                            {lines.map((line, idx) => {
-                                                                let id = '';
-                                                                let text = line.trim();
-
-                                                                // Capture first "word" token as probable ID. Allow it to be mashed with text (no space required in regex, though we prefer it).
-                                                                // e.g. "1.1Nature" -> id="1.1", text="Nature"
-                                                                const match = line.match(/^\s*([^\s]{1,15})\s*(.*)$/);
-
-                                                                let candidateId = match ? match[1] : '';
-                                                                let remainder = match ? match[2] : line;
-
-                                                                const looksLikeId = candidateId && (
-                                                                    /^[\d\.\-\•\)\(\*\>]+$/.test(candidateId) || // 1.1, -, •
-                                                                    /^([A-Z]{1,2}|KE|PE|AC|PC)[\d\.]*$/i.test(candidateId) || // P1, K12, KE1.0
-                                                                    (candidateId.length < 6 && /[\d]/.test(candidateId)) // Short & has digit
-                                                                );
-
-                                                                if (looksLikeId) {
-                                                                    id = candidateId;
-                                                                    text = remainder;
-                                                                } else {
-                                                                    // If no separated ID found, check if the line ITSELF starts with a bullet pattern that wasn't separated
-                                                                    // e.g. "Values of X" (Values looks like ID? No.)
-                                                                    // But if user wants to strip bullets that are embedded:
-                                                                    const embeddedBullet = line.match(/^(\s*[\•\-\u2022]\s+)(.*)/);
-                                                                    if (embeddedBullet) {
-                                                                        id = "•";
-                                                                        text = embeddedBullet[2];
-                                                                    }
-                                                                }
-
-                                                                // Final polish: Strip repeating ID or leading punctuation from text
-                                                                if (id && text.startsWith(id)) {
-                                                                    text = text.substring(id.length).trim();
-                                                                }
-                                                                text = text.replace(/^[\.\-\:\)\s]+/, '');
-
-                                                                // If we found an ID, render as split row. 
-                                                                // If text is effectively empty but id exists (rare), behave carefully.
-                                                                if (id) {
-                                                                    return (
-                                                                        <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                                                                            <td className="px-4 py-2 font-mono text-xs text-slate-500 align-top whitespace-nowrap">{id}</td>
-                                                                            <td className="px-4 py-2 text-slate-700 dark:text-slate-300">{text}</td>
-                                                                        </tr>
-                                                                    );
-                                                                } else {
-                                                                    return (
-                                                                        <tr key={idx} className="bg-slate-50/50 dark:bg-slate-800/30">
-                                                                            <td colSpan={2} className="px-4 py-2 text-slate-800 dark:text-slate-200 font-medium">
-                                                                                {line}
-                                                                            </td>
-                                                                        </tr>
-                                                                    );
-                                                                }
-                                                            })}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        );
-                                    };
-
-                                    return (
-                                        <>
-                                            {renderEvidenceTable('Performance Evidence', selectedUnit.performanceEvidence)}
-                                            {renderEvidenceTable('Knowledge Evidence', selectedUnit.knowledgeEvidence)}
-                                            {renderEvidenceTable('Assessment Conditions', selectedUnit.assessmentConditions)}
-                                        </>
-                                    );
-                                })()}
-
-                                {/* Dynamic Sections (Any other sections not explicitly handled) */}
-                                {selectedUnit.dynamicSections?.map((section, idx) => {
-                                    const standardSections = [
-                                        'Modification History',
-                                        'Application',
-                                        'Unit Sector',
-                                        'Elements and Performance Criteria',
-                                        'Foundation Skills',
-                                        'Knowledge Evidence',
-                                        'Performance Evidence',
-                                        'Assessment Conditions'
-                                    ];
-
-                                    // Skip if it's a standard section we already showed
-                                    if (standardSections.some(s => section.title.toLowerCase().includes(s.toLowerCase()))) {
-                                        return null;
-                                    }
-
-                                    return (
-                                        <div key={idx}>
-                                            <h5 className="font-semibold text-slate-900 dark:text-white border-b pb-2 border-slate-200 dark:border-slate-800 mb-3">{section.title}</h5>
-                                            <div className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-                                                {section.content}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                            </>
                         ) : (
-                            <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-4">
-                                <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center">
-                                    <Info className="w-8 h-8 text-slate-300" />
-                                </div>
+                            <div className="h-full flex flex-col items-center justify-center text-slate-300 space-y-4">
+                                <Search className="w-12 h-12 opacity-20" />
                                 <p>Select a unit to view details</p>
                             </div>
                         )}

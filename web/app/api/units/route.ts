@@ -15,22 +15,48 @@ export async function GET(req: NextRequest) {
 
         const totalCount = units.length;
 
+        const scope = searchParams.get('scope') || 'all';
+
         if (search) {
             units = units.filter(u => {
-                // Basic fields
-                if (u.code.toLowerCase().includes(search) || u.title.toLowerCase().includes(search)) return true;
+                const s = search; // already lowercased above
 
-                // Deep search
-                if (u.description?.toLowerCase().includes(search)) return true;
-                if (u.knowledgeEvidence?.toLowerCase().includes(search)) return true;
-                if (u.performanceEvidence?.toLowerCase().includes(search)) return true;
-                if (u.assessmentConditions?.toLowerCase().includes(search)) return true;
+                // Scope: Code
+                if (scope === 'code' || scope === 'all') {
+                    if (u.code.toLowerCase().includes(s)) return true;
+                }
 
-                // Search in elements and PC
-                return u.elements.some(el =>
-                    el.title.toLowerCase().includes(search) ||
-                    el.performanceCriteria.some(pc => pc.text.toLowerCase().includes(search))
-                );
+                // Scope: Title
+                if (scope === 'title' || scope === 'all') {
+                    if (u.title.toLowerCase().includes(s)) return true;
+                }
+
+                // Scope: Content (Deep Search) - Only if scope is 'content' or 'all'
+                // Note: If scope is SPECIFICALLY 'content', we might skip code/title check? 
+                // Usually 'all' includes content. 'content' might mean JUST content. 
+                // Let's assume 'content' means "Everything including body". 
+                // But if user picks "Title", checks only title.
+
+                if (scope === 'content' || scope === 'all') {
+                    if (u.description?.toLowerCase().includes(s)) return true;
+                    if (u.knowledgeEvidence?.toLowerCase().includes(s)) return true;
+                    if (u.performanceEvidence?.toLowerCase().includes(s)) return true;
+                    if (u.assessmentConditions?.toLowerCase().includes(s)) return true;
+
+                    // Search in elements and PC
+                    if (u.elements.some(el =>
+                        el.title.toLowerCase().includes(s) ||
+                        el.performanceCriteria.some(pc => pc.text.toLowerCase().includes(s))
+                    )) return true;
+
+                    // Search in dynamic sections
+                    if (u.sections && u.sections.some(sec =>
+                        sec.heading.toLowerCase().includes(s) ||
+                        sec.paragraphs.some(p => p.toLowerCase().includes(s))
+                    )) return true;
+                }
+
+                return false;
             });
         }
 
@@ -41,6 +67,15 @@ export async function GET(req: NextRequest) {
             url: u.url || `https://training.gov.au/Training/Details/${u.code}`,
             elementCount: u.elements.length
         }));
+
+        if (searchParams.get('full') === 'true') {
+            return NextResponse.json({
+                units: units, // Full units
+                count: units.length,
+                totalCount: totalCount,
+                lastUpdated: lastUpdated ? lastUpdated.toISOString() : null
+            });
+        }
 
         return NextResponse.json({
             units: simpleList,

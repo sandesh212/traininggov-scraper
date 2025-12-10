@@ -54,7 +54,7 @@ export class AdvancedDocxParser extends StructuredDocxParser {
     } {
         // Extract the document heading (bold, big, red text at start)
         const titleFormatted = this.extractDocumentHeading(buffer);
-        
+
         // Get basic Q&A pairs from parent
         const pairs = this.parseStructuredQA(buffer);
 
@@ -80,64 +80,64 @@ export class AdvancedDocxParser extends StructuredDocxParser {
     private extractDocumentHeading(buffer: Buffer): DocumentHeading | null {
         const zip = new AdmZip(buffer);
         const documentXml = zip.readAsText('word/document.xml');
-        
+
         // Parse first few paragraphs to find the heading
         const pRegex = /<w:p(?: [^>]*)?>([\s\S]*?)<\/w:p>/g;
         const paragraphs: string[] = [];
         let pMatch;
         let count = 0;
-        
+
         // Get first 5 paragraphs
         while ((pMatch = pRegex.exec(documentXml)) !== null && count < 5) {
             paragraphs.push(pMatch[1]);
             count++;
         }
-        
+
         // Analyze each paragraph for heading characteristics
         for (let i = 0; i < paragraphs.length; i++) {
             const pContent = paragraphs[i];
-            
+
             // Extract text and formatting
             let text = '';
             let isBold = false;
             let isRed = false;
             let maxSize = 0;
-            
+
             const rRegex = /<w:r(?: [^>]*)?>([\s\S]*?)<\/w:r>/g;
             let rMatch;
-            
+
             while ((rMatch = rRegex.exec(pContent)) !== null) {
                 const rContent = rMatch[1];
-                
+
                 // Check for bold
                 if (/<w:b\/>/.test(rContent) || /<w:b\s+w:val="true"/.test(rContent)) {
                     isBold = true;
                 }
-                
+
                 // Check for red color
-                if (/<w:color\s+w:val="FF0000"/i.test(rContent) || 
+                if (/<w:color\s+w:val="FF0000"/i.test(rContent) ||
                     /<w:color\s+w:val="ED1C24"/i.test(rContent) ||
                     /<w:color\s+w:val="C00000"/i.test(rContent) ||
                     /<w:color\s+w:val="E60000"/i.test(rContent)) {
                     isRed = true;
                 }
-                
+
                 // Check font size
                 const szMatch = /<w:sz\s+w:val="(\d+)"/.exec(rContent);
                 if (szMatch) {
                     const size = parseInt(szMatch[1]) / 2; // Half-points to points
                     if (size > maxSize) maxSize = size;
                 }
-                
+
                 // Extract text
                 const tMatch = /<w:t(?: [^>]*)?>([\s\S]*?)<\/w:t>/.exec(rContent);
                 if (tMatch) {
                     text += tMatch[1];
                 }
             }
-            
+
             text = text.trim();
-            
+
             // Check if this looks like a heading:
             // 1. Has substantial text (not just whitespace)
             // 2. Is bold OR large (>= 14pt) OR red
@@ -145,10 +145,10 @@ export class AdvancedDocxParser extends StructuredDocxParser {
             // 4. Appears in first 3 paragraphs
             if (text && text.length < 200 && i < 3) {
                 const isLarge = maxSize >= 14;
-                const looksLikeHeading = (isBold || isLarge || isRed) && 
-                                        !text.toLowerCase().includes('instruction') &&
-                                        !/^\d+\./.test(text); // Not a numbered item
-                
+                const looksLikeHeading = (isBold || isLarge || isRed) &&
+                    !text.toLowerCase().includes('instruction') &&
+                    !/^\d+\./.test(text); // Not a numbered item
+
                 if (looksLikeHeading) {
                     return {
                         text,
@@ -160,7 +160,7 @@ export class AdvancedDocxParser extends StructuredDocxParser {
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -205,6 +205,49 @@ export class AdvancedDocxParser extends StructuredDocxParser {
                 continue;
             }
 
+            // 0. SPLITTING CLUMPED CONTENT (Instructions + Question) - Only for the FIRST valid question found
+            // User Rule: Instructions are at the start, have NO numbers, and appear before Question 1 (which usually HAS a number).
+            // We strip everything before the first "numbered question marker".
+            if (!foundFirstQuestion) {
+                // Regex looks for:
+                // 1. Start of string (^) OR Newline (\n)
+                // 2. Optional whitespace
+                // 3. Number marker: "1.", "1)", "Q1", "Question 1"
+                // 4. Followed by space/tab
+                const splitRegex = /(?:^|\n)\s*((?:\d+[\.\)]|Q\d+\.?|Question\s+\d+)[\t\s]+)/;
+                const match = splitRegex.exec(qText);
+
+                // If we found a numbered start marker
+                if (match) {
+                    // The start of the question is the beginning of the capturing group (match[1])
+                    // match.index is the start of the match (including newline).
+                    // We need the index of the actual text start.
+
+                    // Helper: match[0] is "\n1. ", match[1] is "1. "
+                    // We want to cut right before "1. "
+
+                    const matchIndex = match.index;
+                    // Adjust for the newline if it was part of the match
+                    const splitPoint = qText.indexOf(match[1], matchIndex);
+
+                    if (splitPoint > 0) {
+                        const preamble = qText.substring(0, splitPoint).trim();
+                        const realQuestion = qText.substring(splitPoint).trim();
+
+                        // If we have a preamble, it's the instructions
+                        if (preamble.length > 0) {
+                            console.log('✂️  Splitting Instructions from Question 1 based on first number marker');
+
+                            // Add to instructions list (splitting by lines)
+                            const preambleLines = preamble.split('\n').map(l => l.trim()).filter(l => l);
+                            instructions.push(...preambleLines);
+
+                            qText = realQuestion;
+                        }
+                    }
+                }
+            }
+
             // === CLASSIFICATION LOGIC ===
 
             // 1. Check if this is a RED HEADING (title/paper heading in red text)
@@ -226,7 +269,7 @@ export class AdvancedDocxParser extends StructuredDocxParser {
             // Dynamic: Detect instruction patterns without hardcoded keywords
             const hasInstructionPattern = /instruct|guideline|note|please|must|should|ensure|complete|mark|assess|score|criteria|procedure/i.test(qText);
             const isInstructionTable = hasInstructionPattern && aText.length > 20 && aText.split('\n').length > 1;
-            
+
             if (isInstructionTable) {
                 console.log(`📋 Detected as INSTRUCTION BLOCK`);
                 // The instructions are likely in the Answer text (right column)
@@ -453,7 +496,7 @@ export class AdvancedDocxParser extends StructuredDocxParser {
             /participant/i,
             /inherent/i
         ];
-        
+
         const hasInstructionPattern = instructionPatterns.some(pattern => pattern.test(text));
         const isLong = text.length > 200;
         const isNumbered = /^\d+\./.test(text);

@@ -305,7 +305,11 @@ export async function POST(req: NextRequest) {
 
         // 4. AI Analysis & Mapping
         logger.info('4️⃣ Starting AI Analysis & Mapping...');
-        const aiService = new AIService(process.env.OPENAI_API_KEY || '');
+        const aiService = new AIService(
+            process.env.OPENAI_API_KEY || 'ollama',
+            process.env.AI_MODEL || 'gpt-4o',
+            process.env.AI_BASE_URL
+        );
 
         let cleanedQuestions = rawQuestions;
 

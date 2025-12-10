@@ -13,7 +13,9 @@
     "scrape": "node dist/src/index.js",
     "lint": "npm run lint:md",
     "lint:md": "markdownlint \"**/*.md\"",
-    "test": "vitest"
+    "test": "vitest",
+    "validate": "npx tsx src/validateAndScrape.ts",
+    "validate:skip": "npx tsx src/validateAndScrape.ts --skip-validation"
   },
   "dependencies": {
     "axios": "^1.7.7",

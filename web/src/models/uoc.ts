@@ -1,6 +1,6 @@
 export type UocElement = {
     element: string;
-    performanceCriteria: string[];
+    performanceCriteria: { id: string; text: string }[];
 };
 
 export interface Uoc {

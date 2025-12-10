@@ -1,163 +1,32 @@
 import XLSX from 'xlsx-js-style';
-import { Uoc, UocSection, UocElement } from '../models/uoc';
+import { Uoc, UocSection } from '../models/uoc';
+import { promises as fs } from 'fs';
+import * as path from 'path';
+import { logger } from '../utils/logger';
+import { SHEET_CONFIGS } from '../config/maritimeConfig';
 
 /**
  * Maritime-style Excel Export Service
  * Matches the structure of "Maritime-Mapping (Master) 2025 - Uploaded.xlsx"
+ * 
+ * Features:
+ * - Multiple sheets (one per mapping type)
+ * - Two-row headers with merged cells for assessment categories
+ * - 11 columns: Unit, Element, Criteria/Evidence, Performance Criteria, AMPA Conditions, 
+ *   Mapping Count, and 5 assessment-specific columns
+ * - Assessment columns are blank (for manual RTO entry)
  */
 export class MaritimeExcelService {
+  private outputDir: string;
+  private defaultFilename: string;
 
-  /**
-   * Dynamically generate sheet configurations from units data
-   * Infers sheet names, prefixes, and assessment columns from the actual units
-   */
-  private static generateDynamicSheetConfigs(units: Uoc[]): any[] {
-    if (units.length === 0) {
-      return [{
-        name: 'All Units',
-        hasAMPAConditions: true,
-        mappingCountLabel: 'Mapping Count',
-        filterPrefixes: [],
-        assessmentColumns: [],
-        knowledgeColumns: [],
-        showCategories: false
-      }];
-    }
+  // Define sheet configurations - matching the example file structure exactly
+  // Note: Assessment column names are RTO-specific and can be customized per organization,
+  private static readonly SHEET_CONFIGS = SHEET_CONFIGS;
 
-    // Group units by prefix patterns (first 3-4 letters)
-    const prefixGroups = new Map<string, Uoc[]>();
-    const allPrefixes = new Set<string>();
-
-    for (const unit of units) {
-      const code = unit.code;
-      // Extract prefix: 2-4 letters at the start
-      const prefixMatch = code.match(/^[A-Z]{2,4}/);
-      if (prefixMatch) {
-        const prefix = prefixMatch[0];
-        allPrefixes.add(prefix);
-        
-        if (!prefixGroups.has(prefix)) {
-          prefixGroups.set(prefix, []);
-        }
-        prefixGroups.get(prefix)!.push(unit);
-      }
-    }
-
-    // Generate configurations for each prefix group
-    const configs: any[] = [];
-    const sortedPrefixes = Array.from(allPrefixes).sort();
-
-    for (const prefix of sortedPrefixes) {
-      const groupUnits = prefixGroups.get(prefix) || [];
-      
-      // Infer category name from unit sector or title patterns
-      let categoryName = prefix;
-      const sampleUnit = groupUnits[0];
-      if (sampleUnit?.unitSector) {
-        categoryName = sampleUnit.unitSector;
-      }
-
-      configs.push({
-        name: `${categoryName} Mapping`,
-        hasAMPAConditions: true,
-        mappingCountLabel: 'Mapping Count',
-        filterPrefixes: [prefix],
-        assessmentColumns: [],
-        knowledgeColumns: [],
-        showCategories: true
-      });
-    }
-
-    // Add a catch-all sheet for remaining units
-    configs.push({
-      name: 'Other Units',
-      hasAMPAConditions: true,
-      mappingCountLabel: 'Mapping Count',
-      filterPrefixes: Array.from(allPrefixes),
-      assessmentColumns: [],
-      knowledgeColumns: [],
-      showCategories: true
-    });
-
-    // Add Assessment Conditions sheet
-    configs.push({
-      name: 'Assessment Conditions',
-      hasAMPAConditions: false,
-      mappingCountLabel: 'Mapping Count',
-      filterPrefixes: Array.from(allPrefixes),
-      assessmentColumns: [],
-      knowledgeColumns: [],
-      showCategories: false
-    });
-
-    return configs;
-  }
-
-  /**
-   * Convert current Unit model to legacy Uoc model
-   */
-  public static mapUnitToUoc(unit: any): Uoc {
-    return {
-      url: unit.url || '',
-      code: unit.code,
-      title: unit.title,
-      description: unit.description,
-      application: unit.application,
-      unitSector: unit.unitSector,
-      assessmentConditions: unit.assessmentConditions,
-      performanceEvidence: unit.performanceEvidence,
-      knowledgeEvidence: unit.knowledgeEvidence,
-      supersededBy: null,
-      supersedes: null,
-      lastFetchedAt: new Date().toISOString(),
-      elements: unit.elements?.map((el: any) => ({
-        element: el.title,
-        performanceCriteria: el.performanceCriteria.map((pc: any) => `${pc.id} ${pc.text}`)
-      })) || []
-    };
-  }
-
-  /**
-   * Generate complete workbook with all sheets (Dynamic)
-   */
-  public generateExcelWorkbook(units: Uoc[]): any {
-    // Create workbook
-    const wb = XLSX.utils.book_new();
-
-    // Track which units have been used (to avoid duplicates across sheets)
-    const usedUnitCodes = new Set<string>();
-
-    // Generate dynamic sheet configurations from units
-    const sheetConfigs = MaritimeExcelService.generateDynamicSheetConfigs(units);
-
-    // Create each sheet (order matters - more specific filters first)
-    for (const config of sheetConfigs) {
-      // Special handling for Assessment Conditions sheet
-      let ws: XLSX.WorkSheet;
-      if (config.name === 'Assessment Conditions') {
-        ws = this.createAssessmentConditionsSheet(units);
-      } else {
-        ws = this.createSheet(config.name, config, units, usedUnitCodes);
-      }
-
-      XLSX.utils.book_append_sheet(wb, ws, config.name);
-    }
-
-    // Add Sections sheet if any unit has sections
-    const hasSections = units.some(u => u.sections && u.sections.length > 0);
-    if (hasSections) {
-      const wsSections = this.createSectionsSheet(units);
-      XLSX.utils.book_append_sheet(wb, wsSections, "Sections");
-    }
-
-    return wb;
-  }
-
-  /**
-   * Download the workbook in the browser
-   */
-  public static downloadExcel(wb: any, filename: string) {
-    XLSX.writeFile(wb, filename);
+  constructor(outputDir: string = 'data', defaultFilename: string = 'UnitsData.xlsx') {
+    this.outputDir = outputDir;
+    this.defaultFilename = defaultFilename;
   }
 
   /**
@@ -229,16 +98,15 @@ export class MaritimeExcelService {
         }
         if (element.performanceCriteria && element.performanceCriteria.length > 0) {
           for (const pc of element.performanceCriteria) {
-            if (pc === 'Performance Criteria' || pc === 'Elements') continue;
-            const pcMatch = pc.match(/^(\d+\.\d+)\s+(.+)$/);
-            const pcNumber = pcMatch ? pcMatch[1] : '';
-            const pcText = pcMatch ? pcMatch[2] : pc;
-            if (!pcNumber) continue;
-            const pcClean = capitalizeLead(capitalizeSentences(pcText));
+            // pc is now an object { id: string, text: string }
+            // Skip invalid entries if any
+            if (!pc.id || !pc.text) continue;
+
+            const pcClean = capitalizeLead(capitalizeSentences(pc.text));
             appendRow([
               fullUnitName,
               elementHeading || '',
-              pcNumber,
+              pc.id,
               pcClean
             ]);
           }
@@ -332,79 +200,11 @@ export class MaritimeExcelService {
   }
 
   /**
-   * Format Knowledge Evidence lines adding letter suffixes for sub-points beneath a numbered main point.
-   * Logic:
-   * - A line starting with a numbered list marker (e.g. "7." or "7)") becomes base: K7 (main)
-   * - Subsequent bullet/indented lines until the next numbered marker become K7a, K7b, ...
-   * - If there are only bullet lines (no numbering) they become sequential K1, K2...
-   */
-  private formatKnowledgeEvidenceLines(lines: string[]): { code: string; text: string }[] {
-    const results: { code: string; text: string }[] = [];
-    let currentMainIndex = 0;
-    let currentBaseNumber: number | null = null;
-    let suffixCounter = 0;
-
-    const numberedPattern = /^\s*(\d+)\s*[.)]/; // Matches '7.' or '7)' style
-    const bulletPattern = /^\s*[-*•·]/; // Common bullet characters
-
-    for (const raw of lines) {
-      const line = raw.trim();
-      if (!line) continue;
-
-      const numberedMatch = line.match(numberedPattern);
-      if (numberedMatch) {
-        // New main point
-        currentMainIndex = parseInt(numberedMatch[1], 10);
-        currentBaseNumber = currentMainIndex;
-        suffixCounter = 0;
-        // Strip the leading numbering for text cleanliness
-        const cleaned = line.replace(numberedPattern, '').trim();
-        results.push({ code: `K${currentMainIndex}`, text: cleaned });
-        continue;
-      }
-
-      const isBullet = bulletPattern.test(line);
-      if (isBullet && currentBaseNumber !== null) {
-        // Sub-point of current base number
-        const cleaned = line.replace(bulletPattern, '').trim();
-        const suffixLetter = String.fromCharCode('a'.charCodeAt(0) + suffixCounter);
-        results.push({ code: `K${currentBaseNumber}${suffixLetter}`, text: cleaned });
-        suffixCounter++;
-        continue;
-      }
-
-      // Fallback: treat as a new standalone main point with sequential numbering
-      currentMainIndex = (currentMainIndex || results.length) + 1;
-      currentBaseNumber = currentMainIndex;
-      suffixCounter = 0;
-      results.push({ code: `K${currentMainIndex}`, text: line });
-    }
-
-    // If there were no explicit numbered lines at all (only bullets or plain lines), renumber sequentially K1..Kn
-    const hasExplicitNumbering = results.some(r => /^K\d+$/.test(r.code));
-    const anyWithSuffix = results.some(r => /[a-z]$/.test(r.code));
-    if (!hasExplicitNumbering || (!anyWithSuffix && results.every(r => /^K\d+$/.test(r.code)))) {
-      // Simplify: sequential K1..Kn
-      return results.map((r, idx) => ({ code: `K${idx + 1}`, text: r.text }));
-    }
-    return results;
-  }
-
-  /**
    * Create two-row header structure with merged cells
    * Row 0: Merged headers for assessment categories
    * Row 1: Actual column names
    */
   private createHeaders(assessmentColumns: string[], hasAMPAConditions: boolean, mappingCountLabel: string, knowledgeColumns: string[] = [], showCategories: boolean = true): { row0: any[], row1: any[], merges: any[] } {
-    // Color constants for header styling (matched to provided screenshot palette approximations)
-    const COLORS = {
-      headerBlue: '4472C4',           // Dark blue for primary headers
-      categoryKnowledge: 'D0CECE',    // Grey for knowledge category
-      categoryPerformance: 'FFD966',  // Yellow for performance category
-      assessmentFont: '00B050',       // Green font for assessment column names
-      borderBlue: '8EA8DB'
-    };
-
     // Row 0: Category headers & top-level base headers (will be merged vertically)
     const row0 = ['Unit', 'Element', 'Criteria/Evidence', 'Performance Criteria'];
     if (hasAMPAConditions) row0.push('AMPA Conditions');
@@ -479,7 +279,6 @@ export class MaritimeExcelService {
     const categoryKnowledge = '808080';  // Grey #808080
     const categoryPerformance = 'FFD966';  // Yellow #FFD966
     const borderBlue = '8EA8DB';
-    const assessmentGreen = '00B050';
 
     // Determine knowledge/performance column spans from row0 values
     const row0Values = [] as string[];
@@ -487,25 +286,6 @@ export class MaritimeExcelService {
       const addr = XLSX.utils.encode_cell({ r: 0, c });
       row0Values.push(ws[addr] ? (ws[addr] as any).v || '' : '');
     }
-    const knowledgeIndexes: number[] = [];
-    const performanceIndexes: number[] = [];
-    row0Values.forEach((v, idx) => {
-      if (v === 'Knowledge Assessment/s') knowledgeIndexes.push(idx);
-      if (v === 'Performance Assessment/s') performanceIndexes.push(idx);
-    });
-    // Expand merged ranges for category styling
-    const merged = (ws['!merges'] || []) as any[];
-    const categoryCells: { type: 'knowledge' | 'performance'; cells: { r: number; c: number }[] }[] = [];
-    merged.forEach(m => {
-      if (m.s.r === 0 && m.e.r === 0) {
-        const firstVal = ws[XLSX.utils.encode_cell({ r: 0, c: m.s.c })]?.v;
-        if (firstVal === 'Knowledge Assessment/s' || firstVal === 'Performance Assessment/s') {
-          const cells = [] as { r: number; c: number }[];
-          for (let c = m.s.c; c <= m.e.c; c++) cells.push({ r: 0, c });
-          categoryCells.push({ type: firstVal === 'Knowledge Assessment/s' ? 'knowledge' : 'performance', cells });
-        }
-      }
-    });
 
     // Style row0 (base headers + categories)
     for (let c = 0; c < columnCount; c++) {
@@ -717,8 +497,9 @@ export class MaritimeExcelService {
     // Add header
     dataRows.push(['Unit', 'Assessment conditions']);
 
-    // Track where unit conditions end and footer section begins
+    // Track where unit conditions end and AMSA section begins
     const unitsEndRow = 1; // Will update after loop
+    const amsaStartIndex = units.length + 1; // Approx
 
     // Add each unit with its assessment conditions
     for (const unit of units) {
@@ -738,21 +519,17 @@ export class MaritimeExcelService {
       }
     }
 
-    // Add footer legend if any units have AMPA conditions
-    const hasAMPAUnits = units.some(u => u.assessmentConditions && /AMPA|AMSA/i.test(u.assessmentConditions));
-    if (hasAMPAUnits) {
-      const footerItems = [
-        ['Assessment Legend', 'I= Task is to be completed by each candidate individually'],
-        ['Assessment Legend', 'G= Task may be completed as a group activity with individual assessment. The group must contain no more than five candidates'],
-        ['Assessment Legend', 'V= Task must be completed on a vessel that meets the requirements above while operating in navigable waters'],
-        ['Assessment Legend', 'W= Task may be complete either in a workshop or on a vessel that meets the requirements specified above'],
-        ['Assessment Legend', 'P= Task must be completed in water (pool, or other safe water)'],
-        ['Assessment Legend', 'F= Task must be completed on a fire ground'],
-        ['Assessment Legend', 'S= Task may be completed on an approved simulator where realistic conditions are not feasible aboard a vessel (such as an absence of traffic or navigation marks'],
-        ['Assessment Legend', 'O= Tasks may be completed by observation']
-      ];
-      footerItems.forEach(item => dataRows.push(item));
-    }
+    const unitsEndIndex = dataRows.length;
+
+    // Add AMSA Mandated Practical Assessment codes (constant footer)
+    dataRows.push(['AMSA Mandated Practical Assessment', 'I= Task is to be completed by each candidate individually']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'G= Task may be completed as a group activity with individual assessment. The group must contain no more than five candidates']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'V= Task must be completed on a vessel that meets the requirements above while operating in navigable waters']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'W= Task mat be complete either in a workshop or on a vessel that meets the requirements specified above']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'P= Task must be completed in water (pool, or other safe water)']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'F= Task must be completed on a fire ground']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'S= Task may be completed on an approved simulator where realistic conditions are not feasible aboard a vessel (such as an absence of traffic or navigation marks']);
+    dataRows.push(['AMSA Mandated Practical Assessment', 'O= Tasks may be completed by observation']);
 
     // Create worksheet
     const ws = XLSX.utils.aoa_to_sheet(dataRows);
@@ -782,24 +559,18 @@ export class MaritimeExcelService {
     }
 
     // Style data rows
-    // Unit conditions section: all rows blue #D9E1F2
-    // Blank separators: black fill
-    // Footer section: zebra striping white/blue
-    const footerRowCount = hasAMPAUnits ? 8 : 0;
-    const unitsEndIndex = dataRows.length - footerRowCount;
-    
     for (let r = 1; r < dataRows.length; r++) {
       const isBlankSeparator = !dataRows[r][0] && !dataRows[r][1];
-      const isFooterSection = footerRowCount > 0 && r >= unitsEndIndex;
+      const isAMSASection = r >= unitsEndIndex;
 
       // Determine row color
       let fillColor: string | undefined;
       if (isBlankSeparator) {
         fillColor = '000000'; // Black for separators
-      } else if (isFooterSection) {
-        // Zebra striping for footer section (alternating white/blue from start of footer)
-        const footerRowIndex = r - unitsEndIndex;
-        fillColor = footerRowIndex % 2 === 0 ? 'FFFFFF' : 'D9E1F2';
+      } else if (isAMSASection) {
+        // Zebra striping for AMSA section (alternating white/blue from start of AMSA)
+        const amsaRowIndex = r - unitsEndIndex;
+        fillColor = amsaRowIndex % 2 === 0 ? 'FFFFFF' : 'D9E1F2';
       } else {
         // All unit condition rows are blue
         fillColor = 'D9E1F2';
@@ -936,7 +707,122 @@ export class MaritimeExcelService {
     return ws;
   }
 
+  /**
+   * Generate complete workbook with all sheets
+   */
+  async generateExcel(filename?: string, providedUnits?: Uoc[]): Promise<string> {
+    let units: Uoc[] = [];
 
+    if (providedUnits && providedUnits.length > 0) {
+      units = providedUnits;
+    } else {
+      // Read JSONL data
+      const jsonlPath = path.join(this.outputDir, 'uoc.jsonl');
+      try {
+        const fileContent = await fs.readFile(jsonlPath, 'utf-8');
+
+        const unitMap = new Map<string, Uoc>();
+        const lines = fileContent.split('\n');
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].trim();
+
+          // Skip empty lines
+          if (!line) continue;
+
+          // Strip BOM if present
+          const cleanLine = line.replace(/^\uFEFF/, '');
+
+          try {
+            const unit = JSON.parse(cleanLine);
+            if (unit && unit.code) {
+              // Use map to ensure uniqueness (last one wins)
+              unitMap.set(unit.code, unit);
+            }
+          } catch (error: any) {
+            console.warn(`⚠️  Skipping invalid JSON at line ${i + 1}: ${error.message}`);
+          }
+        }
+        units = Array.from(unitMap.values());
+      } catch (err) {
+        console.warn(`Could not read uoc.jsonl from ${jsonlPath}, and no units provided.`, err);
+        units = [];
+      }
+    }
+
+    logger.info(`Excel load units=${units.length}`);
+
+    // Create workbook
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+
+    // Track which units have been used (to avoid duplicates across sheets)
+    const usedUnitCodes = new Set<string>();
+
+    // Determine sheets to generate
+    let configsToRun = MaritimeExcelService.SHEET_CONFIGS;
+
+    // If exporting a single unit, only generate relevant sheets
+    if (units.length === 1) {
+      const u = units[0];
+      const targetConfig = MaritimeExcelService.SHEET_CONFIGS.find(c =>
+        c.name !== 'Assessment Conditions' &&
+        (c.filterPrefixes || []).some(prefix => u.code.startsWith(prefix))
+      );
+
+      const assessmentConfig = MaritimeExcelService.SHEET_CONFIGS.find(c => c.name === 'Assessment Conditions');
+
+      configsToRun = [];
+      if (targetConfig) configsToRun.push(targetConfig);
+      if (assessmentConfig) configsToRun.push(assessmentConfig);
+
+      // If no config matched, fallback to DMLA (catch-all) or just Assessment Conditions
+      if (configsToRun.length === 0 || (configsToRun.length === 1 && configsToRun[0].name === 'Assessment Conditions')) {
+        // Try to find DMLA or similar catch-all if missed
+        const catchAll = MaritimeExcelService.SHEET_CONFIGS.find(c => c.name === 'DMLA');
+        if (catchAll && !configsToRun.includes(catchAll)) configsToRun.unshift(catchAll);
+      }
+    }
+
+    // Create each sheet
+    for (const config of configsToRun) {
+      logger.debug(`Create sheet ${config.name}`);
+
+      // Special handling for Assessment Conditions sheet
+      let ws: XLSX.WorkSheet;
+      if (config.name === 'Assessment Conditions') {
+        ws = this.createAssessmentConditionsSheet(units);
+      } else {
+        ws = this.createSheet(config.name, config, units, usedUnitCodes);
+      }
+
+      // Only append if sheet has content (optional optimization, but createSheet might return empty if no units match, which is fine for single unit mode since we pre-filtered configs)
+      XLSX.utils.book_append_sheet(wb, ws, config.name);
+    }
+
+    // Write to file
+    const outputFilename = filename || this.defaultFilename;
+    const outputPath = path.join(this.outputDir, outputFilename);
+
+    await fs.mkdir(this.outputDir, { recursive: true });
+    XLSX.writeFile(wb, outputPath);
+
+    logger.info(`Excel written ${outputPath} sheets=${MaritimeExcelService.SHEET_CONFIGS.length} units=${units.length}`);
+
+    // Count total rows (using first sheet config as reference)
+    let totalRows = 0;
+    for (const unit of units) {
+      const rows = this.generateUnitRows(
+        unit,
+        MaritimeExcelService.SHEET_CONFIGS[0].hasAMPAConditions,
+        MaritimeExcelService.SHEET_CONFIGS[0].assessmentColumns.length
+      );
+      totalRows += rows.length;
+    }
+    logger.debug(`Rows per sheet approx=${totalRows}`);
+
+    return outputPath;
+  }
 
   /**
    * Create a sheet summarizing hierarchical sections for each unit.

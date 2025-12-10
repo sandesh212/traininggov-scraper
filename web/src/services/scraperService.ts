@@ -1,7 +1,9 @@
-import * as cheerio from 'cheerio';
-import { Unit, Element, PerformanceCriteria } from '../types';
+import { load } from 'cheerio';
+import { Unit } from '../types';
 import puppeteer, { Browser } from 'puppeteer';
 import { logger } from '@/utils/logger';
+import { parseUocHtml } from './uocParser';
+import { UnitMapper } from '@/utils/unitMapper';
 
 export class ScraperService {
     private baseUrl = 'https://training.gov.au/Training/Details';
@@ -65,6 +67,10 @@ export class ScraperService {
     }
 
     async scrapeUnits(codes: string[]): Promise<Unit[]> {
+        // Only init if we actually need it inside valid scrape
+        // But scrapeUnit checks init.
+        // For scrapeUnits standard flow, maybe we can skip global init too?
+        // Let's leave this one for now, as it's less used.
         await this.init();
         const units: Unit[] = [];
         try {
@@ -97,10 +103,11 @@ export class ScraperService {
             return { valid, invalid };
         }
 
-        await this.init(); // Initialize browser ONCE and reuse
+        // REMOVED: await this.init(); 
+        // We will initialize lazily inside scrapeUnit if needed. This prevents crashes if Puppeteer is broken but not needed.
 
-        // IMPROVED CONCURRENCY: Increased to 15 for much better performance
-        const BATCH_SIZE = 15;
+        // CONCURRENCY: Reduced to 5 to prevent local system overload/crashing
+        const BATCH_SIZE = 5;
 
         logger.info(`🚀 Starting parallel scrape for ${codesToScrape.length} units (Batch size: ${BATCH_SIZE})...`);
 
@@ -108,7 +115,8 @@ export class ScraperService {
         const processUnit = async (code: string) => {
             try {
                 logger.info(`   Scraping ${code}...`);
-                const result = await this.scrapeUnitWithReason(code);
+                // Use retry logic here to ensure "retrieve all" is robust
+                const result = await this.scrapeUnitWithReason(code, 3);
                 if (result.success && result.unit) {
                     valid.push(result.unit);
                     logger.info(`   ✅ Scraped ${code}`);
@@ -140,9 +148,9 @@ export class ScraperService {
             // Run batch in parallel
             await Promise.all(batch.map(code => processUnit(code)));
 
-            // Minimal delay between batches (50ms) for max speed
+            // Delay between batches
             if (i + BATCH_SIZE < codesToScrape.length) {
-                await new Promise(resolve => setTimeout(resolve, 50));
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
         }
 
@@ -150,27 +158,41 @@ export class ScraperService {
         return { valid, invalid };
     }
 
-    private async scrapeUnitWithReason(code: string): Promise<{ success: boolean, unit?: Unit, reason?: string }> {
-        try {
-            const unit = await this.scrapeUnit(code);
-            if (unit) {
-                return { success: true, unit };
+    private async scrapeUnitWithReason(code: string, retries = 1): Promise<{ success: boolean, unit?: Unit, reason?: string }> {
+        for (let i = 0; i < retries; i++) {
+            try {
+                const unit = await this.scrapeUnit(code);
+                if (unit) {
+                    return { success: true, unit };
+                }
+                // If null returned without throw, it's usually a 404 or persistent failure logic in scrapeUnit,
+                // but we might want to retry if it was a network blip disguised as null?
+                // Currently scrapeUnit returns null for 404s. Retrying 404s is wasteful but safe.
+                // However, scrapeUnit logs warnings.
+            } catch (e: any) {
+                const errorMsg = e?.message || String(e);
+
+                // If it's the last retry, return failure
+                if (i === retries - 1) {
+                    // Extract reason from console.warn messages if available
+                    if (errorMsg.includes('No title found')) {
+                        return { success: false, reason: 'No title found on page (h1 element empty)' };
+                    } else if (errorMsg.includes('404')) {
+                        return { success: false, reason: 'HTTP 404 - Page not found' };
+                    } else if (errorMsg.includes('Puppeteer')) {
+                        return { success: false, reason: 'Browser automation failed (timeout or content issue)' };
+                    } else if (errorMsg.includes('search')) {
+                        return { success: false, reason: 'Not found in training.gov.au search results' };
+                    }
+                    return { success: false, reason: 'Scraping error: ' + errorMsg };
+                }
+
+                // Wait before retry
+                const delay = 1000 * Math.pow(2, i);
+                await new Promise(resolve => setTimeout(resolve, delay));
             }
-            return { success: false, reason: 'Unit returned null without specific error' };
-        } catch (e: any) {
-            const errorMsg = e?.message || String(e);
-            // Extract reason from console.warn messages if available
-            if (errorMsg.includes('No title found')) {
-                return { success: false, reason: 'No title found on page (h1 element empty)' };
-            } else if (errorMsg.includes('404')) {
-                return { success: false, reason: 'HTTP 404 - Page not found' };
-            } else if (errorMsg.includes('Puppeteer')) {
-                return { success: false, reason: 'Browser automation failed (timeout or content issue)' };
-            } else if (errorMsg.includes('search')) {
-                return { success: false, reason: 'Not found in training.gov.au search results' };
-            }
-            return { success: false, reason: 'Scraping error: ' + errorMsg };
         }
+        return { success: false, reason: 'Unit returned null after retries' };
     }
 
     private async scrapeUnitWithRetry(code: string, retries = 3): Promise<Unit | null> {
@@ -194,33 +216,46 @@ export class ScraperService {
 
     async scrapeUnit(code: string): Promise<Unit | null> {
         let isSpaShell = false;
+        let unitHtml = '';
+        let $: any;
+        let unitUrl = `${this.baseUrl}/${code}`;
+        let response: Response | null = null;
 
         try {
             // 1. Try Direct Fetch (Fast)
-            let unitUrl = `${this.baseUrl}/${code}`;
-            let response = await this.fetchWithHeaders(unitUrl);
-            let unitHtml = await response.text();
-            let $ = cheerio.load(unitHtml);
+            response = await this.fetchWithHeaders(unitUrl);
 
-            // Check if it's the SPA shell (empty title or specific Nuxt markers)
-            let titleRaw = $('h1').first().text().trim();
-            let mainHeading = $('h1').text().toLowerCase();
-            let pageTitle = $('title').text().toLowerCase();
-            isSpaShell = $('div#__nuxt').length > 0 || $('script[src*="_nuxt"]').length > 0;
+            // If we get blocked (403/429) or see a JS challenge, force Puppeteer
+            if (response.status === 403 || response.status === 429) {
+                console.warn(`   ⚠️ Access denied (${response.status}) for ${code}. Switching to Puppeteer...`);
+                isSpaShell = true; // Force Puppeteer path
+            } else {
+                unitHtml = await response.text();
+                $ = load(unitHtml);
+
+                // Check if it's the SPA shell (empty title or specific Nuxt markers)
+                isSpaShell = $('div#__nuxt').length > 0 || $('script[src*="_nuxt"]').length > 0;
+            }
 
             if (isSpaShell) {
-                console.log(`   Detected SPA shell for ${code}. Switching to Puppeteer...`);
+                console.log(`   Detected SPA shell or Block for ${code}. Switching to Puppeteer...`);
+                // Note: init() will be called here if needed (safe check inside)
                 if (!this.browser) await this.init();
 
                 const page = await this.browser!.newPage();
                 try {
                     await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
+                    // Add extra headers to Puppeteer too
+                    await page.setExtraHTTPHeaders({
+                        'Accept-Language': 'en-US,en;q=0.9',
+                        'Upgrade-Insecure-Requests': '1'
+                    });
+
                     // Navigate to the page
-                    await page.goto(unitUrl, { waitUntil: 'networkidle0', timeout: 45000 });
+                    await page.goto(unitUrl, { waitUntil: 'networkidle0', timeout: 60000 }); // Increased timeout
 
                     // Wait for specific content that indicates the page has loaded
-                    // All units have "Assessment Conditions" so wait for that
                     try {
                         await page.waitForFunction(
                             () => {
@@ -229,314 +264,89 @@ export class ScraperService {
                                     bodyText.includes('Elements and Performance Criteria') ||
                                     bodyText.includes('Application');
                             },
-                            { timeout: 15000 }
+                            { timeout: 20000 }
                         );
                         console.log(`   Content loaded for ${code}`);
                     } catch (e) {
-                        console.warn(`   Timeout waiting for content to load for ${code}`);
-                        // Continue anyway, maybe content is there
+                        // Double check content before failing
+                        const content = await page.content();
+                        if (!content.includes('Assessment Conditions') && !content.includes('Elements and Performance Criteria')) {
+                            console.warn(`   Timeout waiting for content to load for ${code}`);
+                        }
                     }
 
-                    // Additional wait for any animations
+                    // additional wait
                     await new Promise(resolve => setTimeout(resolve, 2000));
 
                     unitHtml = await page.content();
-                    $ = cheerio.load(unitHtml);
-
-                    // Debug: Check what we got
-                    const bodyText = $('body').text();
-                    console.log(`   Page text length: ${bodyText.length} chars for ${code}`);
+                    $ = load(unitHtml);
 
                 } catch (e) {
-                    console.warn(`   Puppeteer had issues for ${code}:`, e);
-                    console.warn(`   Continuing with regular fetch response...`);
-                    // Don't return null - continue with the regular fetch response
-                    // The unit might still be valid even if Puppeteer had issues
+                    console.error(`   Puppeteer had issues for ${code}:`, e);
+                    // If blocked fetch AND puppeteer failed, return null
+                    if (response && response.status === 403) return null;
                 } finally {
                     await page.close();
                 }
             }
 
-            // 2. If 404 or redirect to search, Try Search (only if not already handled by Puppeteer or if Puppeteer failed)
-            if (!isSpaShell && (response.status === 404 || response.url.toLowerCase().includes('/search/'))) {
+            // 2. If 404 or redirect to search, Try Search (only if not already handled by Puppeteer or if Puppeteer failed and we have no content)
+            // If isSpaShell is true, unitHtml should be populated. If empty, maybe puppeteer failed.
+            if (!isSpaShell && response && (response.status === 404 || response.url.toLowerCase().includes('/search/'))) {
                 console.warn(`   Direct link for ${code} failed (404 or redirect). Attempting search fallback...`);
                 const searchUrl = `https://training.gov.au/Search?q=${encodeURIComponent(code)}`;
                 const searchResponse = await this.fetchWithHeaders(searchUrl);
 
-                if (!searchResponse.ok) {
-                    console.warn(`   Search failed for ${code}. Reason: Search page request failed`);
-                    return null;
-                }
+                if (searchResponse.ok) {
+                    const searchHtml = await searchResponse.text();
+                    const $search = load(searchHtml);
 
-                const searchHtml = await searchResponse.text();
-                const $search = cheerio.load(searchHtml);
+                    const link = $search(`a[href*="/Training/Details/"]`).filter((_, el) => {
+                        const text = $search(el).text().trim();
+                        const href = $search(el).attr('href') || '';
+                        return text.includes(code) || href.toUpperCase().includes(code.toUpperCase());
+                    }).first();
 
-                const link = $search(`a[href*="/Training/Details/"]`).filter((_, el) => {
-                    const text = $search(el).text().trim();
-                    const href = $search(el).attr('href') || '';
-                    return text.includes(code) || href.toUpperCase().includes(code.toUpperCase());
-                }).first();
-
-                if (link.length > 0) {
-                    const href = link.attr('href');
-                    unitUrl = href?.startsWith('http') ? href : `https://training.gov.au${href}`;
-                    console.log(`   Found ${code} via search: ${unitUrl}`);
-                    response = await this.fetchWithHeaders(unitUrl);
-                    unitHtml = await response.text();
-                    $ = cheerio.load(unitHtml);
-                } else {
-                    console.warn(`   No valid link found in search results for ${code}. Reason: Unit code not found in search results`);
-                    return null;
+                    if (link.length > 0) {
+                        const href = link.attr('href');
+                        unitUrl = href?.startsWith('http') ? href : `https://training.gov.au${href}`;
+                        console.log(`   Found ${code} via search: ${unitUrl}`);
+                        const finalRes = await this.fetchWithHeaders(unitUrl);
+                        unitHtml = await finalRes.text();
+                        $ = load(unitHtml);
+                    } else {
+                        console.warn(`   No valid link found in search results for ${code}`);
+                        return null;
+                    }
                 }
             }
 
-            if (response.status === 404 && !isSpaShell) {
-                console.warn(`   Unit ${code} returned 404 after search fallback. Reason: HTTP 404 - Page not found`);
+            if (!unitHtml || !$) {
+                // Should have been populated by now
                 return null;
             }
 
             // Check for 404 indicators in content
-            pageTitle = $('title').text().toLowerCase();
-            mainHeading = $('h1, h2').text().toLowerCase();
+            const pageTitle = $('title').text().toLowerCase();
+            const mainHeading = $('h1, h2').text().toLowerCase();
 
             if (pageTitle.includes('404') ||
                 pageTitle.includes('page not found') ||
                 mainHeading.includes('page not found') ||
                 mainHeading.includes('error')) {
-                console.warn(`   Unit ${code} page indicates not found. Reason: Page contains 404/error indicators`);
+                console.warn(`   Unit ${code} page indicates not found.`);
                 return null;
             }
 
-            // If we got here, the page exists and is valid (not 404, not error)
-            console.log(`   ✓ Unit ${code} page is valid (not 404)`);
+            // If we got here, the page exists and is valid
+            console.log(`   ✓ Unit ${code} page is valid.`);
 
+            // Use the advanced parser
+            const uoc = parseUocHtml(unitHtml, unitUrl);
+            const unit = UnitMapper.fromUoc(uoc);
 
-            // Extract Title
-            titleRaw = $('h1').text().trim();
-            if (!titleRaw) {
-                // Try alternate title sources
-                titleRaw = $('title').text().trim() || '';
-
-                if (!titleRaw || titleRaw.toLowerCase().includes('training.gov.au')) {
-                    console.warn(`   Unit ${code} has no clear title, using code as fallback`);
-                    titleRaw = code; // Use code as fallback - page exists but title not parseable
-                }
-            }
-
-            const titleMatch = titleRaw.match(new RegExp(`${code}\\s+-\\s+(.+)`, 'i'));
-            const title = titleMatch ? titleMatch[1].trim() : titleRaw;
-
-            // Helper to find headers case-insensitively
-            const findHeader = (text: string) => {
-                return $('h1, h2, h3, h4, h5, h6').filter((_, el) => {
-                    return $(el).text().toLowerCase().includes(text.toLowerCase());
-                }).first();
-            };
-
-            // Extract ALL sections dynamically from main page (h2, h3, h4 headers)
-            const mainPageSections = this.extractAllSectionsWithLevels($);
-
-            // Extract specific known fields
-            // Use findHeader helper to get the element, then extract content
-            const application = this.extractSectionContent($, findHeader('Application'));
-            const unitSector = this.extractSectionContent($, findHeader('Unit Sector'));
-            const modificationHistory = this.extractSectionContent($, findHeader('Modification History'));
-            const foundationSkills = this.extractSectionContent($, findHeader('Foundation Skills'));
-            let performanceEvidence = this.extractSectionContent($, findHeader('Performance Evidence'));
-            let knowledgeEvidence = this.extractSectionContent($, findHeader('Knowledge Evidence'));
-            let assessmentConditions = this.extractSectionContent($, findHeader('Assessment Conditions'));
-
-            // Extract Status and Release from header or summary
-            let status = 'Current'; // Default
-            let release = 'Release 1';
-
-            // Try to find status/release in specific elements
-            const releaseBanner = $('.releases-banner').text();
-            if (releaseBanner) {
-                if (releaseBanner.toLowerCase().includes('superseded')) status = 'Superseded';
-            }
-
-            // Re-read pageTitle after potential Puppeteer load if declared, otherwise declare it
-            // Assuming pageTitle is declared at line 299 as let/var.
-            pageTitle = $('title').text();
-            const releaseMatch = pageTitle.match(/Release\s+(\d+)/i);
-            if (releaseMatch) {
-                release = `Release ${releaseMatch[1]}`;
-            }
-
-            // TGA specific: check for "Current" or "Superseded" badge
-            if ($('.nrt-current').length > 0) status = 'Current';
-            if ($('.nrt-superseded').length > 0) status = 'Superseded';
-
-            // Also check <h2 class="h2-status">Current</h2> if exists
-            const statusText = $('h2.status, .status-label').first().text().trim();
-            if (statusText) status = statusText;
-
-            // Extract Elements & Performance Criteria
-            const elements: Element[] = [];
-            const pcHeader = findHeader('Elements and Performance Criteria');
-
-            if (pcHeader.length > 0) {
-                let pcTable = pcHeader.nextAll('table').first();
-                // If not found as direct sibling, check inside the next div (common in new TGA design)
-                if (pcTable.length === 0) {
-                    pcTable = pcHeader.nextAll('div').first().find('table').first();
-                }
-
-                let currentElement: Element | null = null;
-
-                pcTable.find('tr').each((i, row) => {
-                    const cells = $(row).find('td');
-                    if (cells.length >= 2) {
-                        const c1 = this.extractCellContent($, cells[0]);
-                        const c2 = this.extractCellContent($, cells[1]);
-                        const c3 = cells.length >= 3 ? this.extractCellContent($, cells[2]) : '';
-
-                        // Check 1: Normal Format - c1 is Element ID (e.g. "1")
-                        if (/^\d+\.?$/.test(c1.trim())) {
-                            currentElement = { title: c2, performanceCriteria: [] };
-                            elements.push(currentElement);
-                        }
-                        // Check 2: Normal Format - c1 is PC ID (e.g. "1.1")
-                        else if (/^\d+\.\d+\.?$/.test(c1.trim()) && currentElement) {
-                            currentElement.performanceCriteria.push({ id: c1.trim(), text: c2 });
-                        }
-                        // Check 3: 3-Column Format - c1=Element, c2=PC ID, c3=PC Text
-                        else if (cells.length >= 3 && /^\d+\.\d+\.?$/.test(c2.trim())) {
-                            if (c1.trim() && !c1.toLowerCase().includes('elements describe')) {
-                                currentElement = { title: c1, performanceCriteria: [] };
-                                elements.push(currentElement);
-                            }
-
-                            if (currentElement) {
-                                currentElement.performanceCriteria.push({ id: c2.trim(), text: c3 });
-                            }
-                        }
-                        // Check 4: Combined Format - c2 contains ID + Text (e.g. "1.1 Text...")
-                        else {
-                            const matchText = c2.trim();
-                            const pcMatch = matchText.match(/^(\d+\.\d+)\.?\s+([\s\S]*)/);
-
-                            if (pcMatch) {
-                                // If c1 has text, it's a new Element
-                                if (c1.trim() && !c1.toLowerCase().includes('elements describe')) {
-                                    currentElement = { title: c1, performanceCriteria: [] };
-                                    elements.push(currentElement);
-                                }
-
-                                if (currentElement) {
-                                    currentElement.performanceCriteria.push({ id: pcMatch[1], text: pcMatch[2] });
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Fallback for Elements
-            if (elements.length === 0) {
-                const tableWithPC = $('table').filter((_, el) => $(el).text().includes('Performance Criteria')).first();
-                if (tableWithPC.length > 0) {
-                    let currentElement: Element | null = null;
-                    tableWithPC.find('tr').each((_, row) => {
-                        const cells = $(row).find('td');
-                        if (cells.length >= 2) {
-                            const c1 = $(cells[0]).text().trim();
-                            const c2 = $(cells[1]).text().trim();
-                            if (/^\d+\.?$/.test(c1)) {
-                                currentElement = { title: c2, performanceCriteria: [] };
-                                elements.push(currentElement);
-                            } else if (/^\d+\.\d+\.?$/.test(c1) && currentElement) {
-                                currentElement.performanceCriteria.push({ id: c1, text: c2 });
-                            }
-                        }
-                    });
-                }
-            }
-
-            // Don't fail just because we couldn't parse elements perfectly
-            // The unit is still valid if the page exists and has a title
-            if (elements.length === 0) {
-                console.warn(`   Unit ${code} has no elements parsed (parsing issue, but page is valid).`);
-                // Create a minimal valid unit structure
-                // The page exists and has a title, so it's a valid unit even if we can't parse details
-            }
-
-            // Store all sections (combine main page + AR page later)
-            let allSections = [...mainPageSections];
-
-            // 2. Fetch Assessment Requirements page if exists (sometimes has additional info)
-            const arLink = $('a').filter((_, el) => $(el).text().includes('Assessment Requirements')).attr('href');
-
-            if (arLink && !knowledgeEvidence) {
-                // Only fetch AR page if we didn't already get the data from main page
-                const arUrl = arLink.startsWith('http') ? arLink : `https://training.gov.au${arLink}`;
-                console.log(`      Fetching Assessment Requirements: ${arUrl}`);
-
-                let arHtml = '';
-                if (isSpaShell) {
-                    if (!this.browser) await this.init();
-                    const page = await this.browser!.newPage();
-                    try {
-                        await page.goto(arUrl, { waitUntil: 'networkidle2' });
-                        arHtml = await page.content();
-                    } catch (e) {
-                        console.warn(`      Puppeteer failed for AR ${code}:`, e);
-                    } finally {
-                        await page.close();
-                    }
-                } else {
-                    try {
-                        const arResponse = await this.fetchWithHeaders(arUrl);
-                        if (arResponse.ok) arHtml = await arResponse.text();
-                    } catch (e) {
-                        console.warn(`      Failed to fetch Assessment Requirements for ${code}: ${e}`);
-                    }
-                }
-
-                if (arHtml) {
-                    const $ar = cheerio.load(arHtml);
-
-                    // Extract ALL sections from AR page dynamically
-                    const arSections = this.extractAllSectionsWithLevels($ar);
-                    allSections = [...allSections, ...arSections];
-
-                    // Extract specific known fields for backward compatibility (if not already found)
-                    if (!knowledgeEvidence) knowledgeEvidence = this.findSectionContent(arSections, ['knowledge evidence']);
-                    if (!performanceEvidence) performanceEvidence = this.findSectionContent(arSections, ['performance evidence']);
-                    if (!assessmentConditions) assessmentConditions = this.findSectionContent(arSections, ['assessment conditions']);
-                }
-            }
-
-            // Log what we extracted
-            const pcCount = elements.reduce((sum, el) => sum + el.performanceCriteria.length, 0);
-            console.log(`   ✅ Scraped ${code}:`);
-            console.log(`      - Title: ${title}`);
-            console.log(`      - Elements: ${elements.length}`);
-            console.log(`      - Performance Criteria: ${pcCount}`);
-            console.log(`      - Knowledge Evidence: ${knowledgeEvidence ? `${knowledgeEvidence.length} chars` : 'MISSING'}`);
-            console.log(`      - Performance Evidence: ${performanceEvidence ? `${performanceEvidence.length} chars` : 'MISSING'}`);
-            console.log(`      - Assessment Conditions: ${assessmentConditions ? `${assessmentConditions.length} chars` : 'MISSING'}`);
-            console.log(`      - Foundation Skills: ${foundationSkills ? 'Yes' : 'No'}`);
-            console.log(`      - Unit Sector: ${unitSector || 'N/A'}`);
-
-            return {
-                code,
-                title,
-                url: unitUrl,
-                status,
-                release,
-                description: application,
-                application,
-                unitSector,
-                modificationHistory,
-                foundationSkills,
-                elements,
-                knowledgeEvidence,
-                performanceEvidence,
-                assessmentConditions,
-                sections: allSections
-            };
+            console.log(`   ✅ Scraped ${code}: ${unit.title}`);
+            return unit;
 
         } catch (e) {
             console.error(`   Failed to scrape ${code}:`, e);
@@ -547,13 +357,24 @@ export class ScraperService {
     private async fetchWithHeaders(url: string): Promise<Response> {
         return fetch(url, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Cache-Control': 'no-cache'
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+                'Accept-Language': 'en-AU,en;q=0.9,en-US;q=0.8',
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache',
+                'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+                'Sec-Ch-Ua-Mobile': '?0',
+                'Sec-Ch-Ua-Platform': '"macOS"',
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none',
+                'Sec-Fetch-User': '?1',
+                'Upgrade-Insecure-Requests': '1'
             }
         });
     }
+
+
 
     /**
      * Extract ALL sections with complete hierarchy: headings, sub-headings, paragraphs, lists with nested items

@@ -1,0 +1,664 @@
+{
+  "timestamp": "2025-12-09T21:45:58.061Z",
+  "totalUnits": 131,
+  "validUnits": 131,
+  "invalidUnits": 0,
+  "valid": [
+    {
+      "code": "BSBLDR301",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/BSBLDR301"
+    },
+    {
+      "code": "BSBTWK201",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/BSBTWK201"
+    },
+    {
+      "code": "HLTAID011",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/HLTAID011"
+    },
+    {
+      "code": "MARA022",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARA022"
+    },
+    {
+      "code": "MARA024",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARA024"
+    },
+    {
+      "code": "MARB027",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARB027"
+    },
+    {
+      "code": "MARB028",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARB028"
+    },
+    {
+      "code": "MARB029",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARB029"
+    },
+    {
+      "code": "MARB031",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARB031"
+    },
+    {
+      "code": "MARB032",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARB032"
+    },
+    {
+      "code": "MARB060",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARB060"
+    },
+    {
+      "code": "MARB061",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARB061"
+    },
+    {
+      "code": "MARC033",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC033"
+    },
+    {
+      "code": "MARC034",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC034"
+    },
+    {
+      "code": "MARC035",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC035"
+    },
+    {
+      "code": "MARC036",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC036"
+    },
+    {
+      "code": "MARC037",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC037"
+    },
+    {
+      "code": "MARC038",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC038"
+    },
+    {
+      "code": "MARC039",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC039"
+    },
+    {
+      "code": "MARC040",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC040"
+    },
+    {
+      "code": "MARC041",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC041"
+    },
+    {
+      "code": "MARC042",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC042"
+    },
+    {
+      "code": "MARC043",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC043"
+    },
+    {
+      "code": "MARC044",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC044"
+    },
+    {
+      "code": "MARC047",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC047"
+    },
+    {
+      "code": "MARC048",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC048"
+    },
+    {
+      "code": "MARC064",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARC064"
+    },
+    {
+      "code": "MARF027",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARF027"
+    },
+    {
+      "code": "MARF028",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARF028"
+    },
+    {
+      "code": "MARF029",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARF029"
+    },
+    {
+      "code": "MARF030",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARF030"
+    },
+    {
+      "code": "MARF060",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARF060"
+    },
+    {
+      "code": "MARG007",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARG007"
+    },
+    {
+      "code": "MARH013",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARH013"
+    },
+    {
+      "code": "MARH017",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARH017"
+    },
+    {
+      "code": "MARH019",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARH019"
+    },
+    {
+      "code": "MARH036",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARH036"
+    },
+    {
+      "code": "MARH037",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARH037"
+    },
+    {
+      "code": "MARI003",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARI003"
+    },
+    {
+      "code": "MARI006",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARI006"
+    },
+    {
+      "code": "MARJ006",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARJ006"
+    },
+    {
+      "code": "MARJ007",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARJ007"
+    },
+    {
+      "code": "MARK007",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARK007"
+    },
+    {
+      "code": "MARK008",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARK008"
+    },
+    {
+      "code": "MARK013",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARK013"
+    },
+    {
+      "code": "MARN008",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARN008"
+    },
+    {
+      "code": "MARN009",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARN009"
+    },
+    {
+      "code": "MARN019",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARN019"
+    },
+    {
+      "code": "MARN020",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/MARN020"
+    },
+    {
+      "code": "RIIWHS202E",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/RIIWHS202E"
+    },
+    {
+      "code": "ACMWHS401",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/ACMWHS401"
+    },
+    {
+      "code": "AHCBUS407",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/AHCBUS407"
+    },
+    {
+      "code": "AHCCHM307",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/AHCCHM307"
+    },
+    {
+      "code": "AHCMOM402",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/AHCMOM402"
+    },
+    {
+      "code": "AHCNAR302",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/AHCNAR302"
+    },
+    {
+      "code": "AHCWRK403",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/AHCWRK403"
+    },
+    {
+      "code": "AHCWRK409",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/AHCWRK409"
+    },
+    {
+      "code": "BSBCMM511",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/BSBCMM511"
+    },
+    {
+      "code": "BSBHRM413",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/BSBHRM413"
+    },
+    {
+      "code": "BSBLDR413",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/BSBLDR413"
+    },
+    {
+      "code": "BSBLDR414",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/BSBLDR414"
+    },
+    {
+      "code": "BSBOPS403",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/BSBOPS403"
+    },
+    {
+      "code": "BSBOPS601",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/BSBOPS601"
+    },
+    {
+      "code": "BSBSTR402",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/BSBSTR402"
+    },
+    {
+      "code": "CPCCLDG3001",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/CPCCLDG3001"
+    },
+    {
+      "code": "FBPFSY3001",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/FBPFSY3001"
+    },
+    {
+      "code": "FBPFSY3002",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/FBPFSY3002"
+    },
+    {
+      "code": "FBPOPR2070",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/FBPOPR2070"
+    },
+    {
+      "code": "FBPOPR3005",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/FBPOPR3005"
+    },
+    {
+      "code": "FBPOPR3006",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/FBPOPR3006"
+    },
+    {
+      "code": "SFIAQU101",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU101"
+    },
+    {
+      "code": "SFIAQU202",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU202"
+    },
+    {
+      "code": "SFIAQU204",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU204"
+    },
+    {
+      "code": "SFIAQU205",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU205"
+    },
+    {
+      "code": "SFIAQU207",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU207"
+    },
+    {
+      "code": "SFIAQU211",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU211"
+    },
+    {
+      "code": "SFIAQU212",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU212"
+    },
+    {
+      "code": "SFIAQU213",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU213"
+    },
+    {
+      "code": "SFIAQU214",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU214"
+    },
+    {
+      "code": "SFIAQU217",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU217"
+    },
+    {
+      "code": "SFIAQU302",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU302"
+    },
+    {
+      "code": "SFIAQU303",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU303"
+    },
+    {
+      "code": "SFIAQU304",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU304"
+    },
+    {
+      "code": "SFIAQU305",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU305"
+    },
+    {
+      "code": "SFIAQU307",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU307"
+    },
+    {
+      "code": "SFIAQU308",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU308"
+    },
+    {
+      "code": "SFIAQU309",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU309"
+    },
+    {
+      "code": "SFIAQU310",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU310"
+    },
+    {
+      "code": "SFIAQU315",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU315"
+    },
+    {
+      "code": "SFIAQU402",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU402"
+    },
+    {
+      "code": "SFIAQU405",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU405"
+    },
+    {
+      "code": "SFIAQU407",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU407"
+    },
+    {
+      "code": "SFIAQU408",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU408"
+    },
+    {
+      "code": "SFIAQU409",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU409"
+    },
+    {
+      "code": "SFIAQU411",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIAQU411"
+    },
+    {
+      "code": "SFIBIO201",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIBIO201"
+    },
+    {
+      "code": "SFIBIO301",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIBIO301"
+    },
+    {
+      "code": "SFIBIO401",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIBIO401"
+    },
+    {
+      "code": "SFIDIV301",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIDIV301"
+    },
+    {
+      "code": "SFIDIV302",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIDIV302"
+    },
+    {
+      "code": "SFIDIV304",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIDIV304"
+    },
+    {
+      "code": "SFIDIV306",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIDIV306"
+    },
+    {
+      "code": "SFIEMS201",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIEMS201"
+    },
+    {
+      "code": "SFIEMS401",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIEMS401"
+    },
+    {
+      "code": "SFIFSH201",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIFSH201"
+    },
+    {
+      "code": "SFIFSH301",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIFSH301"
+    },
+    {
+      "code": "SFIFSH302",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIFSH302"
+    },
+    {
+      "code": "SFIFSH303",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIFSH303"
+    },
+    {
+      "code": "SFIFSH304",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIFSH304"
+    },
+    {
+      "code": "SFIFSH305",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIFSH305"
+    },
+    {
+      "code": "SFIFSH306",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIFSH306"
+    },
+    {
+      "code": "SFIPRO301",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIPRO301"
+    },
+    {
+      "code": "SFISTR201",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFISTR201"
+    },
+    {
+      "code": "SFISTR202",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFISTR202"
+    },
+    {
+      "code": "SFISTR301",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFISTR301"
+    },
+    {
+      "code": "SFISTR302",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFISTR302"
+    },
+    {
+      "code": "SFIWHS201",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIWHS201"
+    },
+    {
+      "code": "SFIWHS301",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIWHS301"
+    },
+    {
+      "code": "SFIXSI101",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIXSI101"
+    },
+    {
+      "code": "SFIXSI102",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIXSI102"
+    },
+    {
+      "code": "SFIXSI201",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIXSI201"
+    },
+    {
+      "code": "SFIXSI202",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIXSI202"
+    },
+    {
+      "code": "SFIXSI402",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SFIXSI402"
+    },
+    {
+      "code": "SISOSCB001",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SISOSCB001"
+    },
+    {
+      "code": "SISOSCB007",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SISOSCB007"
+    },
+    {
+      "code": "SISOSCB008",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SISOSCB008"
+    },
+    {
+      "code": "SITXINV004",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/SITXINV004"
+    },
+    {
+      "code": "TLILIC0003",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/TLILIC0003"
+    },
+    {
+      "code": "TLILIC0004",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/TLILIC0004"
+    },
+    {
+      "code": "TLILIC0024",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/TLILIC0024"
+    },
+    {
+      "code": "TLILIC0040",
+      "valid": true,
+      "url": "https://training.gov.au/Training/Details/TLILIC0040"
+    }
+  ],
+  "invalid": []
+}

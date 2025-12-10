@@ -546,18 +546,13 @@ export default function Home() {
                                         <span className="inline sm:hidden">JSON</span>
                                     </button>
                                     <button
-                                        onClick={async () => {
-                                            const { MaritimeExcelService } = await import('@/services/MaritimeExcelService');
-                                            const units = report.fetchedUnits || report.mappedUnits;
-                                            const uocs = units.map((u: any) => MaritimeExcelService.mapUnitToUoc(u));
-                                            const service = new MaritimeExcelService();
-                                            const wb = service.generateExcelWorkbook(uocs);
-                                            MaritimeExcelService.downloadExcel(wb, 'Maritime_Units_Export.xlsx');
+                                        onClick={() => {
+                                            window.location.href = '/api/units/export';
                                         }}
                                         className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                     >
                                         <FileSpreadsheet size={14} className="sm:w-4 sm:h-4" />
-                                        <span className="hidden sm:inline">Export Units</span>
+                                        <span className="hidden sm:inline">Export All Units</span>
                                         <span className="inline sm:hidden">Units</span>
                                     </button>
                                     <button

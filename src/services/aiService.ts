@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { UnitOfCompetency } from './uocLoader.js';
 import { AssessmentQuestion } from '../models/types.js';
+import { logger } from '../utils/logger.js'; // Assuming logger is imported from here
 
 export interface ValidationResult {
     questionId: string;
@@ -16,10 +17,28 @@ export interface ValidationResult {
 export class AIService {
     private openai: OpenAI;
     private model: string;
+    private visionModel: string;
+    private isOllama: boolean;
 
-    constructor(apiKey: string, model: string = 'gpt-4o') {
-        this.openai = new OpenAI({ apiKey: apiKey || 'mock-key' }); // Allow mock key
-        this.model = model;
+    constructor(apiKey: string, model: string = 'gpt-4o', baseUrl?: string) {
+        // DETECT OLLAMA / LOCAL AI CONFIGURATION
+        if (baseUrl && (baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1'))) {
+            this.isOllama = true;
+            this.model = model || 'llama3';
+            this.visionModel = process.env.AI_VISION_MODEL || 'llava'; // Default vision model for local
+            this.openai = new OpenAI({
+                baseURL: baseUrl,
+                apiKey: 'ollama',
+            });
+            logger.info(`🤖 AIService initialized in LOCAL mode (Ollama at ${baseUrl}) with models: Text=${this.model}, Vision=${this.visionModel}`);
+        } else {
+            // STANDARD OPENAI CONFIGURATION
+            this.isOllama = false;
+            this.model = model;
+            this.visionModel = 'gpt-4o'; // OpenAI handles both
+            this.openai = new OpenAI({ apiKey: apiKey || 'mock-key' });
+            logger.info(`☁️ AIService initialized in CLOUD mode (OpenAI) with model: ${this.model}`);
+        }
     }
 
     public async validateQuestion(
@@ -134,5 +153,69 @@ export class AIService {
             "confidence": number (0-100)
         }
         `;
+    }
+
+    public async describeImages(questions: AssessmentQuestion[]): Promise<AssessmentQuestion[]> {
+        // Filter questions with images
+        const questionsWithImages = questions.filter(q => q.images && q.images.length > 0);
+
+        if (questionsWithImages.length === 0) return questions;
+
+        console.log(`   🖼️  Analyzing ${questionsWithImages.length} questions with images using ${this.visionModel}...`);
+
+        // Process in parallel
+        const updatedQuestions = await Promise.all(questions.map(async (q) => {
+            if (!q.images || q.images.length === 0) return q;
+
+            // Only analyze the first image for now to save tokens/time
+            let imageBase64 = q.images[0];
+
+            // Format check for Ollama vs OpenAI
+            // Ollama often prefers just base64 or a specific format depending on the client, 
+            // but the OpenAI standard client usually expects data URI.
+            const imageUrl = imageBase64.startsWith('data:') ? imageBase64 : `data:image/jpeg;base64,${imageBase64}`;
+
+            try {
+                // If mocking (and not Ollama)
+                if (!this.isOllama && (this.openai.apiKey === 'mock-key' || this.openai.apiKey?.startsWith('sk-mock'))) {
+                    return { ...q, imageDescription: "MOCK DESCRIPTION: Image shows an anchor." };
+                }
+
+                // Prepare message content based on provider
+                // Ollama with 'llava' via OpenAI compatible endpoint works similar to GPT-4 Vision
+                const response = await this.openai.chat.completions.create({
+                    model: this.visionModel, // Use the specific vision model
+                    messages: [
+                        {
+                            role: "user",
+                            content: [
+                                { type: "text", text: "Describe this image in detail. Identify technical diagrams, equipment, and read any text." },
+                                {
+                                    type: "image_url",
+                                    image_url: {
+                                        url: imageUrl,
+                                        detail: "high"
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    max_tokens: 300
+                });
+
+                const description = response.choices[0].message.content || "";
+                console.log(`   ✅ Image described for Q${q.id}: ${description.substring(0, 50)}...`);
+
+                return {
+                    ...q,
+                    imageDescription: description
+                };
+            } catch (error) {
+                console.error(`   ❌ Failed to describe image for Q${q.id} using ${this.visionModel}:`, error);
+                return q; // Return original without description on error
+            }
+        }));
+
+        return updatedQuestions;
     }
 }

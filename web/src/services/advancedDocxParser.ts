@@ -206,43 +206,43 @@ export class AdvancedDocxParser extends StructuredDocxParser {
             }
 
             // 0. SPLITTING CLUMPED CONTENT (Instructions + Question) - Only for the FIRST valid question found
-            // User Rule: Instructions are at the start, have NO numbers, and appear before Question 1 (which usually HAS a number).
-            // We strip everything before the first "numbered question marker".
+            // Strategy A: Look for "Part X" or "Section X" headers. Everything before is instructions.
+            // Strategy B: Look for first numbered question marker (fallback).
+
             if (!foundFirstQuestion) {
-                // Regex looks for:
-                // 1. Start of string (^) OR Newline (\n)
-                // 2. Optional whitespace
-                // 3. Number marker: "1.", "1)", "Q1", "Question 1"
-                // 4. Followed by space/tab
-                const splitRegex = /(?:^|\n)\s*((?:\d+[\.\)]|Q\d+\.?|Question\s+\d+)[\t\s]+)/;
-                const match = splitRegex.exec(qText);
+                // Check for Section Header (Part/Section) embedded in text
+                // This is strongest signal that instructions ended and questions began
+                const sectionMatch = /(?:^|\n)((?:Part|Section|Module)\s+\d+.*)(?:\n|$)/i.exec(qText);
 
-                // If we found a numbered start marker
-                if (match) {
-                    // The start of the question is the beginning of the capturing group (match[1])
-                    // match.index is the start of the match (including newline).
-                    // We need the index of the actual text start.
+                if (sectionMatch) {
+                    const splitIdx = sectionMatch.index;
+                    const preamble = qText.substring(0, splitIdx).trim();
+                    const headerAndRest = qText.substring(splitIdx).trim();
 
-                    // Helper: match[0] is "\n1. ", match[1] is "1. "
-                    // We want to cut right before "1. "
+                    if (preamble.length > 0) {
+                        console.log('✂️  Splitting Instructions from Question based on Section Header');
+                        instructions.push(...preamble.split('\n').map(l => l.trim()).filter(l => l));
+                        qText = headerAndRest;
+                    }
+                } else {
+                    // Check for Numbered Question Split (Fallback)
+                    const splitRegex = /(?:^|\n)\s*((?:\d+[\.\)]|Q\d+\.?|Question\s+\d+)[\t\s]+)/;
+                    const match = splitRegex.exec(qText);
 
-                    const matchIndex = match.index;
-                    // Adjust for the newline if it was part of the match
-                    const splitPoint = qText.indexOf(match[1], matchIndex);
+                    if (match) {
+                        const matchIndex = match.index;
+                        const splitPoint = qText.indexOf(match[1], matchIndex);
 
-                    if (splitPoint > 0) {
-                        const preamble = qText.substring(0, splitPoint).trim();
-                        const realQuestion = qText.substring(splitPoint).trim();
+                        if (splitPoint > 0) {
+                            const preamble = qText.substring(0, splitPoint).trim();
+                            const realQuestion = qText.substring(splitPoint).trim();
 
-                        // If we have a preamble, it's the instructions
-                        if (preamble.length > 0) {
-                            console.log('✂️  Splitting Instructions from Question 1 based on first number marker');
-
-                            // Add to instructions list (splitting by lines)
-                            const preambleLines = preamble.split('\n').map(l => l.trim()).filter(l => l);
-                            instructions.push(...preambleLines);
-
-                            qText = realQuestion;
+                            // Only split if preamble DEFINITELY looks like instructions
+                            if (this.isInstruction(preamble) || preamble.length > 50) {
+                                console.log('✂️  Splitting Instructions from Question based on numbering');
+                                instructions.push(...preamble.split('\n').map(l => l.trim()).filter(l => l));
+                                qText = realQuestion;
+                            }
                         }
                     }
                 }
@@ -280,9 +280,8 @@ export class AdvancedDocxParser extends StructuredDocxParser {
             }
 
             // General instruction check
-            const isInstruction = !foundFirstQuestion &&
-                this.isInstruction(qText) &&
-                !this.looksLikeQuestion(qText);
+            // PRIORITY: If it matches instruction keywords, treat as instruction even if it has a number (e.g. "1. This marking sheet...")
+            const isInstruction = !foundFirstQuestion && this.isInstruction(qText);
 
             if (isInstruction) {
                 console.log(`📋 Detected as BLACK INSTRUCTION (guideline)`);
@@ -487,14 +486,19 @@ export class AdvancedDocxParser extends StructuredDocxParser {
             /guideline/i,
             /note\s*:/i,
             /please\s+(ensure|complete|mark|assess)/i,
-            /must\s+(be|ensure|complete)/i,
+            /must\s+(be|ensure|complete|refer)/i,
             /should\s+(be|ensure|complete)/i,
             /criteria/i,
             /procedure/i,
             /assessment\s+conditions/i,
             /reasonable\s+adjustment/i,
             /participant/i,
-            /inherent/i
+            /inherent\s+requirements/i,
+            /marking\s+sheet/i,
+            /model\s+answer/i,
+            /satisfactory\s+response/i,
+            /benchmark/i,
+            /assessors?\s+must/i
         ];
 
         const hasInstructionPattern = instructionPatterns.some(pattern => pattern.test(text));

@@ -208,10 +208,50 @@ export class AdvancedDocxParser extends StructuredDocxParser {
             // 0. SPLITTING CLUMPED CONTENT (Instructions + Question) - Only for the FIRST valid question found
             // Strategy A: Look for "Part X" or "Section X" headers. Everything before is instructions.
             // Strategy B: Look for first numbered question marker (fallback).
+            // Strategy C (NEW): If we haven't found the first question yet, assume non-question blocks are instructions.
 
             if (!foundFirstQuestion) {
+                // Check if this pair IS Question 1 (starts with "1." or "Q1")
+                const isQ1 = /^(1[\.\)]|Q1|Question 1)[\s\t]/.test(qText.trim());
+
+                if (isQ1) {
+                    // We found Q1!
+                    // Check if there is preamble text BEFORE "1."
+                    const splitMatch = /^(1[\.\)]|Q1|Question 1)[\s\t]/.exec(qText.trim());
+                    // If match is at index 0, clean start. If >0, split.
+                    if (qText.trim().indexOf(splitMatch![0]) > 0) {
+                        // This case handled by split logic below
+                    } else {
+                        foundFirstQuestion = true;
+                        // Continue to process as normal Q&A
+                    }
+                } else {
+                    // It is NOT Question 1.
+                    // Does it look like a Section Header?
+                    if (/^(Part|Section|Module)\s+\d+/i.test(qText)) {
+                        // It's a header like "Part 1" - this usually SIGNALS the start of questions or section.
+                        // But if it's "Part 1 - Instructions", it's instructions.
+                        // Let's assume Part 1 starts the question block for now.
+                    } else {
+                        // It's not Q1, not a Header.
+                        // It's very likely PURE INSTRUCTION.
+                        console.log(`📋 Pre-Q1 Content detected as INSTRUCTION: "${qText.substring(0, 30)}..."`);
+
+                        // Treat as instruction
+                        if (qText.length < 100) instructions.push(qText.toUpperCase());
+                        else instructions.push(qText);
+
+                        if (aText && aText.length > 5) {
+                            const lines = aText.split('\n').map(l => l.trim()).filter(l => l);
+                            instructions.push(...lines);
+                        }
+                        continue; // Skip Q&A processing
+                    }
+                }
+
                 // Check for Section Header (Part/Section) embedded in text
                 // This is strongest signal that instructions ended and questions began
+                // ... (rest of existing split logic)
                 const sectionMatch = /(?:^|\n)((?:Part|Section|Module)\s+\d+.*)(?:\n|$)/i.exec(qText);
 
                 if (sectionMatch) {
@@ -223,6 +263,8 @@ export class AdvancedDocxParser extends StructuredDocxParser {
                         console.log('✂️  Splitting Instructions from Question based on Section Header');
                         instructions.push(...preamble.split('\n').map(l => l.trim()).filter(l => l));
                         qText = headerAndRest;
+                        // If we split, we likely found the start.
+                        // Don't set foundFirstQuestion yet, let Q&A logic handle the rest.
                     }
                 } else {
                     // Check for Numbered Question Split (Fallback)

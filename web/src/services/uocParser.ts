@@ -379,25 +379,33 @@ function extractEvidenceSection(
             }
             // Divs/Tables - Deep Search
             else if (current.is("div")) {
-                // If it's a div, it might contain anything. 
-                // We should probably just walk its children similar to top-level logic, or extract text + lists.
-                // Simple approach: Extract all P and UL/OL in order of appearance?
-                // The previous implementation separated them, losing order. Let's try to preserve order if possible.
+                // Deep search for structural elements to avoid merging text
+                // Check if the div contains P or UL/OL elements
+                const children = current.find("p, ul, ol");
 
-                current.contents().each((_: number, child: any) => {
-                    const $child = $(child);
-                    if ($child.is("p")) {
-                        const text = $child.text().trim();
-                        if (text) parts.push(text);
-                    } else if ($child.is("ul, ol")) {
-                        const items = extractNestedList($, $child);
-                        if (items.length) parts.push(items.join("\n"));
-                    } else if ($child.is("div")) {
-                        // Nested div? Just get text for now to be safe
-                        const text = $child.text().trim();
-                        if (text) parts.push(text);
+                if (children.length > 0) {
+                    children.each((_: number, el: any) => {
+                        const $el = $(el);
+                        if ($el.is("p")) {
+                            const text = $el.text().trim();
+                            if (text && !text.toLowerCase().includes("evidence required to demonstrate")) {
+                                parts.push(text);
+                            }
+                        } else if ($el.is("ul, ol")) {
+                            const items = extractNestedList($, $el);
+                            if (items.length) parts.push(items.join("\n"));
+                        }
+                    });
+                } else {
+                    // Fallback: Just text with newlines (handle <br>)
+                    // Avoid using .text() directly on div if it creates merged "RequirementsPlan"
+                    const clone = current.clone();
+                    clone.find('br').replaceWith('\n');
+                    const text = clone.text().trim();
+                    if (text && !text.toLowerCase().includes("evidence required to demonstrate")) {
+                        parts.push(text);
                     }
-                });
+                }
             }
             else if (current.is("table") || current.find("table").length) {
                 const table = current.is("table") ? current : current.find("table").first();
@@ -618,7 +626,7 @@ export function parseUocHtml(html: string, url: string): Uoc {
 
         // EXCLUSION: Ignore footer data, links, and non-content headings
         const lowerHeading = headingText.toLowerCase();
-        if (lowerHeading.match(/^(links|navigation|menu|footer|copyright|disclaimer|privacy|search|my profile|logout|login)$/)) return;
+        if (lowerHeading.match(/^(links|navigation|menu|footer|copyright|disclaimer|privacy|search|my profile|logout|login|acknowledgement of country)$/)) return;
 
         const tag = $h.get(0).tagName.toLowerCase();
         const level = tag === 'h2' ? 2 : tag === 'h3' ? 3 : 4;

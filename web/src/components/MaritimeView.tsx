@@ -70,30 +70,20 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
         let currentGroup: { title: string; items: string[] } | null = null;
 
         lines.forEach(line => {
-            // Regex for detection:
-            // [L0] -> Top level (Number it)
-            // [L1], [L2], etc -> Sub level (Indent/Bullet it)
-            // Fallback for old data: • (Top), ◦ or - (Sub)
+            // STRICT logic: Only [L1]..[L9] are recognized as nested items (from scraper).
+            // All other lines (including manual bullets -, *, •) are treated as new Top Level items (New P-Number).
+            const isNested = /^\[L[1-9]\]/.test(line);
 
-            const isTopLevel = /^(\[L0\]|•)\s*/.test(line);
-            const isSubLevel = /^(\[L[1-9]\]|◦|-)\s*/.test(line);
+            // Clean markers triggers (remove [L0], [L1], and common bullets)
+            const cleanLine = line.replace(/^(\[L\d+\]|[•◦\-\*])\s*/, '').trim();
+            if (!cleanLine) return;
 
-            // Clean markers
-            const cleanLine = line.replace(/^(\[L\d+\]|[•◦-])\s*/, '').trim();
-
-            if (isTopLevel || !currentGroup) {
-                // New numbered item
+            if (isNested && currentGroup) {
+                currentGroup.items.push(cleanLine);
+            } else {
+                // Start a new numbered group for any non-nested line
                 currentGroup = { title: cleanLine, items: [] };
                 groups.push(currentGroup);
-            } else {
-                if (isSubLevel) {
-                    currentGroup.items.push(cleanLine);
-                } else {
-                    // Start new group for unmarked lines to be safe, or append?
-                    // Usually implies new thought.
-                    currentGroup = { title: cleanLine, items: [] };
-                    groups.push(currentGroup);
-                }
             }
         });
         return groups;
@@ -179,7 +169,7 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
                             </div>
 
                             {/* Evidence Sections */}
-                            <div className="grid md:grid-cols-2 gap-8 pt-8 border-t border-slate-200 dark:border-slate-800 mt-8">
+                            <div className="flex flex-col gap-8 pt-8 border-t border-slate-200 dark:border-slate-800 mt-8">
                                 {/* Performance Evidence */}
                                 {u.performanceEvidence && (
                                     <div className="space-y-4">
@@ -191,7 +181,7 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
                                             {parseEvidence(u.performanceEvidence).map((group, i) => (
                                                 <div key={i} className="flex gap-4 items-start">
                                                     <div className="shrink-0 w-8 text-right">
-                                                        <span className="text-xs font-mono font-bold text-slate-400">P{i + 1}</span>
+                                                        <span className="text-xs font-mono font-bold text-slate-400">{i + 1}.</span>
                                                     </div>
                                                     <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                                                         <div className="whitespace-pre-wrap font-medium text-slate-700 dark:text-slate-200">{group.title}</div>
@@ -220,7 +210,7 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
                                             {parseEvidence(u.knowledgeEvidence).map((group, i) => (
                                                 <div key={i} className="flex gap-4 items-start">
                                                     <div className="shrink-0 w-8 text-right">
-                                                        <span className="text-xs font-mono font-bold text-slate-400">K{i + 1}</span>
+                                                        <span className="text-xs font-mono font-bold text-slate-400">{i + 1}.</span>
                                                     </div>
                                                     <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                                                         <div className="whitespace-pre-wrap font-medium text-slate-700 dark:text-slate-200">{group.title}</div>
@@ -292,7 +282,9 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
                                     "performance evidence",
                                     "knowledge evidence",
                                     "assessment conditions",
-                                    "links"
+                                    "links",
+                                    "acknowledgement of country",
+                                    "copyright"
                                 ];
                                 // Check if normalized heading starts with any excluded phrase (e.g. "Application of the Unit")
                                 if (excluded.some(ex => headingLower.includes(ex))) return null;

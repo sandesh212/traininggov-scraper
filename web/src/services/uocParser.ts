@@ -178,8 +178,11 @@ function extractElementsAndPC($: any): UocElement[] | undefined {
     tables.each((i: number, table: any) => {
         const $table = $(table);
         const tableText = $table.text().toLowerCase();
-        // Identify Elements table loosely
-        if (!tableText.includes("elements") || !tableText.includes("performance criteria")) return;
+        const prevHeader = $table.prevAll("h2, h3, h4").first().text().toLowerCase();
+
+        // Identify Elements table loosely: check table text OR preceding header
+        if ((!tableText.includes("element") && !tableText.includes("performance criteria")) &&
+            !prevHeader.includes("element") && !prevHeader.includes("performance criteria")) return;
 
         let currentElement: UocElement | null = null;
 
@@ -188,8 +191,15 @@ function extractElementsAndPC($: any): UocElement[] | undefined {
             const $tds = $tr.find("td");
             if ($tds.length === 0) return;
 
-            // Get clean text for all cells
-            const cells = $tds.map((_: number, td: any) => $(td).text().trim()).get();
+            // Get clean text for all cells, preserving newlines
+            const cells = $tds.map((_: number, td: any) => {
+                const $td = $(td).clone();
+                $td.find('br').replaceWith('\n');
+                $td.find('p').each((_: number, p: any) => {
+                    $(p).after('\n');
+                });
+                return $td.text().trim();
+            }).get();
             const firstCell = cells[0] || "";
 
             // Skip Header Rows (heuristic)
@@ -259,20 +269,22 @@ function extractElementsAndPC($: any): UocElement[] | undefined {
 
                 lines.forEach(rawLine => {
                     // Split by lookahead for "Digit.Digit" to catch "1.1 text 1.2 text" on one line
-                    // Improved regex: removed \b at start to handle "learning3.2" (missing space) scenarios
-                    // Added \s check after number to ensure it's likely an ID (e.g. "3.2 ")
-                    const splitLines = rawLine.split(/(?=\d+\.\d+\s)/);
+                    // Improved regex: removed \b at start, added allow for "1.1. Text" or "1.1Text"
+                    const splitLines = rawLine.split(/(?=\b\d+\.\d+)/);
 
                     splitLines.forEach(l => {
                         const line = l.trim();
                         if (!line) return;
 
-                        // We want to capture valid PCs (e.g. "1.1 text")
-                        const match = line.match(/^(\d+\.\d+)\s+(.+)$/);
+                        // Capture valid PCs (e.g. "1.1 text", "1.1. text", "1.1Text")
+                        // Group 1: ID (e.g. 1.1)
+                        // Group 2: Optional trailing dot
+                        // Group 3: Text
+                        const match = line.match(/^(\d+\.\d+)(\.?)[\s\xA0]*(.*)$/);
                         if (match) {
                             currentElement!.performanceCriteria.push({
-                                id: match[1],
-                                text: match[2].trim()
+                                id: match[1], // Keep standard "X.Y" format
+                                text: match[3].trim()
                             });
                         } else if (line.match(/^\d+\.\d+/)) {
                             // Fallback if regex didn't catch text part cleanly but starts with ID
@@ -294,47 +306,31 @@ function extractElementsAndPC($: any): UocElement[] | undefined {
     return items.length > 0 ? items : undefined;
 }
 
-function extractTextFromSection($: any, headerText: string): string | undefined {
-    const header = $("h2, h3, h4").filter((_: number, el: any) => {
-        const text = $(el).text().trim();
-        return text.toLowerCase() === headerText.toLowerCase();
-    }).first();
-
-    if (!header.length) return undefined;
-
-    const texts: string[] = [];
-    let current = header.next();
-
-    while (current.length && !current.is("h2, h3, h4")) {
-        const text = current.text().trim();
-        if (text && current.is("p")) {
-            texts.push(text);
-        }
-        current = current.next();
-    }
-
-    return texts.length > 0 ? texts.join("\n\n") : undefined;
-}
-
 // Consolidated list extractor helper to ensure deep nesting is captured
 function extractNestedList($: any, $el: any, depth: number = 0): string[] {
     const items: string[] = [];
-    // Use explicit markers to avoid unicode ambiguity in frontend parsing
-    // [L0] = Level 0 (Top), [L1] = Level 1+ (Sub)
+    // Use explicit markers
     const bullet = depth === 0 ? "[L0]" : `[L${depth}]`;
 
     $el.children("li").each((_: number, li: any) => {
         const $li = $(li);
 
-        // 1. Get direct text (ignore nested lists for now)
-        const text = $li.clone().children("ul, ol").remove().end().text().trim();
+        // 1. Get text content (exclude nested lists temporarily to get own text)
+        // Use clone to safe remove children without affecting DOM if references elsewhere (Cheerio is mutable? yes)
+        // But here we just want text.
+        const $clone = $li.clone();
+        $clone.find("ul, ol").remove();
+        const text = $clone.text().trim();
 
         if (text && !text.toLowerCase().includes("evidence required to demonstrate")) {
             items.push(`${bullet} ${text}`);
         }
 
-        // 2. Recursively handle children lists
-        $li.children("ul, ol").each((_: number, nestedList: any) => {
+        // 2. Recursively handle children lists (even if wrapped in divs)
+        // Find all lists that are descendants of this li, but NOT descendants of another list inside this li
+        $li.find("ul, ol").filter((_: number, el: any) => {
+            return $(el).parentsUntil($li, "ul, ol").length === 0;
+        }).each((_: number, nestedList: any) => {
             const nestedItems = extractNestedList($, $(nestedList), depth + 1);
             items.push(...nestedItems);
         });
@@ -343,20 +339,136 @@ function extractNestedList($: any, $el: any, depth: number = 0): string[] {
     return items;
 }
 
+// Helper to recursively extract content from a container (div, section, etc)
+function extractContainerContent($: any, container: any): string[] {
+    const parts: string[] = [];
+    container.contents().each((_: number, el: any) => {
+        const $el = $(el);
+        // Ignore comments or empty text
+        if (el.type === 'comment') return;
+
+        if ($el.is("p")) {
+            const t = $el.text().trim();
+            if (t) parts.push(t);
+        } else if ($el.is("ul, ol")) {
+            const listItems = extractNestedList($, $el);
+            if (listItems.length) parts.push(listItems.join("\n"));
+        } else if ($el.is("table")) {
+            const rows: string[] = [];
+            $el.find("tr").each((_: number, tr: any) => {
+                const cells = $(tr).find("td, th").map((_: number, td: any) => $(td).text().trim()).get();
+                if (cells.length) rows.push(cells.join(" | "));
+            });
+            if (rows.length) parts.push(rows.join("\n"));
+        } else if ($el.is("div, section, article")) {
+            parts.push(...extractContainerContent($, $el)); // Recurse
+        } else if (el.type === 'text') {
+            const t = $el.text().trim();
+            // Minimal length check to avoid just punctuation or stray spaces ?? 
+            // Be careful not to lose "OR" or "&"
+            if (t.length > 0) parts.push(t);
+        } else if ($el.is("br")) {
+            // Treat BR as newline if needed, but here we push blocks.
+            // Maybe ignore or handle if inside text flow?
+        } else {
+            // Fallback for span, strong, etc if strictly at this level?
+            // Usually they are inside p or div. If they are direct children of container:
+            if (!$el.is("script, style")) {
+                const t = $el.text().trim();
+                if (t) parts.push(t);
+            }
+        }
+    });
+    return parts;
+}
+
+function extractTextFromSection($: any, headerText: string): string | undefined {
+    const header = $("h2, h3, h4").filter((_: number, el: any) => {
+        const text = $(el).text().trim();
+        return text.toLowerCase().includes(headerText.toLowerCase());
+    }).first();
+
+    if (!header.length) return undefined;
+
+    const parts: string[] = [];
+    let current = header.next();
+
+    while (current.length && !current.is("h2, h3, h4")) {
+        // Use the robust recursive extractor
+        // We wrap current in a wrapper if it's a single element to reuse logic?
+        // Or just call for specific types.
+
+        if (current.is("div")) {
+            parts.push(...extractContainerContent($, current));
+        } else if (current.is("p")) {
+            const t = current.text().trim();
+            if (t) parts.push(t);
+        } else if (current.is("ul, ol")) {
+            parts.push(extractNestedList($, current).join("\n"));
+        } else if (current.is("table")) {
+            const rows: string[] = [];
+            current.find("tr").each((_: number, tr: any) => {
+                const cells = $(tr).find("td, th").map((_: number, td: any) => $(td).text().trim()).get();
+                if (cells.length) rows.push(cells.join(" | "));
+            });
+            if (rows.length) parts.push(rows.join("\n"));
+        } else {
+            // Fallback
+            const t = current.text().trim();
+            if (t && !current.is("script, style")) parts.push(t);
+        }
+
+        current = current.next();
+    }
+
+    return parts.length > 0 ? parts.join("\n\n") : undefined;
+}
+
+
+function extractSectionHtml($: any, header: any): string | undefined {
+    if (!header.length) return undefined;
+    const parts: string[] = [];
+    let current = header.next();
+    while (current.length && !current.is("h2, h3")) {
+        // Exclude noise
+        if (!current.is("script, style, .links, .footer")) {
+            // Basic cleaning of attributes if needed, but user said 'exact'
+            // We still might want to strip classes that are useless/TGA specific like 'display-field'
+            // But keeping it simple is safer for 'exact' fidelity.
+            parts.push($.html(current));
+        }
+        current = current.next();
+    }
+    return parts.length > 0 ? parts.join("\n") : undefined;
+}
+
 function extractEvidenceSection(
     $: any,
     dlLabel: string,
-    keywords: { primary: string[]; fallback?: string[] }
+    keywords: { primary: string[]; fallback?: string[] },
+    format: 'text' | 'html' = 'text'
 ): string | undefined {
     const dlText = readDlByLabel($, dlLabel);
-    if (dlText) return dlText;
+    if (dlText && format === 'text') return dlText;
+    // For DL HTML, we'd need to find the DD and get its HTML
+    if (format === 'html') {
+        const dt = $(`dt`).filter((_: number, el: any) => $(el).text().trim().toLowerCase() === dlLabel.toLowerCase()).first();
+        if (dt.length) {
+            const dd = dt.next("dd");
+            if (dd.length) return dd.html() || undefined;
+        }
+    }
 
-    const header = $("h2, h3, .mt-6.mb-2, h4").filter((_: number, el: any) => {
+    const header = $("h2, h3, .mt-6.mb-2, h4, h5, strong, b, .title").filter((_: number, el: any) => {
         const text = $(el).text().trim().toLowerCase();
         return keywords.primary.every(kw => text.includes(kw));
     }).first();
 
     if (header.length) {
+        if (format === 'html') {
+            return extractSectionHtml($, header);
+        }
+
         const parts: string[] = [];
         let current = header.next();
 
@@ -437,7 +549,7 @@ function extractEvidenceSection(
     }
 
     // Fallback: search anywhere in body for specific text matches if structured header fail
-    if (keywords.fallback) {
+    if (keywords.fallback && format === 'text') {
         // ... (existing fallback logic kept for safety)
         const evidenceText = $("*").filter((_: number, el: any) => {
             const text = $(el).text().toLowerCase();
@@ -469,21 +581,35 @@ function extractPerformanceEvidence($: any): string | undefined {
     return extractEvidenceSection($, "Performance Evidence", {
         primary: ["performance", "evidence"],
         fallback: ["evidence required to demonstrate competence"]
-    });
+    }, 'text');
+}
+
+function extractPerformanceEvidenceHtml($: any): string | undefined {
+    return extractEvidenceSection($, "Performance Evidence", {
+        primary: ["performance", "evidence"],
+        fallback: ["evidence required to demonstrate competence"]
+    }, 'html');
 }
 
 function extractKnowledgeEvidence($: any): string | undefined {
     return extractEvidenceSection($, "Knowledge Evidence", {
         primary: ["knowledge", "evidence"],
         fallback: ["evidence of the ability", "evidence of knowledge"]
-    });
+    }, 'text');
+}
+
+function extractKnowledgeEvidenceHtml($: any): string | undefined {
+    return extractEvidenceSection($, "Knowledge Evidence", {
+        primary: ["knowledge", "evidence"],
+        fallback: ["evidence of the ability", "evidence of knowledge"]
+    }, 'html');
 }
 
 function extractAssessmentConditions($: any): string | undefined {
     const dlText = readDlByLabel($, "Assessment Conditions");
     if (dlText) return dlText;
 
-    const header = $("h2, h3, h4").filter((_: number, el: any) => {
+    const header = $("h2, h3, h4, h5, strong, b, .title").filter((_: number, el: any) => {
         return $(el).text().trim().toLowerCase() === "assessment conditions";
     }).first();
 
@@ -529,6 +655,28 @@ function extractAssessmentConditions($: any): string | undefined {
     const acMatch = allText.match(/Assessment conditions\s+([\s\S]+?)(?=\n\s*(?:Performance evidence|Knowledge evidence|Range|$))/i);
     if (acMatch) {
         return acMatch[1].trim().replace(/\s+/g, ' ').substring(0, 2000);
+    }
+
+    return undefined;
+}
+
+function extractAssessmentConditionsHtml($: any): string | undefined {
+    const dlText = readDlByLabel($, "Assessment Conditions");
+    // For DL HTML logic
+    if (dlText) {
+        const dt = $(`dt`).filter((_: number, el: any) => $(el).text().trim().toLowerCase() === "assessment conditions").first();
+        if (dt.length) {
+            const dd = dt.next("dd");
+            if (dd.length) return dd.html() || undefined;
+        }
+    }
+
+    const header = $("h2, h3, h4, h5, strong, b, .title").filter((_: number, el: any) => {
+        return $(el).text().trim().toLowerCase() === "assessment conditions";
+    }).first();
+
+    if (header.length) {
+        return extractSectionHtml($, header);
     }
 
     return undefined;
@@ -613,8 +761,11 @@ export function parseUocHtml(html: string, url: string): Uoc {
         extractTextFromSection($, "Foundation skills");
 
     const assessmentConditions = extractAssessmentConditions($);
+    const assessmentConditionsHtml = extractAssessmentConditionsHtml($);
     const performanceEvidence = extractPerformanceEvidence($);
+    const performanceEvidenceHtml = extractPerformanceEvidenceHtml($);
     const knowledgeEvidence = extractKnowledgeEvidence($);
+    const knowledgeEvidenceHtml = extractKnowledgeEvidenceHtml($);
 
     const { supersededBy, supersedes } = extractSupersession($);
 
@@ -638,25 +789,39 @@ export function parseUocHtml(html: string, url: string): Uoc {
         while (cur.length && !cur.is('h2, h3, h4') && !cur.is('footer') && !cur.hasClass('footer')) {
             if (cur.is('p')) {
                 const t = cur.text().trim();
-                // Ignore copyright-like text in paragraphs if somehow reached
                 if (t && !t.toLowerCase().includes("© commonwealth of australia")) {
                     paragraphs.push(t);
                 }
             } else if (cur.is('ul, ol')) {
-                const items = cur.find('> li').map((i: number, li: any) => {
-                    const $li = $(li);
-                    const cloned = $li.clone();
-                    cloned.children('ul, ol').remove();
-                    return cloned.text().trim();
-                }).get().filter(Boolean);
+                // Use extractNestedList for full support
+                const items = extractNestedList($, cur);
                 if (items.length) lists.push(items);
             } else if (cur.is('table')) {
-                // Formatting tables as text blocks for generic sections
                 cur.find('tr').each((_: number, tr: any) => {
-                    // Use $ from header closure, which is global here
-                    // Ensure we use $(c) where $ is the load instance
                     const cells = $(tr).find('td, th').map((_: number, c: any) => $(c).text().trim()).get().join(' | ');
                     if (cells) paragraphs.push(cells);
+                });
+            } else if (cur.is('div')) {
+                // Handle generic divs by recursively extracting content
+                const divContent = extractContainerContent($, cur);
+                // We have mixed parts (paragraphs looking strings).
+                // We can try to guess if they are lists or paregraphs, or just push to paragraphs
+                // extractContainerContent returns flattened strings (lists joined by \n).
+                divContent.forEach(part => {
+                    if (part.includes("[L0]")) {
+                        // It's a list string
+                        lists.push([part]); // Wrap in array as lists expected string[] logic in UocSection?
+                        // Wait, sections.lists is string[][]. 
+                        // My extractNestedList returns string[].
+                        // So [part] is wrong if part is joined string.
+                        // extractContainerContent joins lists. 
+                        // Maybe I should NOT join lists in extractContainerContent if I use it here?
+                        // But extractTextFromSection EXPECTS joined strings.
+                        // Let's just push to paragraphs for now as "pre-formatted list text"
+                        paragraphs.push(part);
+                    } else {
+                        paragraphs.push(part);
+                    }
                 });
             }
             cur = cur.next();
@@ -682,8 +847,11 @@ export function parseUocHtml(html: string, url: string): Uoc {
         elements,
         foundationSkills,
         assessmentConditions,
+        assessmentConditionsHtml,
         performanceEvidence,
+        performanceEvidenceHtml,
         knowledgeEvidence,
+        knowledgeEvidenceHtml,
         supersededBy: supersededBy ?? null,
         supersedes: supersedes ?? null,
         sections: sections.length ? sections : undefined,

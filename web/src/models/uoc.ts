@@ -16,8 +16,11 @@ export interface Uoc {
     elements?: UocElement[];
     foundationSkills?: string;
     assessmentConditions?: string;
+    assessmentConditionsHtml?: string;
     performanceEvidence?: string;
+    performanceEvidenceHtml?: string;
     knowledgeEvidence?: string;
+    knowledgeEvidenceHtml?: string;
     description?: string;
     supersededBy: { code: string; url: string } | null;
     supersedes: { code: string; url: string } | null;

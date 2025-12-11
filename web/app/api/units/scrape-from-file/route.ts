@@ -17,12 +17,13 @@ export async function POST(req: NextRequest) {
         let codes: string[] = [];
         let duplicates: any[] = [];
 
-        if (file.name.endsWith('.txt') || file.name.endsWith('.csv')) {
+        if (file.name.endsWith('.txt')) {
             const text = new TextDecoder().decode(buffer);
             codes = text.split(/\r?\n/)
                 .map(line => line.trim())
                 .filter(line => line.length > 0 && !line.startsWith('#')); // Simple filtering
         } else {
+            // ExcelLoader handles .xlsx, .xls, and .csv using SheetJS
             const result = ExcelLoader.readUnitCodes(buffer);
             codes = result.codes;
             duplicates = result.duplicates;
@@ -41,13 +42,14 @@ export async function POST(req: NextRequest) {
         const uniqueAdded = new Set<string>();
         const failed: { code: string; reason: string }[] = [];
 
-        // Use scrapeUnitsWithDetails for batch processing
-        const { valid, invalid } = await scraper.scrapeUnitsWithDetails(codes);
-
-        for (const unit of valid) {
+        // Use scrapeUnitsWithDetails with incremental saving
+        const { valid, invalid } = await scraper.scrapeUnitsWithDetails(codes, true, async (unit) => {
             await loader.addUnit(unit);
             uniqueAdded.add(unit.code);
-        }
+        });
+
+        // Loop for valid units REMOVED because we save incrementally in callback above.
+        // We still iterate invalid for the response report.
 
         for (const inv of invalid) {
             failed.push({ code: inv.code, reason: inv.reason });

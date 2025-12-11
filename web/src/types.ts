@@ -65,8 +65,11 @@ export interface Unit {
     foundationSkills?: string;
     elements: Element[];
     knowledgeEvidence: string;
+    knowledgeEvidenceHtml?: string;
     performanceEvidence: string;
+    performanceEvidenceHtml?: string;
     assessmentConditions: string;
+    assessmentConditionsHtml?: string;
     supersededBy?: string;
     supersedes?: string;
     sections: Section[];

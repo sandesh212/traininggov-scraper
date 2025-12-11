@@ -90,7 +90,7 @@ export class ScraperService {
         return units;
     }
 
-    async scrapeUnitsWithDetails(codes: string[], skipValidation: boolean = true): Promise<{ valid: Unit[], invalid: { code: string, url: string, reason: string }[] }> {
+    async scrapeUnitsWithDetails(codes: string[], skipValidation: boolean = true, onUnitScraped?: (unit: Unit) => Promise<void>): Promise<{ valid: Unit[], invalid: { code: string, url: string, reason: string }[] }> {
         const valid: Unit[] = [];
         const invalid: { code: string, url: string, reason: string }[] = [];
 
@@ -119,6 +119,13 @@ export class ScraperService {
                 const result = await this.scrapeUnitWithReason(code, 3);
                 if (result.success && result.unit) {
                     valid.push(result.unit);
+                    if (onUnitScraped) {
+                        try {
+                            await onUnitScraped(result.unit);
+                        } catch (cbError) {
+                            logger.error(`   ⚠️ Callback error for ${code}:`, cbError);
+                        }
+                    }
                     logger.info(`   ✅ Scraped ${code}`);
                 } else {
                     logger.warn(`   ⚠️ Failed to scrape ${code}: ${result.reason}`);
@@ -275,8 +282,19 @@ export class ScraperService {
                         }
                     }
 
+                    // Check for title presence
+                    const titleCheck = await page.$('.heroSubheading');
+                    if (!titleCheck) {
+                        console.log(`   Title container not found immediately for ${code}, waiting explicitly...`);
+                        try {
+                            await page.waitForSelector('.heroSubheading', { timeout: 5000 });
+                        } catch (e) {
+                            console.warn(`   Could not find .heroSubheading after wait for ${code}`);
+                        }
+                    }
+
                     // additional wait
-                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    await new Promise(resolve => setTimeout(resolve, 4000));
 
                     unitHtml = await page.content();
                     $ = load(unitHtml);

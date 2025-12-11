@@ -26,10 +26,10 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
     const [uploading, setUploading] = useState(false);
     const [headerMessage, setHeaderMessage] = useState<{ type: 'success' | 'error' | 'loading'; text: string } | null>(null);
     const [showMaritimeView, setShowMaritimeView] = useState(false);
+    const analysisFileInputRef = React.useRef<HTMLInputElement>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const [refreshingAll, setRefreshingAll] = useState(false);
-
     const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
     const [confirmClear, setConfirmClear] = useState(false);
     const [confirmRefreshAll, setConfirmRefreshAll] = useState(false);
@@ -44,7 +44,18 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
 
     useEffect(() => {
         fetchUnits();
-    }, [searchScope]); // Reload when scope changes
+    }, [searchScope]);
+
+    // Polling effect
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (uploading || processingUnit || refreshingAll) {
+            interval = setInterval(() => {
+                fetchUnits(true); // Silent fetch
+            }, 3000);
+        }
+        return () => clearInterval(interval);
+    }, [uploading, processingUnit, refreshingAll]);
 
     // Debounce search
     useEffect(() => {
@@ -54,8 +65,8 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    const fetchUnits = async () => {
-        setLoading(true);
+    const fetchUnits = async (silent = false) => {
+        if (!silent) setLoading(true);
         try {
             const params = new URLSearchParams();
             if (searchTerm) params.set('search', searchTerm);
@@ -69,9 +80,9 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                 setLastUpdated(data.lastUpdated);
             }
         } catch (err) {
-            setError('Failed to load units');
+            if (!silent) setError('Failed to load units');
         } finally {
-            setLoading(false);
+            if (!silent) setLoading(false);
         }
     };
 
@@ -80,23 +91,16 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         if (!file) return;
 
         setUploading(true);
-
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-            // Determine endpoint based on file type
             const isScrapeFile = file.name.match(/\.(xlsx|xls|txt|csv)$/i);
-            const endpoint = isScrapeFile
-                ? '/api/units/scrape-from-file'
-                : '/api/units/upload';
+            const endpoint = isScrapeFile ? '/api/units/scrape-from-file' : '/api/units/upload';
 
             setHeaderMessage({ type: 'loading', text: isScrapeFile ? 'Scraping started...' : 'Uploading...' });
 
-            const res = await fetch(endpoint, {
-                method: 'POST',
-                body: formData
-            });
+            const res = await fetch(endpoint, { method: 'POST', body: formData });
             const data = await res.json();
 
             if (res.ok) {
@@ -112,7 +116,7 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             setTimeout(() => setHeaderMessage(null), 5000);
         } finally {
             setUploading(false);
-            if (fileInputRef.current) fileInputRef.current.value = ''; // Reset
+            if (fileInputRef.current) fileInputRef.current.value = '';
         }
     };
 
@@ -121,7 +125,6 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         if (!newUnitCode.trim()) return;
 
         const codeToCheck = newUnitCode.trim().toUpperCase();
-
         const existingUnit = units.find(u => u.code === codeToCheck);
         if (existingUnit) {
             handleViewDetails(existingUnit.code);
@@ -138,69 +141,38 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                 body: JSON.stringify({ code: codeToCheck })
             });
             const data = await res.json();
-
             if (res.ok) {
-                const hasAdded = data.added && data.added.length > 0;
-                const hasFailed = data.failed && data.failed.length > 0;
-
-                let success = true;
-                let message = data.message;
-
-                if (hasFailed && !hasAdded) {
-                    success = false;
-                    message = 'Failed to add units';
-                }
-
-                if (success) {
-                    setHeaderMessage({ type: 'success', text: message });
-                    setTimeout(() => setHeaderMessage(null), 5000);
-                } else {
-                    setHeaderMessage({ type: 'error', text: message });
-                    setTimeout(() => setHeaderMessage(null), 8000); // Longer for errors
-                }
-
-                if (hasAdded) {
-                    setNewUnitCode('');
-                    await fetchUnits();
-                    if (data.added.length === 1) {
-                        handleViewDetails(data.added[0]);
-                    }
-                }
+                setHeaderMessage({ type: 'success', text: data.message || 'Unit Added' });
+                fetchUnits();
+                setNewUnitCode('');
+                setTimeout(() => setHeaderMessage(null), 5000);
             } else {
-                setHeaderMessage({ type: 'error', text: data.error || 'Failed to add unit' });
+                setHeaderMessage({ type: 'error', text: data.error || 'Failed to add' });
                 setTimeout(() => setHeaderMessage(null), 5000);
             }
         } catch (err) {
             setHeaderMessage({ type: 'error', text: 'Network error' });
-            setTimeout(() => setHeaderMessage(null), 5000);
         } finally {
             setAdding(false);
         }
     };
 
     const handleDeleteUnit = async (code: string) => {
-        // If not confirmed yet, set state
         if (confirmDelete !== code) {
             setConfirmDelete(code);
-            // Auto-clear confirmation after 3s
             setTimeout(() => setConfirmDelete(null), 3000);
             return;
         }
-
         setProcessingUnit(code);
-        setConfirmDelete(null);
         try {
             const res = await fetch(`/api/units/${code}`, { method: 'DELETE' });
             if (res.ok) {
                 if (selectedUnit?.code === code) setSelectedUnit(null);
                 fetchUnits();
-            } else {
-                setError('Failed to delete unit');
             }
-        } catch (err) {
-            setError('Failed to delete unit');
         } finally {
             setProcessingUnit(null);
+            setConfirmDelete(null);
         }
     };
 
@@ -211,12 +183,8 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             if (res.ok) {
                 const data = await res.json();
                 if (selectedUnit?.code === code) setSelectedUnit(data.unit);
-                fetchUnits(); // Update timestamp/list
-            } else {
-                setError('Failed to update unit');
+                fetchUnits();
             }
-        } catch (err) {
-            setError('Failed to update unit');
         } finally {
             setProcessingUnit(null);
         }
@@ -228,26 +196,15 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             setTimeout(() => setConfirmRefreshAll(false), 3000);
             return;
         }
-
-        setConfirmRefreshAll(false);
         setRefreshingAll(true);
         setHeaderMessage({ type: 'loading', text: 'Refreshing all...' });
         try {
-            const res = await fetch('/api/units/refresh', { method: 'POST' });
-            const data = await res.json();
-            if (res.ok) {
-                setHeaderMessage({ type: 'success', text: data.message || 'Refreshed' });
-                fetchUnits();
-                setTimeout(() => setHeaderMessage(null), 4000);
-            } else {
-                setHeaderMessage({ type: 'error', text: 'Failed to refresh units' });
-                setTimeout(() => setHeaderMessage(null), 4000);
-            }
-        } catch (err) {
-            setHeaderMessage({ type: 'error', text: 'Failed to refresh units' });
-            setTimeout(() => setHeaderMessage(null), 4000);
+            await fetch('/api/units/refresh', { method: 'POST' });
+            setHeaderMessage({ type: 'success', text: 'Refresh complete' });
+            fetchUnits();
         } finally {
             setRefreshingAll(false);
+            setTimeout(() => setHeaderMessage(null), 3000);
         }
     };
 
@@ -257,48 +214,21 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             setTimeout(() => setConfirmClear(false), 3000);
             return;
         }
-
-        setConfirmClear(false);
         setLoading(true);
         try {
             await fetch('/api/units', { method: 'DELETE' });
             fetchUnits();
             setSelectedUnit(null);
-            setHeaderMessage({ type: 'success', text: 'All units cleared' });
-            setTimeout(() => setHeaderMessage(null), 3000);
-        } catch (err) {
-            setHeaderMessage({ type: 'error', text: 'Failed to clear units' });
-            setTimeout(() => setHeaderMessage(null), 3000);
+            setHeaderMessage({ type: 'success', text: 'Cleared all units' });
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleUndo = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch('/api/units/restore', { method: 'POST' });
-            if (res.ok) {
-                fetchUnits();
-                setHeaderMessage({ type: 'success', text: 'Units restored' });
-                setTimeout(() => setHeaderMessage(null), 3000);
-            } else {
-                setHeaderMessage({ type: 'error', text: 'Nothing to undo' });
-                setTimeout(() => setHeaderMessage(null), 3000);
-            }
-        } catch (err) {
-            setHeaderMessage({ type: 'error', text: 'Failed to restore' });
             setTimeout(() => setHeaderMessage(null), 3000);
-        } finally {
-            setLoading(false);
         }
     };
 
     const handleViewDetails = async (code: string) => {
         setViewingUnit(true);
-        // Don't clear if clicking same unit
         if (selectedUnit?.code === code) return;
-
         setSelectedUnit(null);
         try {
             const res = await fetch(`/api/units/${code}`);
@@ -311,6 +241,14 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         }
     };
 
+    // Group units logic
+    const groupedUnits = React.useMemo(() => {
+        const sorted = [...units].sort((a, b) =>
+            a.code.localeCompare(b.code, undefined, { numeric: true, sensitivity: 'base' })
+        );
+        return { 'All Units': sorted };
+    }, [units]);
+
     const toggleCategory = (cat: string) => {
         const next = new Set(expandedCategories);
         if (next.has(cat)) next.delete(cat);
@@ -318,76 +256,71 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         setExpandedCategories(next);
     };
 
-    // Group units logic
-    const groupedUnits = React.useMemo(() => {
-        const groups: Record<string, UnitSummary[]> = {};
-        const assignedCodes = new Set<string>();
-
-        // 1. Initialize Maritime Groups
-        SHEET_CONFIGS.forEach(c => {
-            if (c.name !== 'Assessment Conditions') groups[c.name] = [];
-        });
-
-        // 2. Assign to Predefined Maritime Groups
-        units.forEach(u => {
-            const code = u.code.toUpperCase();
-            for (const cfg of SHEET_CONFIGS) {
-                if (cfg.name === 'Assessment Conditions') continue;
-
-                if (cfg.filterPrefixes && cfg.filterPrefixes.some(p => code.startsWith(p))) {
-                    groups[cfg.name].push(u);
-                    assignedCodes.add(code);
-                    break;
-                }
-            }
-        });
-
-        // 3. Dynamic Grouping for Remaining Units
-        units.forEach(u => {
-            if (assignedCodes.has(u.code.toUpperCase())) return;
-
-            // Extract Training Package Prefix (first 3 letters are standard, e.g. BSB, CPC, TLI)
-            // We use 3 letters to group broadly by package rather than sub-sector
-            const match = u.code.match(/^([A-Z]{3})/i);
-            const prefix = match ? match[1].toUpperCase() : 'Other';
-
-            const categoryName = prefix;
-
-            if (!groups[categoryName]) {
-                groups[categoryName] = [];
-            }
-            groups[categoryName].push(u);
-        });
-
-        // 4. Sort Groups: Maritime First, then alphabetical
-        const sortedGroups: Record<string, UnitSummary[]> = {};
-
-        // Add predefined configs in order
-        SHEET_CONFIGS.forEach(c => {
-            if (groups[c.name]) sortedGroups[c.name] = groups[c.name];
-        });
-
-        // Add dynamic groups sorted alphabetically
-        Object.keys(groups)
-            .filter(k => !sortedGroups[k] && k !== 'Other')
-            .sort()
-            .forEach(k => sortedGroups[k] = groups[k]);
-
-        // Add 'Other' last if it exists
-        if (groups['Other'] && groups['Other'].length > 0) {
-            sortedGroups['Other'] = groups['Other'];
-        }
-
-        return sortedGroups;
-    }, [units]);
-
-    // Initialize expanded state once units are loaded or first time
+    // Initialize expanded
     useEffect(() => {
         if (units.length > 0 && expandedCategories.size === 0) {
-            // Expand all by default as requested implicitly ("show all units from all categories")
             setExpandedCategories(new Set(Object.keys(groupedUnits)));
         }
     }, [units.length, groupedUnits]);
+
+    const handleAnalyzeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Prompt for unit list? For now just use DB units if available
+        // Or we could have a multi-file selection. 
+        // For simplicity: Single file upload triggers analysis using existing DB units.
+
+        setUploading(true);
+        setHeaderMessage({ type: 'loading', text: 'Analyzing...' });
+
+        const formData = new FormData();
+        formData.append('assessmentFile', file);
+        // We assume units are already loaded in DB or user can upload matched units file separately if needed.
+        // If we need simultaneous upload, we'd need a modal.
+        // Passing 'saveToDatabase=false' for pure analysis?
+        formData.append('saveToDatabase', 'true');
+
+        try {
+            const res = await fetch('/api/analyze', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                setHeaderMessage({ type: 'success', text: 'Analysis Complete' });
+                // We need to SHOW the results. 
+                // Either separate view or modal?
+                // For now, let's console log and maybe alert user?
+                // Ideally, we switch to a "Analysis Result View".
+                console.log('Analysis Result:', data);
+                // Trigger a download of the report automatically?
+                // or Save it to state to display?
+
+                // Let's create a Blob and download it as JSON report for now to prove it works
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Analysis_Report_${file.name}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                setTimeout(() => setHeaderMessage(null), 5000);
+            } else {
+                setHeaderMessage({ type: 'error', text: data.error || 'Analysis failed' });
+                setTimeout(() => setHeaderMessage(null), 5000);
+            }
+        } catch (err) {
+            setHeaderMessage({ type: 'error', text: 'Network error during analysis' });
+            setTimeout(() => setHeaderMessage(null), 5000);
+        } finally {
+            setUploading(false);
+            if (analysisFileInputRef.current) analysisFileInputRef.current.value = '';
+        }
+    };
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 md:p-4">
@@ -431,6 +364,14 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                                 className="hidden"
                                 accept=".json,.jsonl,.txt,.xlsx,.xls"
                             />
+                            {/* Analysis File Input */}
+                            <input
+                                type="file"
+                                ref={analysisFileInputRef}
+                                onChange={handleAnalyzeUpload}
+                                className="hidden"
+                                accept=".docx"
+                            />
 
                             {/* Dynamic Upload/Status Button */}
                             {headerMessage ? (
@@ -444,14 +385,25 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                                     <span className="whitespace-nowrap">{headerMessage.text}</span>
                                 </div>
                             ) : (
-                                <button
-                                    onClick={() => fileInputRef.current?.click()}
-                                    disabled={uploading}
-                                    className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-600 dark:text-slate-400"
-                                    title="Upload / Scrape File"
-                                >
-                                    <Upload className="w-5 h-5" />
-                                </button>
+                                <>
+                                    <button
+                                        onClick={() => fileInputRef.current?.click()}
+                                        disabled={uploading}
+                                        className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-600 dark:text-slate-400"
+                                        title="Upload / Scrape File"
+                                    >
+                                        <Upload className="w-5 h-5" />
+                                    </button>
+                                    <button
+                                        onClick={() => analysisFileInputRef.current?.click()}
+                                        disabled={uploading}
+                                        className="p-2 ml-1 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg transition-colors flex items-center gap-1"
+                                        title="Analyze Assessment (DOCX)"
+                                    >
+                                        <CheckCircle className="w-4 h-4" />
+                                        <span className="text-xs font-bold">Analyze</span>
+                                    </button>
+                                </>
                             )}
 
                             {units.length > 0 && (
@@ -562,11 +514,11 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                                         if (categoryFilter !== 'ALL' && category !== categoryFilter) return null;
                                         if (categoryUnits.length === 0) return null;
 
-                                        const isExpanded = expandedCategories.has(category) || categoryFilter !== 'ALL';
+                                        const isExpanded = expandedCategories.has(category) || categoryFilter !== 'ALL' || Object.keys(groupedUnits).length === 1;
 
                                         return (
                                             <div key={category} className="mb-3">
-                                                {categoryFilter === 'ALL' && (
+                                                {categoryFilter === 'ALL' && Object.keys(groupedUnits).length > 1 && (
                                                     <button
                                                         onClick={() => toggleCategory(category)}
                                                         className="w-full flex items-center justify-between px-2 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors"
@@ -652,52 +604,54 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                                 </div>
 
                                 {/* Unit Header Actions */}
-                                <div className="p-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col items-start gap-3 shrink-0 z-10 relative">
-                                    <div className="flex w-full justify-between items-start">
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                                <div className="p-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex justify-between items-start gap-4 shrink-0 z-10 relative">
+                                    <div className="flex flex-col lg:flex-row lg:items-baseline gap-2 lg:gap-4 flex-1 min-w-0">
+                                        {/* Code & Tag */}
+                                        <div className="flex items-center gap-3 shrink-0">
+                                            <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
                                                 {selectedUnit.code}
                                             </span>
                                             {SHEET_CONFIGS.find(cfg => (cfg.filterPrefixes || []).some(prefix => selectedUnit?.code.startsWith(prefix))) && (
-                                                <span className="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-blue-50 text-blue-700 border border-blue-100">
+                                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-blue-50 text-blue-700 border border-blue-100 self-center">
                                                     {SHEET_CONFIGS.find(cfg => (cfg.filterPrefixes || []).some(prefix => selectedUnit?.code.startsWith(prefix)))?.name}
                                                 </span>
                                             )}
                                         </div>
 
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => window.location.href = `/api/units/export?unit=${selectedUnit.code}`}
-                                                className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                                                title="Download Excel"
-                                            >
-                                                <Download className="w-5 h-5" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleRefreshUnit(selectedUnit.code)}
-                                                disabled={processingUnit === selectedUnit.code}
-                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                            >
-                                                {processingUnit === selectedUnit.code ? <Loader2 className="w-5 h-5 animate-spin" /> : <RotateCcw className="w-5 h-5" />}
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteUnit(selectedUnit.code)}
-                                                disabled={processingUnit === selectedUnit.code}
-                                                className={`p-2 rounded-lg transition-colors ${confirmDelete === selectedUnit.code ? 'text-red-600 bg-red-50' : 'text-slate-400 hover:text-red-600 hover:bg-red-50'}`}
-                                            >
-                                                <Trash2 className="w-5 h-5" />
-                                            </button>
+                                        {/* Title */}
+                                        <div className="flex items-center gap-2 min-w-0">
+                                            <h1 className={`font-medium text-slate-700 dark:text-slate-200 leading-snug ${selectedUnit.title.length > 50 ? 'text-base' : 'text-lg'}`}>
+                                                {selectedUnit.title}
+                                            </h1>
+                                            <a href={`https://training.gov.au/Training/Details/${selectedUnit.code}`} target="_blank" rel="noreferrer" className="text-slate-300 hover:text-blue-500 transition-colors shrink-0 self-center">
+                                                <div className="w-5 h-5 rounded-full border border-current flex items-center justify-center text-[10px]">↗</div>
+                                            </a>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3">
-                                        <h1 className="text-lg font-medium text-slate-700 dark:text-slate-200 leading-snug max-w-2xl">
-                                            {selectedUnit.title}
-                                        </h1>
-                                        <a href={`https://training.gov.au/Training/Details/${selectedUnit.code}`} target="_blank" rel="noreferrer" className="text-slate-300 hover:text-blue-500 transition-colors">
-                                            <span className="sr-only">External Link</span>
-                                            <div className="w-5 h-5 rounded-full border border-current flex items-center justify-center text-[10px]">↗</div>
-                                        </a>
+                                    {/* Actions */}
+                                    <div className="flex gap-2 shrink-0">
+                                        <button
+                                            onClick={() => window.location.href = `/api/units/export?unit=${selectedUnit.code}`}
+                                            className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                            title="Download Excel"
+                                        >
+                                            <Download className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                            onClick={() => handleRefreshUnit(selectedUnit.code)}
+                                            disabled={processingUnit === selectedUnit.code}
+                                            className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                        >
+                                            {processingUnit === selectedUnit.code ? <Loader2 className="w-5 h-5 animate-spin" /> : <RotateCcw className="w-5 h-5" />}
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteUnit(selectedUnit.code)}
+                                            disabled={processingUnit === selectedUnit.code}
+                                            className={`p-2 rounded-lg transition-colors ${confirmDelete === selectedUnit.code ? 'text-red-600 bg-red-50' : 'text-slate-400 hover:text-red-600 hover:bg-red-50'}`}
+                                        >
+                                            <Trash2 className="w-5 h-5" />
+                                        </button>
                                     </div>
                                 </div>
 

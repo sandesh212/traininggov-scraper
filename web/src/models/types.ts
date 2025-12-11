@@ -7,6 +7,7 @@ export interface AssessmentQuestion {
     mappingHint?: string;
     subQuestions?: AssessmentQuestion[];
     parentQuestionId?: string;
+    _answer?: string; // Extracted answer text for validation/mapping
 }
 
 export interface ValidationResult {

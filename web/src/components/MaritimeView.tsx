@@ -65,28 +65,222 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
 
     const parseEvidence = (text: string) => {
         if (!text) return [];
-        const lines = text.split('\n').map(l => l.trim()).filter(l => l);
-        const groups: { title: string; items: string[] }[] = [];
-        let currentGroup: { title: string; items: string[] } | null = null;
+        const lines = text.split('\n').filter(l => l.trim());
+        const groups: { type: 'text' | 'list'; title: string; items: string[] }[] = [];
+        let currentGroup: { type: 'text' | 'list'; title: string; items: string[] } | null = null;
 
         lines.forEach(line => {
-            // STRICT logic: Only [L1]..[L9] are recognized as nested items (from scraper).
-            // All other lines (including manual bullets -, *, •) are treated as new Top Level items (New P-Number).
-            const isNested = /^\[L[1-9]\]/.test(line);
+            const trimmedLine = line.trim();
+            // Check for explicit nested marker from scraper OR manual indentation in text
+            // [L1+] is explicit nested.
+            // If previous line was a parent, and this line is a bullet/number BUT meant to be nested?
+            // The scraper outputs flattened text. If it output [L1], we use it.
+            // If the user says "child bullets are considered parent", it means they are appearing as Level 0.
+            // This happens if the scraper failed to mark them as [L1] or if my logic here promotes them.
 
-            // Clean markers triggers (remove [L0], [L1], and common bullets)
-            const cleanLine = line.replace(/^(\[L\d+\]|[•◦\-\*])\s*/, '').trim();
-            if (!cleanLine) return;
+            // Heuristic: If we are in a group, and this line looks like a bullet but NOT a top-level numbering [L0],
+            // AND the scraper didn't explicitly say [L0], maybe it's a child?
+            // BUT uocParser adds [L0] to all li elements found in strict lists.
+            // If the scraper outputs [L0] for nested items, that's a scraper issue.
+            // If the scraper output plain text bullets "o  Item", they are caught by /^[•◦\-\*]/ and made top level.
 
-            if (isNested && currentGroup) {
-                currentGroup.items.push(cleanLine);
+            // FIX: If we are already in a group (List or Text), and we encounter a simple bullet (not [L0]),
+            // treat it as a child item OF the current group, instead of a new top-level group.
+            // This assumes TGA doesn't mix "Text -> Bullet -> Text" where the bullet is top level.
+            // Usually top level is "1. Item", "2. Item".
+            // Bullets inside are children.
+
+            const isExplicitNested = /^\[L[1-9]\]/.test(trimmedLine);
+            const isExplicitTop = /^\[L0\]/.test(trimmedLine); // Scraper recognized top level
+            const isManualBullet = /^[•◦\-\*]/.test(trimmedLine);
+
+            // Clean content
+            const cleanContent = trimmedLine.replace(/^(\[L\d+\]|[•◦\-\*]|\d+\.)\s*/, '').trim();
+            if (!cleanContent) return;
+
+            if (isExplicitNested) {
+                // Definitely a child
+                if (currentGroup) {
+                    currentGroup.items.push(cleanContent);
+                } else {
+                    // Orphaned child, start a text group?
+                    currentGroup = { type: 'text', title: '', items: [cleanContent] };
+                    groups.push(currentGroup);
+                }
+            } else if (isExplicitTop) {
+                // Definitely a new top level item
+                currentGroup = { type: 'list', title: cleanContent, items: [] };
+                groups.push(currentGroup);
+            } else if (isManualBullet) {
+                // Ambiguous bullet.
+                // If we are in a group, treat as child.
+                // If no group, treat as top level list.
+                if (currentGroup) {
+                    currentGroup.items.push(cleanContent);
+                } else {
+                    currentGroup = { type: 'list', title: cleanContent, items: [] };
+                    groups.push(currentGroup);
+                }
+            } else if (/^\d+\./.test(trimmedLine)) {
+                // Numbered line (e.g. "1. Item"). Treat as new top level.
+                currentGroup = { type: 'list', title: cleanContent, items: [] };
+                groups.push(currentGroup);
             } else {
-                // Start a new numbered group for any non-nested line
-                currentGroup = { title: cleanLine, items: [] };
+                // Text paragraph
+                currentGroup = { type: 'text', title: cleanContent, items: [] };
                 groups.push(currentGroup);
             }
         });
         return groups;
+    };
+
+    const renderEvidenceSection = (title: string, content: string | undefined, contentHtml: string | undefined | null, colorClass: string, options: { prefix?: string, style?: 'numbered' | 'bullet' } = { style: 'numbered' }) => {
+        if (!content && !contentHtml) return null;
+
+        if (contentHtml) {
+            return (
+                <div className="space-y-4">
+                    <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                        <span className={`w-1 h-4 ${colorClass} rounded-full`}></span>
+                        {title}
+                    </h4>
+                    <div
+                        className="prose prose-sm dark:prose-invert max-w-none pl-3 border-l border-slate-100 dark:border-slate-800
+                                   prose-ul:list-disc prose-ol:list-decimal prose-li:marker:text-slate-400
+                                   prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:leading-relaxed
+                                   prose-headings:text-slate-800 dark:prose-headings:text-slate-100
+                                   prose-td:align-top prose-td:p-2 prose-td:border prose-td:border-slate-200 dark:prose-td:border-slate-700
+                                   prose-th:p-2 prose-th:bg-slate-50 dark:prose-th:bg-slate-800"
+                        dangerouslySetInnerHTML={{ __html: contentHtml }}
+                    />
+                </div>
+            );
+        }
+
+        const groups = parseEvidence(content!);
+        let listCount = 0;
+
+        return (
+            <div className="space-y-4">
+                <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                    <span className={`w-1 h-4 ${colorClass} rounded-full`}></span>
+                    {title}
+                </h4>
+                <div className="space-y-4 pl-3 border-l border-slate-100 dark:border-slate-800">
+                    {groups.map((group, i) => {
+                        const isList = group.type === 'list';
+                        if (isList) listCount++;
+
+                        // Determine marker
+                        let marker: React.ReactNode = null;
+                        if (isList) {
+                            if (options.style === 'bullet') {
+                                marker = <span className="text-slate-400 text-lg leading-none">•</span>;
+                            } else {
+                                marker = (
+                                    <span className="text-xs font-mono font-bold text-slate-400">
+                                        {options.prefix}{listCount}.
+                                    </span>
+                                );
+                            }
+                        }
+
+                        return (
+                            <div key={i} className="flex gap-4 items-start">
+                                {/* Marker Column */}
+                                <div className="shrink-0 w-8 text-right flex justify-end">
+                                    {marker}
+                                </div>
+                                <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed w-full min-w-0">
+                                    <div className="whitespace-pre-wrap font-medium text-slate-700 dark:text-slate-200">{group.title}</div>
+                                    {group.items.length > 0 && (
+                                        <ul className="mt-2 space-y-2 pl-4 list-[circle] marker:text-slate-300 text-slate-600 dark:text-slate-400">
+                                            {group.items.map((item, j) => (
+                                                <li key={j} className="whitespace-pre-wrap">{item}</li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    };
+
+    const renderFoundationSkills = (text: string | undefined | null) => {
+        if (!text) return null;
+
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+        const tableRows: { skill: string; desc: string }[] = [];
+        const otherText: string[] = [];
+
+        lines.forEach(line => {
+            // Pattern 1: Table format "Skill | Description"
+            if (line.includes('|')) {
+                const parts = line.split('|').map(p => p.trim());
+                if (parts.length >= 2) {
+                    const col1 = parts[0].toLowerCase();
+                    // Skip header row if it contains generic terms
+                    if (col1 === 'skill' || col1 === 'foundation skills' || col1 === 'elements') return;
+
+                    tableRows.push({ skill: parts[0], desc: parts.slice(1).join(' | ') });
+                } else {
+                    otherText.push(line);
+                }
+            }
+            // Pattern 2: "Skill to: Description" format (Common in some units)
+            else if (line.match(/^(Reading|Writing|Oral communication|Numeracy|Teamwork|Planning and organising|Technology|Problem solving|Self-management|Learning)\s+(skills\s+)?to:/i)) {
+                const match = line.match(/^(.+?to:)\s*(.*)$/);
+                if (match) {
+                    tableRows.push({ skill: match[1], desc: match[2] || '' });
+                } else {
+                    otherText.push(line);
+                }
+            }
+            else {
+                otherText.push(line);
+            }
+        });
+
+        if (tableRows.length === 0 && otherText.length === 0) return null;
+
+        return (
+            <div className="space-y-4 pt-8 border-t border-slate-200 dark:border-slate-800 mt-8">
+                <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                    <span className="w-1 h-4 bg-teal-500 rounded-full"></span>
+                    Foundation Skills
+                </h4>
+
+                {otherText.length > 0 && (
+                    <div className="text-sm text-slate-600 dark:text-slate-300 space-y-2 mb-4 pl-3">
+                        {otherText.map((t, i) => <p key={i} className="whitespace-pre-wrap">{t}</p>)}
+                    </div>
+                )}
+
+                {tableRows.length > 0 && (
+                    <div className="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 mx-3">
+                        <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                            <thead className="bg-slate-50 dark:bg-slate-800">
+                                <tr>
+                                    <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider w-1/3">Skill</th>
+                                    <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white dark:bg-slate-900 divide-y divide-slate-200 dark:divide-slate-800">
+                                {tableRows.map((row, idx) => (
+                                    <tr key={idx}>
+                                        <td className="px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100 align-top">{row.skill}</td>
+                                        <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-400 align-top whitespace-pre-wrap">{row.desc}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+        );
     };
 
     const renderSheet = (config: SheetConfig) => {
@@ -109,7 +303,16 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
                                 <React.Fragment key={u.code}>
                                     <tr className={`border-b border-slate-100 dark:border-slate-800 ${i % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50 dark:bg-slate-800/50'}`}>
                                         <td className="p-3 border-r border-slate-200 dark:border-slate-800 align-top font-medium text-slate-900 dark:text-slate-100">{u.code} {u.title}</td>
-                                        <td className="p-3 border-r border-slate-200 dark:border-slate-800 whitespace-pre-wrap text-slate-600 dark:text-slate-400 leading-relaxed">{u.assessmentConditions}</td>
+                                        <td className="p-3 border-r border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 leading-relaxed align-top">
+                                            {u.assessmentConditionsHtml ? (
+                                                <div
+                                                    className="prose prose-sm dark:prose-invert max-w-none"
+                                                    dangerouslySetInnerHTML={{ __html: u.assessmentConditionsHtml }}
+                                                />
+                                            ) : (
+                                                <div className="whitespace-pre-wrap">{u.assessmentConditions}</div>
+                                            )}
+                                        </td>
                                     </tr>
                                     {/* Separator row */}
                                     <tr className="bg-slate-100 dark:bg-slate-800 h-1"><td colSpan={2}></td></tr>
@@ -133,13 +336,11 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
                             {/* Elements & PCs */}
                             <div className="space-y-8">
                                 {u.elements.map((el, elIdx) => {
-                                    let elTitle = el.title;
-                                    if (elTitle && !elTitle.match(/^\d+\.\d+$/)) {
-                                        elCount++;
-                                        elTitle = `${elCount}. ${elTitle.replace(/^\d+\.\s*/, '')}`;
-                                    } else {
-                                        return null;
-                                    }
+                                    // Clean the title: Strip leading numbers (e.g., "1. Plan..." -> "Plan...")
+                                    // and filter out table header artifacts
+                                    let elTitle = el.title ? el.title.replace(/^\d+\.?\s+/, '').trim() : '';
+
+                                    if (!elTitle || elTitle.toLowerCase() === 'element' || elTitle.toLowerCase() === 'elements') return null;
 
                                     return (
                                         <div key={elIdx} className="break-inside-avoid">
@@ -148,10 +349,41 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
                                                 {elTitle}
                                             </h3>
 
-                                            {/* PC List */}
+                                            {/* PC List - Fixed for Clumped Text */}
                                             <div className="space-y-4 px-2 pl-4">
-                                                {el.performanceCriteria.map((pc) => (
-                                                    <div key={pc.id} className="flex gap-4 p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg transition-colors group items-start">
+                                                {el.performanceCriteria.flatMap((pc) => {
+                                                    // Fix for clumped PCs (e.g., "1.1.Action...1.2.Action...")
+                                                    // Some units have all PCs in one text block. We need to split them.
+                                                    // Pattern: Look for "X.Y" or "X.Y." followed by text.
+
+                                                    // If the text contains internal numbering like "1.2.", split it to separate rows.
+                                                    // We use a lookahead to keep the number in the split result.
+                                                    const chunks = pc.text.split(/(?=\b\d+\.\d+\.?\s)/g);
+
+                                                    if (chunks.length <= 1) return [pc];
+
+                                                    return chunks.map((chunk, i) => {
+                                                        const trimmed = chunk.trim();
+                                                        // Attempt to extract ID from the chunk
+                                                        const match = trimmed.match(/^(\d+\.\d+)(\.?)\s*([\s\S]*)/);
+                                                        if (match) {
+                                                            return {
+                                                                id: match[1],
+                                                                text: match[3] || trimmed // If regex fails to capture group 3, fallback
+                                                            };
+                                                        }
+
+                                                        // Fallback for first chunk if it doesn't match ID pattern but belongs to parent pc.id
+                                                        if (i === 0) {
+                                                            // If chunk doesn't start with ID, maybe it was stripped? Use original PC id.
+                                                            return { id: pc.id, text: trimmed };
+                                                        }
+
+                                                        // Orphaned chunk?
+                                                        return { id: '', text: trimmed };
+                                                    });
+                                                }).map((pc, pcIdx) => (
+                                                    <div key={`${elIdx}-${pcIdx}`} className="flex gap-4 p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg transition-colors group items-start">
                                                         <div className="shrink-0 w-12 pt-0.5 text-right">
                                                             <span className="inline-block text-slate-500 dark:text-slate-400 text-xs font-mono font-bold">
                                                                 {pc.id}
@@ -170,160 +402,21 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
 
                             {/* Evidence Sections */}
                             <div className="flex flex-col gap-8 pt-8 border-t border-slate-200 dark:border-slate-800 mt-8">
-                                {/* Performance Evidence */}
-                                {u.performanceEvidence && (
-                                    <div className="space-y-4">
-                                        <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
-                                            <span className="w-1 h-4 bg-green-500 rounded-full"></span>
-                                            Performance Evidence
-                                        </h4>
-                                        <div className="space-y-4 pl-3 border-l border-slate-100 dark:border-slate-800">
-                                            {parseEvidence(u.performanceEvidence).map((group, i) => (
-                                                <div key={i} className="flex gap-4 items-start">
-                                                    <div className="shrink-0 w-8 text-right">
-                                                        <span className="text-xs font-mono font-bold text-slate-400">{i + 1}.</span>
-                                                    </div>
-                                                    <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                                                        <div className="whitespace-pre-wrap font-medium text-slate-700 dark:text-slate-200">{group.title}</div>
-                                                        {group.items.length > 0 && (
-                                                            <ul className="mt-2 space-y-2 pl-4 list-[circle] marker:text-slate-300">
-                                                                {group.items.map((item, j) => (
-                                                                    <li key={j} className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap">{item}</li>
-                                                                ))}
-                                                            </ul>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Knowledge Evidence */}
-                                {u.knowledgeEvidence && (
-                                    <div className="space-y-4">
-                                        <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
-                                            <span className="w-1 h-4 bg-purple-500 rounded-full"></span>
-                                            Knowledge Evidence
-                                        </h4>
-                                        <div className="space-y-4 pl-3 border-l border-slate-100 dark:border-slate-800">
-                                            {parseEvidence(u.knowledgeEvidence).map((group, i) => (
-                                                <div key={i} className="flex gap-4 items-start">
-                                                    <div className="shrink-0 w-8 text-right">
-                                                        <span className="text-xs font-mono font-bold text-slate-400">{i + 1}.</span>
-                                                    </div>
-                                                    <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                                                        <div className="whitespace-pre-wrap font-medium text-slate-700 dark:text-slate-200">{group.title}</div>
-                                                        {group.items.length > 0 && (
-                                                            <ul className="mt-2 space-y-2 pl-4 list-[circle] marker:text-slate-300">
-                                                                {group.items.map((item, j) => (
-                                                                    <li key={j} className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap">{item}</li>
-                                                                ))}
-                                                            </ul>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
+                                {renderEvidenceSection('Performance Evidence', u.performanceEvidence, u.performanceEvidenceHtml, 'bg-green-500', { prefix: 'P' })}
+                                {renderEvidenceSection('Knowledge Evidence', u.knowledgeEvidence, u.knowledgeEvidenceHtml, 'bg-purple-500', { prefix: 'K' })}
                             </div>
 
                             {/* Foundation Skills (if any) */}
-                            {u.foundationSkills && (
-                                <div className="space-y-4 pt-8 border-t border-slate-200 dark:border-slate-800 mt-8">
-                                    <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
-                                        <span className="w-1 h-4 bg-teal-500 rounded-full"></span>
-                                        Foundation Skills
-                                    </h4>
-                                    <div className="text-sm text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed pl-3 border-l border-slate-100 dark:border-slate-800 whitespace-pre-wrap">
-                                        {u.foundationSkills}
-                                    </div>
-                                </div>
-                            )}
+                            {renderFoundationSkills(u.foundationSkills)}
 
                             {/* Assessment Conditions */}
                             {u.assessmentConditions && (
                                 <div className="pt-8 border-t border-slate-200 dark:border-slate-800 mt-8">
-                                    <div className="space-y-4">
-                                        <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
-                                            <span className="w-1 h-4 bg-orange-500 rounded-full"></span>
-                                            Assessment Conditions
-                                        </h4>
-                                        <div className="space-y-2 pl-3 border-l border-slate-100 dark:border-slate-800">
-                                            <ul className="space-y-3 pl-4 list-disc marker:text-slate-400">
-                                                {parseEvidence(u.assessmentConditions).map((group, i) => (
-                                                    <React.Fragment key={i}>
-                                                        {group.title && (
-                                                            <li className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
-                                                                {group.title}
-                                                                {group.items.length > 0 && (
-                                                                    <ul className="mt-2 space-y-2 pl-4 list-[circle] marker:text-slate-300">
-                                                                        {group.items.map((item, j) => (
-                                                                            <li key={j} className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap">{item}</li>
-                                                                        ))}
-                                                                    </ul>
-                                                                )}
-                                                            </li>
-                                                        )}
-                                                    </React.Fragment>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    {renderEvidenceSection("Assessment Conditions", u.assessmentConditions, u.assessmentConditionsHtml, 'bg-orange-50', { prefix: 'AC', style: 'bullet' })}
                                 </div>
                             )}
 
-                            {/* Other Dynamic Sections */}
-                            {u.sections && u.sections.map((section, sIdx) => {
-                                const headingLower = section.heading.toLowerCase();
-                                const excluded = [
-                                    "elements and performance criteria",
-                                    "performance evidence",
-                                    "knowledge evidence",
-                                    "assessment conditions",
-                                    "links",
-                                    "acknowledgement of country",
-                                    "copyright"
-                                ];
-                                // Check if normalized heading starts with any excluded phrase (e.g. "Application of the Unit")
-                                if (excluded.some(ex => headingLower.includes(ex))) return null;
-
-                                // IMPROVEMENT: Do not show headings with no content
-                                const hasParagraphs = section.paragraphs && section.paragraphs.length > 0;
-                                const hasLists = section.lists && section.lists.length > 0;
-                                if (!hasParagraphs && !hasLists) return null;
-
-                                return (
-                                    <div key={sIdx} className="pt-8 border-t border-slate-200 dark:border-slate-800 mt-8 break-inside-avoid">
-                                        <div className="space-y-4">
-                                            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
-                                                <span className="w-1 h-4 bg-slate-400 rounded-full"></span>
-                                                {section.heading}
-                                            </h4>
-
-                                            <div className="text-sm text-slate-600 dark:text-slate-300 space-y-3 leading-relaxed pl-3 border-l border-slate-100 dark:border-slate-800">
-                                                {/* Paragraphs */}
-                                                {section.paragraphs.map((para, pIdx) => (
-                                                    <p key={pIdx} className="whitespace-pre-wrap">{para}</p>
-                                                ))}
-
-                                                {/* Lists */}
-                                                {section.lists && section.lists.map((item, lIdx) => (
-                                                    <div key={lIdx} className="pl-2">
-                                                        {/* Simple check if it's a simple list item or nested structure */}
-                                                        {/* Note: unitMapper flattens complex structures to nested text objects currently, or simple lists */}
-                                                        <div className="whitespace-pre-wrap flex gap-2">
-                                                            <span className="text-slate-400">•</span>
-                                                            <span>{item.text}</span>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                            {/* Other Dynamic Sections removed as per user request */}
                         </div>
                     );
                 })}

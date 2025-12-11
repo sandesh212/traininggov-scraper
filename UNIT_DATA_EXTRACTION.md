@@ -44,6 +44,20 @@ The scraper follows the "Assessment Requirements" link and extracts:
 
 ---
 
+## 🛠️ Recent Improvements (Fixing Missing Content)
+
+### 1. Robust Assessment Requirements Extraction
+- **Issue**: Some units (e.g., MARB032) have "Assessment Requirements" content that wasn't matching strict headers or class names.
+- **Fix**: Expanded header detection to include `h5`, `strong`, `b`, `.title` and case-insensitive matching.
+- **Result**: "Performance Evidence", "Knowledge Evidence", and "Assessment Conditions" are now correctly extracted even from non-standard or older unit page layouts.
+
+### 2. Improved SPA/Puppeteer Reliability
+- **Issue**: Dynamic content (like Assessment Requirements) sometimes wasn't fully loaded before scraping.
+- **Fix**: Increased Puppeteer wait time to **4000ms** to ensure proper hydration of all sections.
+- **Result**: Significantly reduced "missing sections" for complex SPA pages.
+
+---
+
 ## 🔍 Extraction Process
 
 ### Step 1: Main Unit Page

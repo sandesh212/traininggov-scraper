@@ -69,53 +69,56 @@ export class UocLoader {
     public async addUnit(unit: Unit): Promise<void> {
         // Update memory
         this.uocMap.set(unit.code, unit);
-        // Save all to keep file clean and unique
-        await this.save();
+        // Append to file (thread-safeish for OS) instead of rewriting entire file (race condition prone)
+        await this.append(unit);
     }
 
     public async removeUnit(code: string): Promise<boolean> {
         if (this.uocMap.has(code)) {
             this.uocMap.delete(code);
-            await this.save();
+            await this.rewrite();
             return true;
         }
         return false;
     }
 
-    private async save(): Promise<void> {
+    private async append(unit: Unit): Promise<void> {
+        const absolutePath = path.resolve(process.cwd(), this.dataPath);
+        const persistenceUnit = this.toPersistence(unit);
+        // Use fs.promises.appendFile for non-blocking append
+        await fs.promises.appendFile(absolutePath, JSON.stringify(persistenceUnit) + '\n');
+    }
+
+    private async rewrite(): Promise<void> {
         const absolutePath = path.resolve(process.cwd(), this.dataPath);
         const stream = fs.createWriteStream(absolutePath);
 
         for (const unit of this.uocMap.values()) {
-            // Transform to user's desired persistence format
-            const persistenceUnit: any = { ...unit };
-
-            // Transform elements to string-based format if needed
-            if (unit.elements) {
-                persistenceUnit.elements = unit.elements.map((el, i) => {
-                    // Try to reconstruct "Element X. Title" if ID is not available, or just use Title
-                    // If we have access to the original element ID (e.g. "1"), we should use it.
-                    // But our internal model only stores title. 
-                    // Let's assume title contains the full string "Prepare..." and we might need to add number.
-                    // However, user output shows "1. Prepare...". 
-                    // Let's just use the title as 'element' field.
-
-                    const pcStrings = el.performanceCriteria.map(pc => {
-                        return pc.id ? `${pc.id} ${pc.text}` : pc.text;
-                    });
-
-                    return {
-                        element: el.title,
-                        performanceCriteria: pcStrings
-                    };
-                });
-            }
-
+            const persistenceUnit = this.toPersistence(unit);
             stream.write(JSON.stringify(persistenceUnit) + '\n');
         }
 
         stream.end();
         await new Promise<void>(resolve => stream.on('finish', () => resolve()));
+    }
+
+    private toPersistence(unit: Unit): any {
+        const persistenceUnit: any = { ...unit };
+
+        // Transform elements to string-based format if needed
+        if (unit.elements) {
+            persistenceUnit.elements = unit.elements.map((el, i) => {
+                const pcStrings = el.performanceCriteria.map(pc => {
+                    return pc.id ? `${pc.id} ${pc.text}` : pc.text;
+                });
+
+                return {
+                    element: el.title,
+                    performanceCriteria: pcStrings
+                };
+            });
+        }
+        return persistenceUnit;
     }
 
     public async clearAll(): Promise<void> {

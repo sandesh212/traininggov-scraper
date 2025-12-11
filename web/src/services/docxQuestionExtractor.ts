@@ -60,10 +60,12 @@ export async function extractQuestionsFromDocx(fileBuffer: Buffer): Promise<{
             text: fullQuestionText.trim(),
             section: pq.section,
             parentQuestionId: pq.parentQuestionId,
+            _answer: pq.answerText, // Combine answer for AI analysis
             subQuestions: pq.subQuestions?.map(sq => ({
                 id: sq.id,
                 text: sq.questionText,
-                section: sq.section
+                section: sq.section,
+                _answer: sq.answerText // Also map sub-question answers
             }))
         });
 

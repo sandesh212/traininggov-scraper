@@ -53,7 +53,7 @@ export class ExcelLoader {
 
                         // Filter out common false positives (like 'UNIT', 'CODE', dates, heavy text)
                         // TGA codes are generally 8-12 characters long.
-                        if (fullCode.length >= 8 && fullCode.length <= 13) {
+                        if (fullCode.length >= 7 && fullCode.length <= 13) {
                             if (foundCodes.has(fullCode)) {
                                 if (!duplicates.includes(fullCode)) duplicates.push(fullCode);
                             } else {

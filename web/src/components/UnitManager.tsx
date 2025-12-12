@@ -28,6 +28,21 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
     // const [headerMessage, setHeaderMessage] = useState<{ type: 'success' | 'error' | 'loading'; text: string } | null>(null); // Removed in favor of Toast
     const [showMaritimeView, setShowMaritimeView] = useState(false);
 
+    // Toast State
+    const [toast, setToast] = useState<{ message: string; type: ToastType; isVisible: boolean }>({
+        message: '',
+        type: 'info',
+        isVisible: false
+    });
+
+    const showToast = (message: string, type: ToastType) => {
+        setToast({ message, type, isVisible: true });
+    };
+
+    const hideToast = () => {
+        setToast(prev => ({ ...prev, isVisible: false }));
+    };
+
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const [refreshingAll, setRefreshingAll] = useState(false);

@@ -18,22 +18,30 @@ export async function POST(req: NextRequest) {
         let failedCount = 0;
         const failedCodes: string[] = [];
 
-        // Process in sequence to avoid rate limiting
-        for (const existingUnit of units) {
-            try {
-                const freshUnit = await scraper.scrapeUnit(existingUnit.code);
-                if (freshUnit) {
-                    await loader.addUnit(freshUnit); // addUnit overwrites existing
-                    updatedCount++;
-                } else {
+        // Process in batches to improve speed but avoid overwhelming the server
+        const BATCH_SIZE = 3;
+        const chunks = [];
+        for (let i = 0; i < units.length; i += BATCH_SIZE) {
+            chunks.push(units.slice(i, i + BATCH_SIZE));
+        }
+
+        for (const chunk of chunks) {
+            await Promise.all(chunk.map(async (existingUnit) => {
+                try {
+                    const freshUnit = await scraper.scrapeUnit(existingUnit.code);
+                    if (freshUnit) {
+                        await loader.addUnit(freshUnit);
+                        updatedCount++;
+                    } else {
+                        failedCount++;
+                        failedCodes.push(existingUnit.code);
+                    }
+                } catch (error) {
+                    console.error(`Failed to refresh ${existingUnit.code}:`, error);
                     failedCount++;
                     failedCodes.push(existingUnit.code);
                 }
-            } catch (error) {
-                console.error(`Failed to refresh ${existingUnit.code}:`, error);
-                failedCount++;
-                failedCodes.push(existingUnit.code);
-            }
+            }));
         }
 
         return NextResponse.json({

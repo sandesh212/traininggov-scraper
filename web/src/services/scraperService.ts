@@ -227,6 +227,7 @@ export class ScraperService {
         let $: any;
         let unitUrl = `${this.baseUrl}/${code}`;
         let response: Response | null = null;
+        let usedPuppeteer = false;
 
         try {
             // 1. Try Direct Fetch (Fast)
@@ -244,7 +245,9 @@ export class ScraperService {
                 isSpaShell = $('div#__nuxt').length > 0 || $('script[src*="_nuxt"]').length > 0;
             }
 
+            // Force Puppeteer if we detect it's an SPA or if we decided to fallback
             if (isSpaShell) {
+                usedPuppeteer = true;
                 console.log(`   Detected SPA shell or Block for ${code}. Switching to Puppeteer...`);
                 // Note: init() will be called here if needed (safe check inside)
                 if (!this.browser) await this.init();
@@ -340,7 +343,6 @@ export class ScraperService {
             }
 
             if (!unitHtml || !$) {
-                // Should have been populated by now
                 return null;
             }
 
@@ -356,14 +358,54 @@ export class ScraperService {
                 return null;
             }
 
+            // Parse content
+            let uoc = parseUocHtml(unitHtml, unitUrl);
+            let unit = UnitMapper.fromUoc(uoc);
+
+            // 3. Validation & Fallback to Puppeteer checking
+            // If we used direct fetch (fast mode) BUT got empty data, it might be due to dynamic content we missed.
+            const hasElements = unit.elements && unit.elements.length > 0;
+            const hasPE = unit.performanceEvidence && unit.performanceEvidence.length > 100;
+
+            if (!usedPuppeteer && (!hasElements || !hasPE)) {
+                console.warn(`   ⚠️ ${code} scraped via Direct Fetch but seems incomplete (Elements: ${unit.elements?.length}, PE: ${unit.performanceEvidence?.length}). Retrying with Puppeteer...`);
+
+                // RE-RUN LOGIC WITH FORCED PUPPETEER
+                // We can recursively call a helper or just redo the puppeteer block. 
+                // Simpler: Set flag and jump? No, loops are messy.
+                // Recursive call with forced flag? 
+                // Let's just instantiate Puppeteer here.
+
+                if (!this.browser) await this.init();
+                const page = await this.browser!.newPage();
+                try {
+                    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+                    await page.goto(unitUrl, { waitUntil: 'networkidle0', timeout: 60000 });
+
+                    // Wait for content
+                    try {
+                        await page.waitForFunction(() => document.body.innerText.includes('Elements and Performance Criteria'), { timeout: 20000 });
+                    } catch (e) { }
+
+                    await new Promise(r => setTimeout(r, 3000));
+
+                    unitHtml = await page.content();
+                    $ = load(unitHtml);
+
+                    // Re-parse
+                    uoc = parseUocHtml(unitHtml, unitUrl);
+                    unit = UnitMapper.fromUoc(uoc);
+                    console.log(`   ✅ Re-scraped ${code} with Puppeteer. Elements: ${unit.elements?.length}`);
+                } catch (e) {
+                    console.error(`   Puppeteer retry failed for ${code}:`, e);
+                } finally {
+                    await page.close();
+                }
+            }
+
             // If we got here, the page exists and is valid
             console.log(`   ✓ Unit ${code} page is valid.`);
-
-            // Use the advanced parser
-            const uoc = parseUocHtml(unitHtml, unitUrl);
-            const unit = UnitMapper.fromUoc(uoc);
-
-            console.log(`   ✅ Scraped ${code}: ${unit.title}`);
+            console.log(`   ✅ Scraped ${code}: ${unit.title} (Elems: ${unit.elements?.length}, PE: ${unit.performanceEvidence?.length})`);
             return unit;
 
         } catch (e) {

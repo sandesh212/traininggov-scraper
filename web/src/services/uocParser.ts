@@ -199,7 +199,7 @@ function extractElementsAndPC($: any): UocElement[] | undefined {
                     $(p).after('\n');
                 });
                 return $td.text().trim();
-            }).get();
+            }).get().map((c: string) => c || ""); // ensure no undefined
             const firstCell = cells[0] || "";
 
             // Skip Header Rows (heuristic)
@@ -212,31 +212,43 @@ function extractElementsAndPC($: any): UocElement[] | undefined {
 
             // --- Analyze Row Structure ---
 
+            // console.log(`Row ${rowIdx}: ${cells.join(" | ")}`); // DEBUG LINE
+
             if ($tds.length >= 2) {
                 // Standard 2+ Column Layout
                 // Col 0: Element (or empty if continuation)
-                // Col 1: PC (or ID) + Col 2 PC Text
+                // Col 1: PC ID? 
+                // Col 2: PC Text?
 
-                potentialElement = cells[0];
+                potentialElement = cells[0] !== undefined ? cells[0] : "";
+                // console.log("Potential Elem:", potentialElement); // DEBUG LINE
 
                 if ($tds.length === 2) {
                     // [Element, PC+Text]
                     potentialPC = cells[1];
                 } else if ($tds.length === 3) {
-                    // [Element, ID, Text] or [Element, ID, Empty]
-                    const id = cells[1];
-                    const text = cells[2];
-                    if (id.match(/^[\d\.]+$/)) {
-                        potentialPC = `${id} ${text}`;
-                    } else {
-                        // Maybe col 1 is the PC text? Layouts vary.
-                        potentialPC = id.length > text.length ? id : text;
+                    // [Element, PC ID, PC Text]  <-- This is the format for MARA022/MARB027
+                    // OR [Element, ID+Text, Empty] depending on colspan
+                    const col1 = cells[1];
+                    const col2 = cells[2];
+
+                    // Case 1: Col 1 is just ID (e.g. "1.1"), Col 2 is text
+                    if (col1.match(/^\d+\.\d+$/)) {
+                        potentialPC = `${col1} ${col2}`;
+                    }
+                    // Case 2: Col 1 is ID+Text, Col 2 is empty/irrelevant
+                    else if (col1.length > 50 && col2.length < 5) {
+                        potentialPC = col1;
+                    }
+                    // Case 3: Both have text? Assume Col 2 is the definition.
+                    else {
+                        potentialPC = `${col1} ${col2}`;
                     }
                 } else {
-                    // >= 4 Cols. Assume Last strict col is PC, or 2nd col is PC.
+                    // >= 4 Cols. 
                     // Usually doesn't happen for Elements table. 
-                    // Fallback to cells[1] + cells[2] if needed
-                    potentialPC = cells[1];
+                    // Fallback to concatenating the middle/end cells
+                    potentialPC = cells.slice(1).join(" ");
                 }
             } else if ($tds.length === 1) {
                 // Single cell row.
@@ -248,14 +260,33 @@ function extractElementsAndPC($: any): UocElement[] | undefined {
             }
 
             // --- Logic to Create New Element ---
-            // An Element cell is usually non-empty, and does NOT look like a PC ID (1.1)
-            // It usually starts with a single number "1. Title" or just "Title"
-            if ($tds.length >= 2 && potentialElement && potentialElement.length > 2) {
-                // Heuristic: Elements rarely start with "X.Y" (those are PCs)
-                // But they start with "X." or "X "
-                if (!potentialElement.match(/^\d+\.\d+/)) {
+            // An Element cell is usually non-empty.
+            // It might look like "1. Title" or "1 Title" or just "Title"
+            // It MUST NOT look like "1.1" (that's a PC, though usually in col 2, sometimes col 1 in very weird tables)
+
+            // Check if potentialElement is actually a PC ID (e.g. "1.1")
+            const isPcId = potentialElement.match(/^\d+\.\d+/);
+
+            if ($tds.length >= 2 && potentialElement && potentialElement.length > 0 && !isPcId) {
+                // Heuristic: If it's short (like "1" or "1.") wait for text? 
+                // Actually usually it's "1. Prepare for loading".
+                // Sometimes it's just "1" and the text is in the next cell? (Rare for TGA).
+                // Let's assume standard "1. Title".
+
+                // If it's just a number "1", we might need to look at next cell? 
+                // But for now, let's just create it.
+
+                // FIX: Check if we already have this element to avoid re-creating partials? 
+                // No, usually row-span means empty cell for subsequent rows.
+
+                // Clean it up
+                const cleanElem = potentialElement.replace(/\s+/g, ' ').trim();
+
+                // Only create new if it's substantial or clearly a new number
+                // e.g. "1" or "1. Title"
+                if (cleanElem.length > 0) {
                     currentElement = {
-                        element: potentialElement,
+                        element: cleanElem,
                         performanceCriteria: []
                     };
                     items.push(currentElement);
@@ -269,18 +300,19 @@ function extractElementsAndPC($: any): UocElement[] | undefined {
 
                 lines.forEach(rawLine => {
                     // Split by lookahead for "Digit.Digit" to catch "1.1 text 1.2 text" on one line
-                    // Improved regex: removed \b at start, added allow for "1.1. Text" or "1.1Text"
-                    const splitLines = rawLine.split(/(?=\b\d+\.\d+)/);
+                    // Improved regex: handles "text2.2" (missing space) and "1.1."
+                    // We allow a split if we see Digit.Digit, even without a preceding word boundary if it looks like a collision
+                    const splitLines = rawLine.split(/(?=(?:\s|^|[a-z])\d+\.\d+)/i);
 
                     splitLines.forEach(l => {
                         const line = l.trim();
-                        if (!line) return;
+                        if (!line || line.length < 3) return; // Skip tiny fragments
 
                         // Capture valid PCs (e.g. "1.1 text", "1.1. text", "1.1Text")
                         // Group 1: ID (e.g. 1.1)
                         // Group 2: Optional trailing dot
                         // Group 3: Text
-                        const match = line.match(/^(\d+\.\d+)(\.?)[\s\xA0]*(.*)$/);
+                        const match = line.match(/^\s*(\d+\.\d+)(\.?)[\s\xA0]*(.*)$/);
                         if (match) {
                             currentElement!.performanceCriteria.push({
                                 id: match[1], // Keep standard "X.Y" format
@@ -288,7 +320,6 @@ function extractElementsAndPC($: any): UocElement[] | undefined {
                             });
                         } else if (line.match(/^\d+\.\d+/)) {
                             // Fallback if regex didn't catch text part cleanly but starts with ID
-                            // Try to split manually
                             const parts = line.split(" ");
                             const id = parts[0];
                             const text = parts.slice(1).join(" ");
@@ -296,6 +327,17 @@ function extractElementsAndPC($: any): UocElement[] | undefined {
                                 id,
                                 text
                             });
+                        } else {
+                            // If this line does NOT start with an ID, but we have a current element,
+                            // it might be a continuation of the *previous* PC in this loop?
+                            // Or it's just garbage text. 
+                            // However, if rawLine was "1.1 Text continued", it stays with 1.1.
+                            // If rawLine was separated by newline, we might want to append to last PC?
+                            // For now, if we can't find an ID, we append to the last PC if it exists.
+                            const lastPC = currentElement!.performanceCriteria[currentElement!.performanceCriteria.length - 1];
+                            if (lastPC) {
+                                lastPC.text += " " + line;
+                            }
                         }
                     });
                 });
@@ -310,24 +352,38 @@ function extractElementsAndPC($: any): UocElement[] | undefined {
 function extractNestedList($: any, $el: any, depth: number = 0): string[] {
     const items: string[] = [];
     // Use explicit markers
-    const bullet = depth === 0 ? "[L0]" : `[L${depth}]`;
+    const bullet = depth === 0 ? "•" : `  -`; // Cleaner bullets
 
     $el.children("li").each((_: number, li: any) => {
         const $li = $(li);
 
         // 1. Get text content (exclude nested lists temporarily to get own text)
-        // Use clone to safe remove children without affecting DOM if references elsewhere (Cheerio is mutable? yes)
-        // But here we just want text.
         const $clone = $li.clone();
         $clone.find("ul, ol").remove();
-        const text = $clone.text().trim();
+        // Ensure we separate block elements in the clone so text doesn't merge
+        $clone.find("br").replaceWith("\n");
+        $clone.find("div, p").each((_: number, el: any) => {
+            $(el).append("\n");
+        });
+
+        // Use a simpler whitespace normalizer that preserves newlines
+        // Replace non-breaking spaces with normal spaces
+        // Then collapse MULTIPLE spaces (but not newlines) into single space?
+        // Actually, easiest is to get text, then just trim lines.
+        let text = $clone.text();
+
+        // Normalize:
+        // 1. Replace multiple spaces with single space (but keep \n)
+        // 2. Replace multiple \n with single \n
+        text = text.replace(/[ \t]+/g, ' ').replace(/\n\s*\n/g, '\n').trim();
 
         if (text && !text.toLowerCase().includes("evidence required to demonstrate")) {
+            // If the text contains newlines, we should probably indent subsequent lines to match bullet?
+            // Or just let the renderer handle pre-wrap.
             items.push(`${bullet} ${text}`);
         }
 
         // 2. Recursively handle children lists (even if wrapped in divs)
-        // Find all lists that are descendants of this li, but NOT descendants of another list inside this li
         $li.find("ul, ol").filter((_: number, el: any) => {
             return $(el).parentsUntil($li, "ul, ol").length === 0;
         }).each((_: number, nestedList: any) => {
@@ -549,20 +605,23 @@ function extractEvidenceSection(
     }
 
     // Fallback: search anywhere in body for specific text matches if structured header fail
-    if (keywords.fallback && format === 'text') {
-        // ... (existing fallback logic kept for safety)
+    if (keywords.fallback) {
         const evidenceText = $("*").filter((_: number, el: any) => {
             const text = $(el).text().toLowerCase();
             return keywords.fallback!.some(kw => text.includes(kw));
         }).first();
 
         if (evidenceText.length) {
-            // ... same extraction logic ...
-            // For brevity in this replacement, we assume if header detection fails, fallback is less critical for "all bullets" 
-            // but we will preserve the exact logic from before just cleaning up the List extraction calls.
-            const parts: string[] = [];
             const parent = evidenceText.closest("div, section, article, td");
 
+            if (format === 'html') {
+                // If we found it via fallback, return the parent's inner HTML
+                // But perform slight cleaning to remove the 'heading' that triggered the match if possible?
+                // Actually, TGA usually has "Evidence required..." as a strong text, so keeping it is fine.
+                return parent.html() || undefined;
+            }
+
+            const parts: string[] = [];
             // Capture P and Lists from parent container
             parent.children().each((_: number, child: any) => {
                 const $c = $(child);

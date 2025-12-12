@@ -3,6 +3,7 @@ import { Unit } from '../types';
 import { Trash2, RotateCcw, RefreshCw, Plus, Search, Info, X, Loader2, CheckCircle, AlertCircle, Upload, Table, LayoutGrid, ChevronRight, ChevronDown, Filter, Download, PanelLeft } from 'lucide-react';
 import { MaritimeView } from './MaritimeView';
 import { SHEET_CONFIGS } from '../config/maritimeConfig';
+import { Toast, ToastType } from './Toast';
 
 interface UnitSummary {
     code: string;
@@ -24,9 +25,9 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
     const [viewingUnit, setViewingUnit] = useState(false);
     const [processingUnit, setProcessingUnit] = useState<string | null>(null);
     const [uploading, setUploading] = useState(false);
-    const [headerMessage, setHeaderMessage] = useState<{ type: 'success' | 'error' | 'loading'; text: string } | null>(null);
+    // const [headerMessage, setHeaderMessage] = useState<{ type: 'success' | 'error' | 'loading'; text: string } | null>(null); // Removed in favor of Toast
     const [showMaritimeView, setShowMaritimeView] = useState(false);
-    const analysisFileInputRef = React.useRef<HTMLInputElement>(null);
+
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const [refreshingAll, setRefreshingAll] = useState(false);
@@ -86,37 +87,37 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         }
     };
 
-    const handleUploadFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+    const handleUploadFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
         if (!file) return;
 
         setUploading(true);
+        const isScrapeFile = file.name.match(/\.(xlsx|xls|txt|csv)$/i);
+        // showToast(isScrapeFile ? 'Scraping started...' : 'Uploading...', 'loading'); // Don't auto-dismiss loading
+        setToast({ message: isScrapeFile ? 'Scraping started...' : 'Uploading...', type: 'loading', isVisible: true });
+
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-            const isScrapeFile = file.name.match(/\.(xlsx|xls|txt|csv)$/i);
             const endpoint = isScrapeFile ? '/api/units/scrape-from-file' : '/api/units/upload';
-
-            setHeaderMessage({ type: 'loading', text: isScrapeFile ? 'Scraping started...' : 'Uploading...' });
-
             const res = await fetch(endpoint, { method: 'POST', body: formData });
             const data = await res.json();
 
             if (res.ok) {
-                setHeaderMessage({ type: 'success', text: data.message || 'Success' });
+                showToast(data.message || 'Success', 'success');
                 fetchUnits();
-                setTimeout(() => setHeaderMessage(null), 5000);
             } else {
-                setHeaderMessage({ type: 'error', text: data.error || 'Upload failed' });
-                setTimeout(() => setHeaderMessage(null), 5000);
+                showToast(data.error || 'Upload failed', 'error');
             }
         } catch (err) {
-            setHeaderMessage({ type: 'error', text: 'Network error during upload' });
-            setTimeout(() => setHeaderMessage(null), 5000);
+            showToast('Network error during upload', 'error');
         } finally {
             setUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
+            // If it was loading, it gets replaced by success/error. 
+            // If logic allows finally to run after success, we need to ensure we don't clear a success toast immediately?
+            // actually showToast sets visible=true. 
         }
     };
 
@@ -133,7 +134,8 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         }
 
         setAdding(true);
-        setHeaderMessage({ type: 'loading', text: 'Adding unit...' });
+        setToast({ message: 'Adding unit...', type: 'loading', isVisible: true });
+
         try {
             const res = await fetch('/api/units', {
                 method: 'POST',
@@ -142,16 +144,14 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             });
             const data = await res.json();
             if (res.ok) {
-                setHeaderMessage({ type: 'success', text: data.message || 'Unit Added' });
+                showToast(data.message || 'Unit Added', 'success');
                 fetchUnits();
                 setNewUnitCode('');
-                setTimeout(() => setHeaderMessage(null), 5000);
             } else {
-                setHeaderMessage({ type: 'error', text: data.error || 'Failed to add' });
-                setTimeout(() => setHeaderMessage(null), 5000);
+                showToast(data.error || 'Failed to add', 'error');
             }
         } catch (err) {
-            setHeaderMessage({ type: 'error', text: 'Network error' });
+            showToast('Network error', 'error');
         } finally {
             setAdding(false);
         }
@@ -160,6 +160,7 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
     const handleDeleteUnit = async (code: string) => {
         if (confirmDelete !== code) {
             setConfirmDelete(code);
+            showToast('Click again to confirm delete', 'info');
             setTimeout(() => setConfirmDelete(null), 3000);
             return;
         }
@@ -169,7 +170,12 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             if (res.ok) {
                 if (selectedUnit?.code === code) setSelectedUnit(null);
                 fetchUnits();
+                showToast(`Deleted ${code}`, 'success');
+            } else {
+                showToast(`Failed to delete ${code}`, 'error');
             }
+        } catch {
+            showToast('Network error', 'error');
         } finally {
             setProcessingUnit(null);
             setConfirmDelete(null);
@@ -178,13 +184,19 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
 
     const handleRefreshUnit = async (code: string) => {
         setProcessingUnit(code);
+        setToast({ message: `Refreshing ${code}...`, type: 'loading', isVisible: true });
         try {
             const res = await fetch(`/api/units/${code}`, { method: 'PUT' });
             if (res.ok) {
                 const data = await res.json();
                 if (selectedUnit?.code === code) setSelectedUnit(data.unit);
                 fetchUnits();
+                showToast(`Updated ${code}`, 'success');
+            } else {
+                showToast(`Failed to update ${code}`, 'error');
             }
+        } catch {
+            showToast('Network error', 'error');
         } finally {
             setProcessingUnit(null);
         }
@@ -193,24 +205,30 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
     const handleRefreshAll = async () => {
         if (!confirmRefreshAll) {
             setConfirmRefreshAll(true);
+            showToast('Click again to confirm Refresh All (re-scrapes everything)', 'info');
             setTimeout(() => setConfirmRefreshAll(false), 3000);
             return;
         }
         setRefreshingAll(true);
-        setHeaderMessage({ type: 'loading', text: 'Refreshing all...' });
+        setToast({ message: 'Refreshing all units (this may take a while)...', type: 'loading', isVisible: true });
         try {
-            await fetch('/api/units/refresh', { method: 'POST' });
-            setHeaderMessage({ type: 'success', text: 'Refresh complete' });
-            fetchUnits();
+            const res = await fetch('/api/units/refresh', { method: 'POST' });
+            const data = await res.json();
+            if (res.ok) {
+                showToast(`Refreshed ${data.updated} units. ${data.failed} failed.`, 'success');
+                fetchUnits();
+            } else {
+                showToast(data.error || 'Refresh failed', 'error');
+            }
         } finally {
             setRefreshingAll(false);
-            setTimeout(() => setHeaderMessage(null), 3000);
         }
     };
 
     const handleClearAll = async () => {
         if (!confirmClear) {
             setConfirmClear(true);
+            showToast('Click again to DELETE ALL units', 'info');
             setTimeout(() => setConfirmClear(false), 3000);
             return;
         }
@@ -219,25 +237,38 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             await fetch('/api/units', { method: 'DELETE' });
             fetchUnits();
             setSelectedUnit(null);
-            setHeaderMessage({ type: 'success', text: 'Cleared all units' });
+            showToast('All units cleared', 'success');
         } finally {
             setLoading(false);
-            setTimeout(() => setHeaderMessage(null), 3000);
         }
     };
 
+    const [loadingDetails, setLoadingDetails] = useState(false);
+
     const handleViewDetails = async (code: string) => {
+        if (loadingDetails) return; // Prevent double clicks
         setViewingUnit(true);
+
+        // If we are already viewing this unit, do nothing
         if (selectedUnit?.code === code) return;
-        setSelectedUnit(null);
+
+        setLoadingDetails(true);
+        // Do NOT nullify selectedUnit immediately to avoid UI flashing/closing on mobile
+        // setSelectedUnit(null); 
+
         try {
             const res = await fetch(`/api/units/${code}`);
             if (res.ok) {
                 const data = await res.json();
                 setSelectedUnit(data);
+            } else {
+                showToast('Failed to load details', 'error');
             }
         } catch (err) {
             console.error(err);
+            showToast('Network error loading details', 'error');
+        } finally {
+            setLoadingDetails(false);
         }
     };
 
@@ -263,64 +294,7 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         }
     }, [units.length, groupedUnits]);
 
-    const handleAnalyzeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
 
-        // Prompt for unit list? For now just use DB units if available
-        // Or we could have a multi-file selection. 
-        // For simplicity: Single file upload triggers analysis using existing DB units.
-
-        setUploading(true);
-        setHeaderMessage({ type: 'loading', text: 'Analyzing...' });
-
-        const formData = new FormData();
-        formData.append('assessmentFile', file);
-        // We assume units are already loaded in DB or user can upload matched units file separately if needed.
-        // If we need simultaneous upload, we'd need a modal.
-        // Passing 'saveToDatabase=false' for pure analysis?
-        formData.append('saveToDatabase', 'true');
-
-        try {
-            const res = await fetch('/api/analyze', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await res.json();
-
-            if (res.ok) {
-                setHeaderMessage({ type: 'success', text: 'Analysis Complete' });
-                // We need to SHOW the results. 
-                // Either separate view or modal?
-                // For now, let's console log and maybe alert user?
-                // Ideally, we switch to a "Analysis Result View".
-                console.log('Analysis Result:', data);
-                // Trigger a download of the report automatically?
-                // or Save it to state to display?
-
-                // Let's create a Blob and download it as JSON report for now to prove it works
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Analysis_Report_${file.name}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-
-                setTimeout(() => setHeaderMessage(null), 5000);
-            } else {
-                setHeaderMessage({ type: 'error', text: data.error || 'Analysis failed' });
-                setTimeout(() => setHeaderMessage(null), 5000);
-            }
-        } catch (err) {
-            setHeaderMessage({ type: 'error', text: 'Network error during analysis' });
-            setTimeout(() => setHeaderMessage(null), 5000);
-        } finally {
-            setUploading(false);
-            if (analysisFileInputRef.current) analysisFileInputRef.current.value = '';
-        }
-    };
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 md:p-4">
@@ -364,47 +338,17 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                                 className="hidden"
                                 accept=".json,.jsonl,.txt,.xlsx,.xls"
                             />
-                            {/* Analysis File Input */}
-                            <input
-                                type="file"
-                                ref={analysisFileInputRef}
-                                onChange={handleAnalyzeUpload}
-                                className="hidden"
-                                accept=".docx"
-                            />
 
-                            {/* Dynamic Upload/Status Button */}
-                            {headerMessage ? (
-                                <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold animate-in fade-in zoom-in-95 transition-all
-                                    ${headerMessage.type === 'loading' ? 'bg-blue-100 text-blue-700' :
-                                        headerMessage.type === 'success' ? 'bg-green-100 text-green-700' :
-                                            'bg-red-100 text-red-700'}`}>
-                                    {headerMessage.type === 'loading' && <Loader2 className="w-4 h-4 animate-spin shrink-0" />}
-                                    {headerMessage.type === 'success' && <CheckCircle className="w-4 h-4 shrink-0" />}
-                                    {headerMessage.type === 'error' && <AlertCircle className="w-4 h-4 shrink-0" />}
-                                    <span className="whitespace-nowrap">{headerMessage.text}</span>
-                                </div>
-                            ) : (
-                                <>
-                                    <button
-                                        onClick={() => fileInputRef.current?.click()}
-                                        disabled={uploading}
-                                        className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-600 dark:text-slate-400"
-                                        title="Upload / Scrape File"
-                                    >
-                                        <Upload className="w-5 h-5" />
-                                    </button>
-                                    <button
-                                        onClick={() => analysisFileInputRef.current?.click()}
-                                        disabled={uploading}
-                                        className="p-2 ml-1 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg transition-colors flex items-center gap-1"
-                                        title="Analyze Assessment (DOCX)"
-                                    >
-                                        <CheckCircle className="w-4 h-4" />
-                                        <span className="text-xs font-bold">Analyze</span>
-                                    </button>
-                                </>
-                            )}
+
+                            {/* Upload Button ONLY (No inline status) */}
+                            <button
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={uploading}
+                                className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-600 dark:text-slate-400"
+                                title="Upload / Scrape File"
+                            >
+                                {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
+                            </button>
 
                             {units.length > 0 && (
                                 <>
@@ -436,6 +380,7 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
 
                 {/* Content Area */}
                 <div className="flex-1 min-h-0 flex flex-col md:flex-row relative transition-all">
+
 
                     {/* Left Panel: Sidebar */}
                     <div className={`${(selectedUnit && viewingUnit) ? 'hidden md:flex' : 'flex'} w-full border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 z-20 md:flex-none transition-all duration-300 ease-in-out
@@ -656,7 +601,15 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                                 </div>
 
                                 {/* Scrollable Maritime Format View */}
-                                <div className="flex-1 overflow-y-auto bg-slate-50/50 dark:bg-slate-950/50 scroll-smooth">
+                                <div className="flex-1 overflow-y-auto bg-slate-50/50 dark:bg-slate-950/50 scroll-smooth relative">
+                                    {loadingDetails && (
+                                        <div className="absolute inset-0 bg-white/80 dark:bg-slate-900/80 z-50 flex items-center justify-center backdrop-blur-sm">
+                                            <div className="flex flex-col items-center gap-3">
+                                                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                                                <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Loading details...</p>
+                                            </div>
+                                        </div>
+                                    )}
                                     <div className="min-h-full pb-20">
                                         <MaritimeView
                                             isEmbedded={true}
@@ -667,13 +620,30 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                             </>
                         ) : (
                             <div className="h-full flex flex-col items-center justify-center text-slate-300 space-y-4">
-                                <Search className="w-12 h-12 opacity-20" />
-                                <p>Select a unit to view details</p>
+                                {loadingDetails ? (
+                                    <div className="flex flex-col items-center gap-3">
+                                        <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+                                        <p className="text-lg font-medium text-slate-500">Fetching unit data...</p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <Search className="w-12 h-12 opacity-20" />
+                                        <p>Select a unit to view details</p>
+                                    </>
+                                )}
                             </div>
                         )}
                     </div>
                 </div>
             </div>
+
+            {/* Global Toast Notification */}
+            <Toast
+                message={toast.message}
+                type={toast.type}
+                isVisible={toast.isVisible}
+                onClose={hideToast}
+            />
         </div>
     );
 }

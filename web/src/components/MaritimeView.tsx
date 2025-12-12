@@ -66,69 +66,56 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
     const parseEvidence = (text: string) => {
         if (!text) return [];
         const lines = text.split('\n').filter(l => l.trim());
-        const groups: { type: 'text' | 'list'; title: string; items: string[] }[] = [];
-        let currentGroup: { type: 'text' | 'list'; title: string; items: string[] } | null = null;
+        const groups: { type: 'text' | 'list'; title: string; items: { text: string; level: number }[] }[] = [];
+        let currentGroup: { type: 'text' | 'list'; title: string; items: { text: string; level: number }[] } | null = null;
 
         lines.forEach(line => {
+            // Check for indentation level based on leading spaces or specific markers
+            // 2 spaces or [L1] = level 1
+            // 4 spaces or [L2] = level 2
+            let level = 0;
+            if (line.startsWith('    ') || line.startsWith('\t\t') || /^\[L2\]/.test(line)) level = 2;
+            else if (line.startsWith('  ') || line.startsWith('\t') || /^\[L1\]/.test(line)) level = 1;
+
             const trimmedLine = line.trim();
-            // Check for explicit nested marker from scraper OR manual indentation in text
-            // [L1+] is explicit nested.
-            // If previous line was a parent, and this line is a bullet/number BUT meant to be nested?
-            // The scraper outputs flattened text. If it output [L1], we use it.
-            // If the user says "child bullets are considered parent", it means they are appearing as Level 0.
-            // This happens if the scraper failed to mark them as [L1] or if my logic here promotes them.
 
-            // Heuristic: If we are in a group, and this line looks like a bullet but NOT a top-level numbering [L0],
-            // AND the scraper didn't explicitly say [L0], maybe it's a child?
-            // BUT uocParser adds [L0] to all li elements found in strict lists.
-            // If the scraper outputs [L0] for nested items, that's a scraper issue.
-            // If the scraper output plain text bullets "o  Item", they are caught by /^[•◦\-\*]/ and made top level.
-
-            // FIX: If we are already in a group (List or Text), and we encounter a simple bullet (not [L0]),
-            // treat it as a child item OF the current group, instead of a new top-level group.
-            // This assumes TGA doesn't mix "Text -> Bullet -> Text" where the bullet is top level.
-            // Usually top level is "1. Item", "2. Item".
-            // Bullets inside are children.
-
-            const isExplicitNested = /^\[L[1-9]\]/.test(trimmedLine);
-            const isExplicitTop = /^\[L0\]/.test(trimmedLine); // Scraper recognized top level
-            const isManualBullet = /^[•◦\-\*]/.test(trimmedLine);
-
-            // Clean content
+            // Clean content markers
+            // We recognize standard bullets: -, •, *, [L*], digit.
+            const isBullet = /^(\[L\d+\]|[•◦\-\*]|\d+\.)/.test(trimmedLine);
             const cleanContent = trimmedLine.replace(/^(\[L\d+\]|[•◦\-\*]|\d+\.)\s*/, '').trim();
+
             if (!cleanContent) return;
 
-            if (isExplicitNested) {
-                // Definitely a child
-                if (currentGroup) {
-                    currentGroup.items.push(cleanContent);
+            if (isBullet) {
+                // It's a list item
+                if (currentGroup && currentGroup.type === 'list') {
+                    // Start new group if we hit a top-level bullet (Level 0) AND we are currently deep? 
+                    // No, usually assume continuous list. 
+                    // BUT if we hit a numbering "1." and we were validly iterating, maybe new item?
+                    // For now, assume single massive list for specific sections like PE/KE is fine, 
+                    // unless we detect a major header change (which text extractor usually splits).
+
+                    // Allow indentation override: If the line *looked* like a top level bullet (e.g. "• Item") 
+                    // but had leading spaces, respect the spaces.
+                    currentGroup.items.push({ text: cleanContent, level });
                 } else {
-                    // Orphaned child, start a text group?
-                    currentGroup = { type: 'text', title: '', items: [cleanContent] };
+                    // Start new list group
+                    currentGroup = { type: 'list', title: '', items: [{ text: cleanContent, level }] };
                     groups.push(currentGroup);
                 }
-            } else if (isExplicitTop) {
-                // Definitely a new top level item
-                currentGroup = { type: 'list', title: cleanContent, items: [] };
-                groups.push(currentGroup);
-            } else if (isManualBullet) {
-                // Ambiguous bullet.
-                // If we are in a group, treat as child.
-                // If no group, treat as top level list.
-                if (currentGroup) {
-                    currentGroup.items.push(cleanContent);
-                } else {
-                    currentGroup = { type: 'list', title: cleanContent, items: [] };
-                    groups.push(currentGroup);
-                }
-            } else if (/^\d+\./.test(trimmedLine)) {
-                // Numbered line (e.g. "1. Item"). Treat as new top level.
-                currentGroup = { type: 'list', title: cleanContent, items: [] };
-                groups.push(currentGroup);
             } else {
-                // Text paragraph
-                currentGroup = { type: 'text', title: cleanContent, items: [] };
-                groups.push(currentGroup);
+                // Text line (Header or Paragraph)
+                // If it's a short text line followed by bullets, it's a title.
+                // If we are in a text group, append? 
+                if (currentGroup && currentGroup.type === 'text') {
+                    // Append as new paragraph or same?
+                    // New generic item
+                    currentGroup.items.push({ text: cleanContent, level: 0 });
+                } else {
+                    // New text group (or title)
+                    currentGroup = { type: 'text', title: cleanContent, items: [] };
+                    groups.push(currentGroup);
+                }
             }
         });
         return groups;
@@ -169,35 +156,50 @@ export function MaritimeView({ onClose, isEmbedded = false, selectedUnit }: Mari
                 <div className="space-y-4 pl-3 border-l border-slate-100 dark:border-slate-800">
                     {groups.map((group, i) => {
                         const isList = group.type === 'list';
-                        if (isList) listCount++;
+                        if (isList && group.title) {
+                            // If a list group has a title (from previous logic), treat it as Header + List
+                        }
 
                         // Determine marker
-                        let marker: React.ReactNode = null;
-                        if (isList) {
+                        let mainMarker: React.ReactNode = null;
+                        if (isList && !group.title) {
+                            // If it's a pure list group without a header
+                            // We don't render a main marker for the GROUP, we render markers for ITEMS.
+                        } else if (isList && group.title) {
+                            listCount++;
                             if (options.style === 'bullet') {
-                                marker = <span className="text-slate-400 text-lg leading-none">•</span>;
+                                mainMarker = <span className="text-slate-400 text-lg leading-none">•</span>;
                             } else {
-                                marker = (
-                                    <span className="text-xs font-mono font-bold text-slate-400">
-                                        {options.prefix}{listCount}.
-                                    </span>
-                                );
+                                mainMarker = <span className="text-xs font-mono font-bold text-slate-400">{options.prefix}{listCount}.</span>;
                             }
                         }
 
                         return (
                             <div key={i} className="flex gap-4 items-start">
-                                {/* Marker Column */}
-                                <div className="shrink-0 w-8 text-right flex justify-end">
-                                    {marker}
-                                </div>
-                                <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed w-full min-w-0">
-                                    <div className="whitespace-pre-wrap font-medium text-slate-700 dark:text-slate-200">{group.title}</div>
+                                {/* Only show Group Marker if it has a title (treated as distinct section) */}
+                                {group.title && (
+                                    <div className="shrink-0 w-8 text-right flex justify-end">
+                                        {mainMarker}
+                                    </div>
+                                )}
+
+                                <div className={`text-sm text-slate-600 dark:text-slate-300 leading-relaxed w-full min-w-0 ${!group.title ? 'pl-12' : ''}`}>
+                                    {group.title && <div className="whitespace-pre-wrap font-medium text-slate-700 dark:text-slate-200">{group.title}</div>}
+
                                     {group.items.length > 0 && (
-                                        <ul className="mt-2 space-y-2 pl-4 list-[circle] marker:text-slate-300 text-slate-600 dark:text-slate-400">
-                                            {group.items.map((item, j) => (
-                                                <li key={j} className="whitespace-pre-wrap">{item}</li>
-                                            ))}
+                                        <ul className={`space-y-2 mt-2 ${group.type === 'text' ? '' : 'list-none'}`}>
+                                            {group.items.map((item, j) => {
+                                                const indentClass = item.level === 1 ? 'ml-4' : item.level === 2 ? 'ml-8' : '';
+                                                return (
+                                                    <li key={j} className="flex gap-2">
+                                                        {/* Custom Bullet for Items based on Level */}
+                                                        <span className={`shrink-0 text-slate-400 ${indentClass}`}>
+                                                            {item.level === 0 ? '•' : '◦'}
+                                                        </span>
+                                                        <span className="whitespace-pre-wrap">{item.text}</span>
+                                                    </li>
+                                                );
+                                            })}
                                         </ul>
                                     )}
                                 </div>

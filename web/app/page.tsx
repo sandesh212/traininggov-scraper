@@ -61,7 +61,9 @@ export default function Home() {
             'Fetching Live Data from training.gov.au...',
             'Vectorizing Knowledge Base...',
             'Analyzing Questions against Criteria...',
-            'Finalizing Compliance Matrix...'
+            'Processing with AI (this may take a while)...',
+            'Still working... Large files can take 2-5 minutes on local AI.',
+            'Tip: Check your terminal for real-time progress logs.'
         ];
         let i = 0;
         setLoadingMessage(messages[0]);
@@ -70,7 +72,7 @@ export default function Home() {
             if (i < messages.length) {
                 setLoadingMessage(messages[i]);
             }
-        }, 4000);
+        }, 8000); // Slower updates (8s) to span longer wait times
         return () => clearInterval(interval);
     }, [loading]);
 

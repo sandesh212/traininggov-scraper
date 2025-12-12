@@ -131,56 +131,64 @@ ${rawText.substring(0, 15000)} ... (truncated if too long) ...
             return this.getMockValidation(question, uocs);
         }
 
+        const startTime = Date.now();
         try {
-            // OPTIMIZATION: If local model, filter units context to top 10 relevant units to avoid context window processing hang
+            // OPTIMIZATION: If local model, filter units context to top relevant units
             let contextUnits = uocs;
-            if (this.isOllama && uocs.length > 5) {
-                // Heuristic filter: find units with at least SOME keyword overlap
+            // Strict filtering for Ollama to prevent context overflow and slowness
+            if (this.isOllama) {
+                // Determine relevance score
                 const scores = uocs.map(u => {
                     let s = 0;
                     const qText = (question.text + ' ' + (question.section || '')).toLowerCase();
                     const uText = (u.code + ' ' + u.title + ' ' + u.description).toLowerCase();
+                    if (uText.includes(qText.substring(0, 10))) s += 2; // simple phrase match
+
+                    // Keyword match
                     const words = qText.split(/\s+/).filter(w => w.length > 4);
                     words.forEach(w => { if (uText.includes(w)) s++; });
                     return { u, s };
                 });
-                // Sort by score desc, take top 5-10
                 scores.sort((a, b) => b.s - a.s);
-                contextUnits = scores.slice(0, 8).map(x => x.u); // Send top 8 units
+                // Reduce to TOP 3 for Local AI speed (was 8)
+                contextUnits = scores.slice(0, 3).map(x => x.u);
             }
 
             const prompt = this.buildPrompt(question, contextUnits);
 
-            // For local models, simplified params often work better
             const params: any = {
                 messages: [
-                    { role: "system", content: "You are an expert VET Assessment Validator. You MUST map every question to a Unit. Output valid JSON only." },
+                    { role: "system", content: "You are an expert VET Assessment Validator. Map the question to the most relevant Unit. Return valid JSON." },
                     { role: "user", content: prompt }
                 ],
                 model: this.model,
-                temperature: 0.1, // Low temp for precision
+                temperature: 0.1,
             };
 
-            // Only enforce json_object if not a very old/basic local model, but usually safe for Llama3
             if (!this.isOllama) {
                 params.response_format = { type: "json_object" };
             }
 
-            const completion = await this.openai.chat.completions.create(params);
+            // ADD TIMEOUT: Race the AI request against a timeout (e.g. 45s for local)
+            const timeoutMs = this.isOllama ? 60000 : 30000;
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("AI Timeout")), timeoutMs));
+
+            const completion = await Promise.race([
+                this.openai.chat.completions.create(params),
+                timeoutPromise
+            ]) as OpenAI.Chat.Completions.ChatCompletion;
 
             const content = completion.choices[0].message.content;
             if (!content) throw new Error("Empty response from AI");
 
-            // Sanitize local model output (sometimes they add markdown blocks or conversational text)
+            // Sanitize local model output
             let jsonStr = content.replace(/```json\n?|```/g, '').trim();
-
-            // Regex to find the first valid-looking JSON object or array
             const jsonMatch = jsonStr.match(/({[\s\S]*})/);
-            if (jsonMatch) {
-                jsonStr = jsonMatch[1];
-            }
+            if (jsonMatch) jsonStr = jsonMatch[1];
 
             const result = JSON.parse(jsonStr);
+
+            // ... (rest of parsing logic) ...
 
             // FALLBACK: If AI failed to map (returned null), use heuristic
             let finalMappedUnit = result.mappedUnit;
@@ -191,15 +199,18 @@ ${rawText.substring(0, 15000)} ... (truncated if too long) ...
                 const fallback = this.findBestHeuristicMatch(question, uocs);
                 if (fallback) {
                     finalMappedUnit = fallback.code;
-                    finalReasoning = `(Auto-Fallback) AI could not determine map. Mapped based on keyword overlap: ${fallback.reason}`;
-                    // Try to find a default PC?
+                    finalReasoning = `(Auto-Fallback) AI returned null. Mapped based on keyword overlap: ${fallback.reason}`;
                     finalCriteria = ["1.1"];
                 }
             }
 
+            // Log time taken
+            const duration = Date.now() - startTime;
+            if (duration > 5000) logger.warn(`Slow Q${question.id}: ${duration}ms`);
+
             return {
                 questionId: question.id,
-                isValid: result.isValid ?? true, // Default to valid if properly mapped
+                isValid: result.isValid ?? true,
                 mappedUnit: finalMappedUnit,
                 mappedCriteria: finalCriteria,
                 mappedKnowledge: result.mappedKnowledge || [],
@@ -209,8 +220,8 @@ ${rawText.substring(0, 15000)} ... (truncated if too long) ...
             };
 
         } catch (error) {
-            logger.error(`AI Validation failed for Q${question.id}:`, error);
-            // Even on error, try heuristic?
+            logger.error(`AI Validation failed for Q${question.id} after ${Date.now() - startTime}ms:`, error);
+            // Fallback on error/timeout
             const fallback = this.findBestHeuristicMatch(question, uocs);
             return {
                 questionId: question.id,
@@ -218,7 +229,7 @@ ${rawText.substring(0, 15000)} ... (truncated if too long) ...
                 mappedUnit: fallback ? fallback.code : null,
                 mappedCriteria: ["1.1"],
                 mappedKnowledge: [],
-                reasoning: "AI Failed (" + (error instanceof Error ? error.message : String(error)) + "). Used Keyword Fallback.",
+                reasoning: "AI Failed/Timed Out (" + (error instanceof Error ? error.message : String(error)) + "). Used Keyword Fallback.",
                 gaps: [],
                 confidence: 30
             };

@@ -331,7 +331,7 @@ export async function POST(req: NextRequest) {
             }, { status: 400 });
         }
 
-        const AI_BATCH_SIZE = 5; // Reduced from 10 to ensure smoother progress
+        const AI_BATCH_SIZE = aiService.isLocalModel ? 1 : 5; // Use sequential processing for local models
         logger.info(`Processing ${cleanedQuestions.length} questions in batches of ${AI_BATCH_SIZE}...`);
 
         for (let i = 0; i < cleanedQuestions.length; i += AI_BATCH_SIZE) {

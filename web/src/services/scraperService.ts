@@ -1,9 +1,9 @@
 import { load } from 'cheerio';
 import { Unit } from '../types';
 import puppeteer, { Browser } from 'puppeteer';
-import { logger } from '@/utils/logger';
+import { logger } from '../utils/logger';
 import { parseUocHtml } from './uocParser';
-import { UnitMapper } from '@/utils/unitMapper';
+import { UnitMapper } from '../utils/unitMapper';
 
 export class ScraperService {
     private baseUrl = 'https://training.gov.au/Training/Details';
@@ -106,8 +106,8 @@ export class ScraperService {
         // REMOVED: await this.init(); 
         // We will initialize lazily inside scrapeUnit if needed. This prevents crashes if Puppeteer is broken but not needed.
 
-        // CONCURRENCY: Reduced to 5 to prevent local system overload/crashing
-        const BATCH_SIZE = 5;
+        // CONCURRENCY: Increased to 8 for better throughput
+        const BATCH_SIZE = 8;
 
         logger.info(`🚀 Starting parallel scrape for ${codesToScrape.length} units (Batch size: ${BATCH_SIZE})...`);
 
@@ -146,18 +146,35 @@ export class ScraperService {
         };
 
         // Process in batches
+        let processedCount = 0;
+        const totalUnits = codesToScrape.length;
+
+        const printProgress = (current: number, total: number) => {
+            const width = 30;
+            const percent = Math.round((current / total) * 100);
+            const filled = Math.round((width * current) / total);
+            const empty = width - filled;
+            const bar = '▓'.repeat(filled) + '░'.repeat(empty);
+            console.log(`\n   ${bar} ${percent}% (${current}/${total} units processed)\n`);
+        };
+
         for (let i = 0; i < codesToScrape.length; i += BATCH_SIZE) {
             const batch = codesToScrape.slice(i, i + BATCH_SIZE);
             const batchNum = Math.floor(i / BATCH_SIZE) + 1;
             const totalBatches = Math.ceil(codesToScrape.length / BATCH_SIZE);
+
             logger.info(`   Processing batch ${batchNum}/${totalBatches} (${batch.join(', ')})...`);
 
             // Run batch in parallel
-            await Promise.all(batch.map(code => processUnit(code)));
+            await Promise.all(batch.map(async (code) => {
+                await processUnit(code);
+                processedCount++;
+                printProgress(processedCount, totalUnits);
+            }));
 
             // Delay between batches
             if (i + BATCH_SIZE < codesToScrape.length) {
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await new Promise(resolve => setTimeout(resolve, 200));
             }
         }
 

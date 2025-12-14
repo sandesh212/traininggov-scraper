@@ -43,23 +43,33 @@ export class UnitValidator {
      */
     async validateUnit(code: string): Promise<ValidationResult> {
         const url = `${this.baseUrl}/${code}`;
-        
+
         if (!this.browser) {
             await this.init();
         }
 
         const page = await this.browser!.newPage();
-        
+
         try {
             await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
-            // Navigate to the page
-            const response = await page.goto(url, { 
-                waitUntil: 'networkidle0', 
-                timeout: 30000 
+            // Optimisation: Block images and stylesheets to save bandwidth and time
+            await page.setRequestInterception(true);
+            page.on('request', (req) => {
+                if (['image', 'stylesheet', 'font'].includes(req.resourceType())) {
+                    req.abort();
+                } else {
+                    req.continue();
+                }
             });
 
-            // Check if redirected to search
+            // Navigate to the page - Use domcontentloaded which is much faster than networkidle0
+            const response = await page.goto(url, {
+                waitUntil: 'domcontentloaded',
+                timeout: 15000
+            });
+
+            // Fast fail for redirect
             const currentUrl = page.url();
             if (currentUrl.toLowerCase().includes('/search')) {
                 await page.close();
@@ -71,18 +81,22 @@ export class UnitValidator {
                 };
             }
 
-            // Wait a bit for content to render
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Wait for key content headers instead of arbitrary sleep
+            // We look for 'h1', 'h2', or standard TGA layout elements
+            try {
+                await page.waitForSelector('.ibox-content', { timeout: 5000 });
+            } catch (e) {
+                // Ignore timeout, we'll check content anyway
+            }
 
-            // Get page content after JavaScript execution
+            // Get page content
             const bodyText = await page.evaluate(() => document.body.innerText);
             const htmlContent = await page.content();
 
             // Check for "not found" indicators in rendered content
             const textLower = bodyText.toLowerCase();
-            const htmlLower = htmlContent.toLowerCase();
 
-            if (textLower.includes('page not found') || 
+            if (textLower.includes('page not found') ||
                 textLower.includes('unit not found') ||
                 textLower.includes('no results found') ||
                 textLower.includes('error 404')) {
@@ -95,37 +109,21 @@ export class UnitValidator {
                 };
             }
 
-            // Check for valid unit indicators in rendered content
+            // Check for valid unit indicators
             const hasUnitCode = bodyText.includes(code) || htmlContent.includes(code);
-            const hasElements = textLower.includes('elements and performance criteria') || 
-                               textLower.includes('performance criteria') ||
-                               textLower.includes('assessment conditions') ||
-                               textLower.includes('application');
-
             const hasMinimalContent = bodyText.length > 500;
 
-            if (!hasMinimalContent) {
-                await page.close();
-                return {
-                    code,
-                    valid: false,
-                    reason: 'Page content too short - likely error page',
-                    url
-                };
-            }
-
-            if (hasUnitCode && hasElements) {
-                await page.close();
-                return { code, valid: true, url };
-            }
-
-            // If code is in page but no elements, might still be valid (different layout)
             if (hasUnitCode && hasMinimalContent) {
                 await page.close();
                 return { code, valid: true, url };
             }
 
-            // Default to invalid if we can't confirm it's valid
+            // Default to invalid if we can't confirm it's valid, but be lenient if content is substantial
+            if (hasMinimalContent) {
+                await page.close();
+                return { code, valid: true, url }; // Assume valid if we have content
+            }
+
             await page.close();
             return {
                 code,
@@ -135,7 +133,7 @@ export class UnitValidator {
             };
 
         } catch (error: any) {
-            await page.close();
+            try { await page.close(); } catch (e) { }
             return {
                 code,
                 valid: false,
@@ -148,35 +146,47 @@ export class UnitValidator {
     /**
      * Validate multiple units in batches
      */
-    async validateUnits(codes: string[], batchSize: number = 3): Promise<{
+    async validateUnits(codes: string[], batchSize: number = 5): Promise<{
         valid: ValidationResult[];
         invalid: ValidationResult[];
     }> {
         const results: ValidationResult[] = [];
-        
+
         console.log(`\n🔍 Pre-validating ${codes.length} units against training.gov.au...`);
-        console.log(`   Using Puppeteer for accurate JavaScript-rendered content check\n`);
+        console.log(`   Using Puppeteer with optimized parallel batching (size: ${batchSize})\n`);
 
         await this.init();
 
-        // Process in batches to avoid overwhelming the browser
+        // Process in batches
+        let processedCount = 0;
+        const totalUnits = codes.length;
+
+        const printProgress = (current: number, total: number) => {
+            const width = 30;
+            const percent = Math.round((current / total) * 100);
+            const filled = Math.round((width * current) / total);
+            const empty = width - filled;
+            const bar = '▓'.repeat(filled) + '░'.repeat(empty);
+            console.log(`\n   ${bar} ${percent}% (${current}/${total} checked)\n`);
+        };
+
         for (let i = 0; i < codes.length; i += batchSize) {
             const batch = codes.slice(i, i + batchSize);
             const batchNum = Math.floor(i / batchSize) + 1;
             const totalBatches = Math.ceil(codes.length / batchSize);
-            
-            console.log(`   Batch ${batchNum}/${totalBatches}: ${batch.join(', ')}`);
 
-            // Process batch sequentially (browser reuse)
-            for (const code of batch) {
-                const result = await this.validateUnit(code);
-                results.push(result);
-            }
+            console.log(`   Batch ${batchNum}/${totalBatches}: Checking ${batch.join(', ')} ...`);
 
-            // Small delay between batches
-            if (i + batchSize < codes.length) {
-                await new Promise(resolve => setTimeout(resolve, 500));
-            }
+            // Execute batch in PARALLEL
+            const batchPromises = batch.map(async (code) => {
+                const res = await this.validateUnit(code);
+                processedCount++;
+                printProgress(processedCount, totalUnits);
+                return res;
+            });
+            const batchResults = await Promise.all(batchPromises);
+
+            results.push(...batchResults);
         }
 
         await this.close();

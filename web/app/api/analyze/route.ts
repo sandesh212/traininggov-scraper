@@ -331,7 +331,7 @@ export async function POST(req: NextRequest) {
             }, { status: 400 });
         }
 
-        const AI_BATCH_SIZE = aiService.isLocalModel ? 1 : 5; // Use sequential processing for local models
+        const AI_BATCH_SIZE = aiService.isLocalModel ? 2 : 10; // Bump local to 2 for slightly better throughput if model allows
         logger.info(`Processing ${cleanedQuestions.length} questions in batches of ${AI_BATCH_SIZE}...`);
 
         for (let i = 0; i < cleanedQuestions.length; i += AI_BATCH_SIZE) {
@@ -343,6 +343,47 @@ export async function POST(req: NextRequest) {
             const batchPromises = batch.map(async (q) => {
                 try {
                     const result = await aiService.validateQuestion(q, allUnits);
+
+                    // Construct Detailed Mapping
+                    let detailedMapping: any = undefined;
+                    if (result.mappedUnit) {
+                        const unit = allUnits.find(u => u.code === result.mappedUnit);
+                        if (unit) {
+                            const pcTexts: string[] = [];
+                            let elementTitle = '';
+                            let elementNumber = '';
+
+                            (result.mappedCriteria || []).forEach(pcId => {
+                                // Find PC in elements
+                                for (const el of unit.elements) {
+                                    const pc = el.performanceCriteria.find(p => p.id === pcId || p.text.startsWith(pcId));
+                                    if (pc) {
+                                        pcTexts.push(pc.text);
+                                        if (!elementTitle) {
+                                            elementTitle = el.title;
+                                            // Try extract number from PC ID (e.g. 1.1 -> Element 1)
+                                            const match = pcId.match(/^(\d+)/);
+                                            if (match) elementNumber = match[1];
+                                        }
+                                    }
+                                }
+                            });
+
+                            detailedMapping = {
+                                unitCode: unit.code,
+                                unitTitle: unit.title,
+                                elementNumber: elementNumber,
+                                elementTitle: elementTitle,
+                                performanceCriteria: result.mappedCriteria,
+                                performanceCriteriaText: pcTexts,
+                                knowledgeEvidence: result.mappedKnowledge, // Already text or IDs? Usually IDs/keywords from AI
+                                performanceEvidence: [], // Fill if AI maps this
+                                confidence: (result.confidence || 0) / 100,
+                                sourceType: 'mixed'
+                            };
+                        }
+                    }
+
                     return {
                         questionId: q.id,
                         questionText: q.text,
@@ -351,6 +392,7 @@ export async function POST(req: NextRequest) {
                         mappedUnit: result.mappedUnit,
                         mappedCriteria: result.mappedCriteria,
                         mappedKnowledge: result.mappedKnowledge,
+                        detailedMapping: detailedMapping,
                         reasoning: result.reasoning,
                         gaps: result.gaps,
                         confidence: result.confidence,

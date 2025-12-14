@@ -9,8 +9,8 @@
   "scripts": {
     "dev": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
-    "start": "npx tsx src/autoSync.ts",
-    "scrape": "node dist/src/index.js",
+    "start": "npx tsx src/runScraper.ts",
+    "scrape": "npx tsx src/runScraper.ts",
     "lint": "npm run lint:md",
     "lint:md": "markdownlint \"**/*.md\"",
     "test": "vitest",

@@ -150,8 +150,8 @@ ${rawText.substring(0, 15000)} ... (truncated if too long) ...
                     return { u, s };
                 });
                 scores.sort((a, b) => b.s - a.s);
-                // Reduce to TOP 3 for Local AI speed (was 8)
-                contextUnits = scores.slice(0, 3).map(x => x.u);
+                // Reduce to TOP 1 for Local AI speed (was 3) to prevent freezing
+                contextUnits = scores.slice(0, 1).map(x => x.u);
             }
 
             const prompt = this.buildPrompt(question, contextUnits);
@@ -170,7 +170,7 @@ ${rawText.substring(0, 15000)} ... (truncated if too long) ...
             }
 
             // ADD TIMEOUT: Race the AI request against a timeout (e.g. 45s for local)
-            const timeoutMs = this.isOllama ? 60000 : 30000;
+            const timeoutMs = this.isOllama ? 120000 : 30000;
             const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("AI Timeout")), timeoutMs));
 
             const completion = await Promise.race([
@@ -297,7 +297,7 @@ ${rawText.substring(0, 15000)} ... (truncated if too long) ...
             ).join(' | ');
 
             // Truncate KE/PE/AC to save tokens
-            const ke = u.knowledgeEvidence ? u.knowledgeEvidence.substring(0, 300).replace(/\n/g, ' ') + '...' : 'N/A';
+            const ke = u.knowledgeEvidence ? u.knowledgeEvidence.substring(0, 150).replace(/\n/g, ' ') + '...' : 'N/A';
 
             return `UNIT: ${u.code} - ${u.title}
 PCs: ${pcList}

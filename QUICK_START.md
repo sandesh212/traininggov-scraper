@@ -10,11 +10,21 @@ Three major improvements have been implemented:
 
 ## Quick Usage
 
-### 1. Validate Units from Excel
+### 1. Run the Full Scraper (New!)
+
+The easiest way to validate and scrape in one go, with progress bars:
 
 ```bash
-# Validate all units in Units.xlsx
-npm run validate
+npm start
+```
+
+This will:
+1. Load units from `Units.xlsx`
+2. Validate them (showing progress)
+3. Scrape valid units (showing progress)
+4. Save results to `data/units.json`
+
+### 2. Validate Only
 
 # This will create:
 # - validation-report.json (full results)

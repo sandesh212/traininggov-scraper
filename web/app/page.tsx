@@ -11,6 +11,7 @@ import { generateExcelReport, generateUnitDataExcel } from '@/utils/excelExport'
 
 const QuestionAnswerTable = dynamic(() => import('@/components/QuestionAnswerTable').then(mod => mod.QuestionAnswerTable), { ssr: false });
 const UnitManager = dynamic(() => import('@/components/UnitManager').then(mod => mod.UnitManager), { ssr: false });
+const MappedUnitsReference = dynamic(() => import('@/components/MappedUnitsReference').then(mod => mod.MappedUnitsReference), { ssr: false });
 
 export default function Home() {
     const [assessmentFile, setAssessmentFile] = useState<File | null>(null);
@@ -650,6 +651,9 @@ export default function Home() {
                                     />
                                 </div>
                             </motion.div>
+
+                            {/* Mapped Units Reference Section */}
+                            <MappedUnitsReference units={report.mappedUnits || []} />
                         </motion.div>
                     )}
                 </AnimatePresence>

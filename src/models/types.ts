@@ -5,4 +5,5 @@ export interface AssessmentQuestion {
     context?: string; // Surrounding text or sub-questions
     images?: string[];
     type?: string;
+    answer?: string;
 }

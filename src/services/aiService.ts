@@ -1,7 +1,8 @@
 import OpenAI from 'openai';
 import { UnitOfCompetency } from './uocLoader.js';
 import { AssessmentQuestion } from '../models/types.js';
-import { logger } from '../utils/logger.js'; // Assuming logger is imported from here
+// import { logger } from '../utils/logger.js'; // Broken import
+const logger = { info: console.log, error: console.error, warn: console.warn };
 
 export interface ValidationResult {
     questionId: string;
@@ -45,28 +46,8 @@ export class AIService {
         question: AssessmentQuestion,
         uocs: UnitOfCompetency[]
     ): Promise<ValidationResult> {
-        // MOCK MODE: If API key is 'mock-key' or starts with 'sk-mock', return dummy data
-        if (this.openai.apiKey === 'mock-key' || this.openai.apiKey.startsWith('sk-mock')) {
-            console.log(`   (Mocking AI response for Q${question.id})`);
-            await new Promise(resolve => setTimeout(resolve, 500)); // Simulate latency
-
-            // Heuristic: Match question text/section to Unit Title/Code
-            const bestMatch = uocs.find(u =>
-                question.text.toLowerCase().includes(u.title.toLowerCase().split(' ')[0]) ||
-                question.section?.toLowerCase().includes(u.title.toLowerCase().split(' ')[0])
-            ) || uocs[0];
-
-            return {
-                questionId: question.id,
-                isValid: true,
-                mappedUnit: bestMatch.code,
-                mappedCriteria: ["1.1", "1.2"],
-                mappedKnowledge: ["K1"],
-                reasoning: `MOCK ANALYSIS: Question matched to ${bestMatch.code} based on keywords.`,
-                gaps: [],
-                confidence: 85
-            };
-        }
+        // Mock mode removed for dynamic behavior
+        // if (this.openai.apiKey === 'mock-key') { ... }
 
         const prompt = this.buildPrompt(question, uocs);
 
@@ -176,10 +157,7 @@ export class AIService {
             const imageUrl = imageBase64.startsWith('data:') ? imageBase64 : `data:image/jpeg;base64,${imageBase64}`;
 
             try {
-                // If mocking (and not Ollama)
-                if (!this.isOllama && (this.openai.apiKey === 'mock-key' || this.openai.apiKey?.startsWith('sk-mock'))) {
-                    return { ...q, imageDescription: "MOCK DESCRIPTION: Image shows an anchor." };
-                }
+                // Mock image description removed
 
                 // Prepare message content based on provider
                 // Ollama with 'llava' via OpenAI compatible endpoint works similar to GPT-4 Vision

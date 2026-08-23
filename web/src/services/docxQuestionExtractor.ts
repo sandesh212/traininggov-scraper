@@ -341,8 +341,11 @@ export async function extractQuestionsFromDocx(
 
                     pQuestionText = pQuestionText.replace(/\s+/g, ' ').trim();
 
-                    // Remove any red text that might have been included
+                    // Remove any red text that might have been included.
                     pQuestionText = removeRedText(pQuestionText);
+
+                    // A block that consists entirely of an answer must not become a blank question.
+                    if (!pQuestionText) return;
 
                     const newQuestion = {
                         id: uniqueId,

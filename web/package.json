@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint app src"
+    "lint": "eslint app src",
+    "test:integration": "node scripts/integration-test.cjs"
   },
   "dependencies": {
     "@types/adm-zip": "^0.5.7",

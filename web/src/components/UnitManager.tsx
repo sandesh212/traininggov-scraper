@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Unit } from '../types';
 import { Trash2, RotateCcw, Plus, Search, Info, X, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
@@ -12,14 +12,12 @@ interface UnitSummary {
 export function UnitManager({ onClose }: { onClose?: () => void }) {
     const [units, setUnits] = useState<UnitSummary[]>([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [lastUpdated, setLastUpdated] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [newUnitCode, setNewUnitCode] = useState('');
     const [adding, setAdding] = useState(false);
     const [addResult, setAddResult] = useState<{ success: boolean; message: string; added?: string[]; failed?: { code: string; reason: string }[] } | null>(null);
     const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
-    const [viewingUnit, setViewingUnit] = useState(false);
     const [processingUnit, setProcessingUnit] = useState<string | null>(null);
 
     const [refreshingAll, setRefreshingAll] = useState(false);
@@ -28,36 +26,34 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
     const [confirmClear, setConfirmClear] = useState(false);
     const [confirmRefreshAll, setConfirmRefreshAll] = useState(false);
 
-    useEffect(() => {
-        fetchUnits();
-    }, []);
-
-    // Debounce search
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            fetchUnits();
-        }, 500);
-        return () => clearTimeout(timer);
-    }, [searchTerm]);
-
-    const fetchUnits = async () => {
+    const fetchUnits = useCallback(async (query: string) => {
         setLoading(true);
         try {
             const params = new URLSearchParams();
-            if (searchTerm) params.set('search', searchTerm);
+            if (query) params.set('search', query);
 
-            const res = await fetch(`/api/units?${params.toString()}`, { cache: 'no-store' });
-            const data = await res.json();
-            if (data.units) {
-                setUnits(data.units);
-                setLastUpdated(data.lastUpdated);
+            const response = await fetch(`/api/units?${params.toString()}`, { cache: 'no-store' });
+            const data = await response.json();
+            if (!response.ok || !data.units) {
+                throw new Error(data.error || 'Failed to load units');
             }
-        } catch (err) {
-            setError('Failed to load units');
+
+            setUnits(data.units);
+            setLastUpdated(data.lastUpdated);
+        } catch {
+            setAddResult({ success: false, message: 'Failed to load units' });
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    // Debounce user search while loading immediately on the first render.
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            void fetchUnits(searchTerm);
+        }, searchTerm ? 500 : 0);
+        return () => clearTimeout(timer);
+    }, [fetchUnits, searchTerm]);
 
     const handleAddUnit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -95,12 +91,12 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
 
                 if (hasAdded) {
                     setNewUnitCode('');
-                    fetchUnits(); // Refresh list
+                    void fetchUnits(searchTerm); // Refresh list
                 }
             } else {
                 setAddResult({ success: false, message: data.error || 'Failed to add unit' });
             }
-        } catch (err) {
+        } catch {
             setAddResult({ success: false, message: 'Network error' });
         } finally {
             setAdding(false);
@@ -122,12 +118,12 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             const res = await fetch(`/api/units/${code}`, { method: 'DELETE' });
             if (res.ok) {
                 if (selectedUnit?.code === code) setSelectedUnit(null);
-                fetchUnits();
+                void fetchUnits(searchTerm);
             } else {
-                setError('Failed to delete unit');
+                setAddResult({ success: false, message: 'Failed to delete unit' });
             }
-        } catch (err) {
-            setError('Failed to delete unit');
+        } catch {
+            setAddResult({ success: false, message: 'Failed to delete unit' });
         } finally {
             setProcessingUnit(null);
         }
@@ -140,12 +136,12 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
             if (res.ok) {
                 const data = await res.json();
                 if (selectedUnit?.code === code) setSelectedUnit(data.unit);
-                fetchUnits(); // Update timestamp/list
+                void fetchUnits(searchTerm); // Update timestamp/list
             } else {
-                setError('Failed to update unit');
+                setAddResult({ success: false, message: 'Failed to update unit' });
             }
-        } catch (err) {
-            setError('Failed to update unit');
+        } catch {
+            setAddResult({ success: false, message: 'Failed to update unit' });
         } finally {
             setProcessingUnit(null);
         }
@@ -168,11 +164,11 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                 // for now we can just rely on the list updating or use a temporary success state.
                 // Re-using addResult for generic feedback:
                 setAddResult({ success: true, message: data.message });
-                fetchUnits();
+                void fetchUnits(searchTerm);
             } else {
                 setAddResult({ success: false, message: 'Failed to refresh units' });
             }
-        } catch (err) {
+        } catch {
             setAddResult({ success: false, message: 'Failed to refresh units' });
         } finally {
             setRefreshingAll(false);
@@ -190,10 +186,10 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         setLoading(true);
         try {
             await fetch('/api/units', { method: 'DELETE' });
-            fetchUnits();
+            void fetchUnits(searchTerm);
             setSelectedUnit(null);
             setAddResult({ success: true, message: 'All units cleared' });
-        } catch (err) {
+        } catch {
             setAddResult({ success: false, message: 'Failed to clear units' });
         } finally {
             setLoading(false);
@@ -205,12 +201,12 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
         try {
             const res = await fetch('/api/units/restore', { method: 'POST' });
             if (res.ok) {
-                fetchUnits();
+                void fetchUnits(searchTerm);
                 setAddResult({ success: true, message: 'Units restored' });
             } else {
                 setAddResult({ success: false, message: 'Nothing to undo' });
             }
-        } catch (err) {
+        } catch {
             setAddResult({ success: false, message: 'Failed to restore' });
         } finally {
             setLoading(false);
@@ -218,7 +214,6 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
     };
 
     const handleViewDetails = async (code: string) => {
-        setViewingUnit(true);
         // Don't clear if clicking same unit
         if (selectedUnit?.code === code) return;
 
@@ -229,16 +224,10 @@ export function UnitManager({ onClose }: { onClose?: () => void }) {
                 const data = await res.json();
                 setSelectedUnit(data);
             }
-        } catch (err) {
-            console.error(err);
+        } catch {
+            setAddResult({ success: false, message: 'Failed to load unit details' });
         }
     };
-
-    // Filtering is now done server-side
-    // const filteredUnits = units.filter(u =>
-    //     u.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //     u.title.toLowerCase().includes(searchTerm.toLowerCase())
-    // );
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">

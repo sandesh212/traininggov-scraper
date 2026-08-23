@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import { Unit, Element, PerformanceCriteria } from '../types';
+import { Unit, Element } from '../types';
 import puppeteer, { Browser } from 'puppeteer';
 import { logger } from '@/utils/logger';
 
@@ -180,7 +180,7 @@ export class ScraperService {
                             { timeout: 15000 }
                         );
                         console.log(`   Content loaded for ${code}`);
-                    } catch (e) {
+                    } catch {
                         console.warn(`   Timeout waiting for content to load for ${code}`);
                         // Continue anyway, maybe content is there
                     }

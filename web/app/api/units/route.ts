@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
             count: units.length,
             lastUpdated: lastUpdated ? lastUpdated.toISOString() : null
         });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed to fetch units' }, { status: 500 });
     }
 }
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
                 } else {
                     failed.push({ code: c, reason: 'Not found on training.gov.au' });
                 }
-            } catch (e) {
+            } catch {
                 failed.push({ code: c, reason: 'Scraping error' });
             }
         }
@@ -99,12 +99,12 @@ export async function POST(req: NextRequest) {
     }
 }
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE() {
     try {
         const loader = new UocLoader('data/uoc.jsonl');
         await loader.clearAll();
         return NextResponse.json({ message: 'All units cleared' });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed to clear units' }, { status: 500 });
     }
 }

@@ -69,10 +69,16 @@ function assertReport(report, expectedUnitCount) {
     0,
     `each result needs identifying question data; invalid records: ${JSON.stringify(incompleteQuestionRecords.slice(0, 3))}`
   );
-  assert.ok(report.results.every((item) => item.mappedUnit && item.isValid), 'offline mapping must produce a usable mapping for each question');
+  const mappedResults = report.results.filter((item) => item.mappedUnit);
+  const unmappedResults = report.results.filter((item) => !item.mappedUnit);
+  assert.ok(mappedResults.length > 0, 'the workflow should produce at least one relevant local mapping');
   assert.ok(
-    report.results.every((item) => item.reasoning.startsWith('Local fallback mapped the question')),
-    'the mock-key test environment must exercise local fallback mapping'
+    mappedResults.every((item) => item.isValid && item.confidence >= 55 && item.reasoning.startsWith('Local fallback mapped the question')),
+    'mapped results must be valid, scored matches'
+  );
+  assert.ok(
+    unmappedResults.every((item) => !item.isValid && item.confidence === 0 && item.gaps.includes('No meaningful keyword overlap was found; manual mapping is required.')),
+    'unmapped results must be explicit manual-review cases'
   );
 }
 

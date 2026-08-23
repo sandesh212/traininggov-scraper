@@ -3,10 +3,6 @@ import * as cheerio from "cheerio";
 import { AssessmentQuestion } from '@/models/types';
 import { logger } from '@/utils/logger';
 
-// Production mode - reduces console output
-const PRODUCTION_MODE = process.env.PRODUCTION_MODE === 'true';
-const log = (...args: any[]) => !PRODUCTION_MODE && console.log(...args);
-
 /**
  * Extracts questions from a .docx file using robust HTML parsing with Cheerio.
  * Handles complex layouts, tables, images, and varying formats.
@@ -20,21 +16,6 @@ export async function extractQuestionsFromDocx(
     redTextSegments: string[] = []
 ): Promise<{ questions: AssessmentQuestion[], detectedUnitCodes: string[], instructions: string[] }> {
     logger.info('   📄 Starting DOCX extraction...');
-
-    // Helper to check if text contains red text
-    const containsRedText = (text: string): boolean => {
-        if (!text || redTextSegments.length === 0) return false;
-
-        const normalizedText = text.toLowerCase().replace(/[\s\W_]+/g, '');
-
-        for (const segment of redTextSegments) {
-            const normalizedSegment = segment.toLowerCase().replace(/[\s\W_]+/g, '');
-            if (normalizedSegment.length > 10 && normalizedText.includes(normalizedSegment)) {
-                return true;
-            }
-        }
-        return false;
-    };
 
     // Helper to remove red text from a string
     const removeRedText = (text: string): string => {
@@ -99,8 +80,6 @@ export async function extractQuestionsFromDocx(
 
         let currentSection = "General";
 
-        // Track seen question text to avoid duplicates (normalized)
-        const seenQuestions = new Set<string>();
         const instructions: string[] = [];
         const seenInstructionTexts = new Set<string>(); // Track normalized instruction text
 

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, AlertCircle, ChevronDown, ChevronRight, BookOpen, Image as ImageIcon, ExternalLink } from 'lucide-react';
+import { CheckCircle, AlertCircle, ChevronDown, BookOpen, Image as ImageIcon } from 'lucide-react';
 import { QuestionResult, Unit } from '../types';
 import { parseEvidenceHierarchy, EvidenceNode } from '../../src/utils/evidenceHierarchy';
 
@@ -67,7 +67,6 @@ export function UnifiedReportView({ results, mappedUnits, instructions }: Unifie
                         result={result}
                         idx={idx}
                         onNavigateToUnit={scrollToUnit}
-                        mappedUnits={mappedUnits}
                     />
                 ))}
             </div>
@@ -94,11 +93,10 @@ export function UnifiedReportView({ results, mappedUnits, instructions }: Unifie
     );
 }
 
-function QuestionCard({ result, idx, onNavigateToUnit, mappedUnits }: {
-    result: QuestionResult,
-    idx: number,
-    onNavigateToUnit: (code: string) => void,
-    mappedUnits: Unit[]
+function QuestionCard({ result, idx, onNavigateToUnit }: {
+    result: QuestionResult;
+    idx: number;
+    onNavigateToUnit: (code: string) => void;
 }) {
     // Helper to render text with [[ANSWER: ...]] in red
     const renderQuestionText = (text: string) => {
@@ -284,11 +282,6 @@ function UnitReferenceCard({ unit, isExpanded, toggle, results }: {
     if (unit.knowledgeEvidence) {
         keNodes = parseEvidenceHierarchy(unit.knowledgeEvidence);
     }
-    let peNodes: EvidenceNode[] = [];
-    if (unit.performanceEvidence) {
-        peNodes = parseEvidenceHierarchy(unit.performanceEvidence);
-    }
-
     return (
         <div
             id={`unit-ref-${unit.code}`}

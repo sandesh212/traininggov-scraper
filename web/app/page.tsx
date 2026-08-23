@@ -3,9 +3,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { Upload, FileText, CheckCircle, Loader2, AlertCircle, Sparkles, Award, TrendingUp, List, Download, LayoutGrid, RefreshCw, FileSpreadsheet, X, ArrowLeft, RotateCcw, Database } from 'lucide-react';
+import { Upload, FileText, CheckCircle, Loader2, Sparkles, Award, TrendingUp, List, Download, RefreshCw, FileSpreadsheet, X, ArrowLeft, RotateCcw, Database } from 'lucide-react';
 import { Toast, ToastType } from '@/components/Toast';
-import { ConfirmationModal } from '@/components/ConfirmationModal';
 import { ReportData } from '@/types';
 import { generateExcelReport, generateUnitDataExcel } from '@/utils/excelExport';
 
@@ -21,8 +20,6 @@ export default function Home() {
     const [report, setReport] = useState<ReportData | null>(null);
     const [activeTab, setActiveTab] = useState<'report' | 'redtext'>('report');
     const [showUnitManager, setShowUnitManager] = useState(false);
-    const [showInvalidModal, setShowInvalidModal] = useState(false); // New state
-    const [invalidUnitsList, setInvalidUnitsList] = useState<{ code: string; url: string; reason?: string }[]>([]); // Updated with reason
     const [saveToDatabase, setSaveToDatabase] = useState(true); // Default: save to database
 
     // Toast State
@@ -76,7 +73,7 @@ export default function Home() {
         return () => clearInterval(interval);
     }, [loading]);
 
-    const handleAnalyze = async (ignoreInvalid = false) => {
+    const handleAnalyze = async () => {
         if (!assessmentFile) return;
 
         setLoading(true);
@@ -86,9 +83,6 @@ export default function Home() {
             formData.append('assessmentFile', assessmentFile);
             if (unitsFile) {
                 formData.append('unitsFile', unitsFile);
-            }
-            if (ignoreInvalid) {
-                formData.append('ignoreInvalid', 'true');
             }
             formData.append('saveToDatabase', saveToDatabase.toString());
 
@@ -103,36 +97,14 @@ export default function Home() {
                 throw new Error(data.error || 'Analysis failed');
             }
 
-            // Check for invalid units warning (status 200 but has invalidUnits)
-            /* 
-            // DISABLED BY USER REQUEST: Stop checking valid/invalid units
-            if (data.invalidUnits && data.invalidUnits.length > 0) {
-                setInvalidUnitsList(data.invalidUnits);
-                setShowInvalidModal(true);
-                setLoading(false); // Pause loading state while user decides
-                return;
-            }
-            */
 
             setReport(data);
             showToast('Analysis complete! Report generated successfully.', 'success');
         } catch (err) {
             showToast((err as Error).message, 'error');
         } finally {
-            if (!ignoreInvalid && !showInvalidModal) {
-                setLoading(false);
-            }
+            setLoading(false);
         }
-    };
-
-    const handleConfirmInvalid = () => {
-        setShowInvalidModal(false);
-        handleAnalyze(true);
-    };
-
-    const handleCancelInvalid = () => {
-        setShowInvalidModal(false);
-        setLoading(false);
     };
 
     const downloadReport = () => {
@@ -168,17 +140,6 @@ export default function Home() {
                 onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
             />
 
-            <ConfirmationModal
-                isOpen={showInvalidModal}
-                title="Invalid Units Detected"
-                message="The following units from your list could not be verified on training.gov.au. They may be invalid codes, superseded, or the server is unreachable."
-                items={invalidUnitsList}
-                confirmText="Continue Without Them"
-                cancelText="Stop & Fix File"
-                onConfirm={handleConfirmInvalid}
-                onCancel={handleCancelInvalid}
-                type="warning"
-            />
 
             {/* Unit Manager Modal */}
             <AnimatePresence>
@@ -439,7 +400,7 @@ export default function Home() {
                                 {/* Analyze Button */}
                                 <div className="text-center">
                                     <button
-                                        onClick={() => handleAnalyze(false)}
+                                        onClick={() => handleAnalyze()}
                                         disabled={!canAnalyze || loading}
                                         className={`
                                             px-12 py-5 rounded-2xl text-xl font-bold shadow-xl transition-all transform hover:-translate-y-1 active:scale-95
@@ -525,7 +486,7 @@ export default function Home() {
                                         <span className="inline xs:hidden">Back</span>
                                     </button>
                                     <button
-                                        onClick={() => handleAnalyze(false)}
+                                        onClick={() => handleAnalyze()}
                                         className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                     >
                                         <RefreshCw size={14} className="sm:w-4 sm:h-4" />

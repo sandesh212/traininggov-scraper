@@ -5,9 +5,10 @@ import { UocLoader } from '@/services/uocLoader';
 import { ScraperService } from '@/services/scraperService';
 
 export async function GET(
-    req: NextRequest,
+    request: NextRequest,
     { params }: { params: Promise<{ code: string }> }
 ) {
+    void request;
     try {
         const { code } = await params;
         const loader = new UocLoader('data/uoc.jsonl');
@@ -19,15 +20,16 @@ export async function GET(
         }
 
         return NextResponse.json(unit);
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed to fetch unit details' }, { status: 500 });
     }
 }
 
 export async function DELETE(
-    req: NextRequest,
+    request: NextRequest,
     { params }: { params: Promise<{ code: string }> }
 ) {
+    void request;
     try {
         const { code } = await params;
         const loader = new UocLoader('data/uoc.jsonl');
@@ -39,15 +41,16 @@ export async function DELETE(
         }
 
         return NextResponse.json({ message: 'Unit deleted successfully' });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed to delete unit' }, { status: 500 });
     }
 }
 
 export async function PUT(
-    req: NextRequest,
+    request: NextRequest,
     { params }: { params: Promise<{ code: string }> }
 ) {
+    void request;
     try {
         const { code } = await params;
         const scraper = new ScraperService();
@@ -62,7 +65,7 @@ export async function PUT(
         await loader.addUnit(unit);
 
         return NextResponse.json({ message: 'Unit updated successfully', unit });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed to update unit' }, { status: 500 });
     }
 }

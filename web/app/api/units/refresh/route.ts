@@ -1,9 +1,9 @@
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { UocLoader } from '@/services/uocLoader';
 import { ScraperService } from '@/services/scraperService';
 
-export async function POST(req: NextRequest) {
+export async function POST() {
     try {
         const loader = new UocLoader('data/uoc.jsonl');
         await loader.load();

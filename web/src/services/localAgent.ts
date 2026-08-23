@@ -259,18 +259,6 @@ export class LocalAgent {
         const knowledge = unitMatches.filter(m => m.type === 'knowledge').map(m => `${m.id}: ${m.text}`);
         const performance = unitMatches.filter(m => m.type === 'performance').map(m => `${m.id}: ${m.text}`);
 
-        // 2. Sufficiency (Partial): Does it cover multiple aspects?
-        let coverageNote = '';
-        if (criteria.length > 0) {
-            coverageNote = criteria.length > 1
-                ? `Covers multiple criteria (${criteria.join(', ')}).`
-                : `Addresses criterion ${criteria[0]}.`;
-        } else if (knowledge.length > 0 || performance.length > 0) {
-            coverageNote = `Aligns with Knowledge/Performance Evidence.`;
-        } else {
-            coverageNote = `Weak alignment with unit requirements.`;
-        }
-
         const intentDescription = isKnowledgeQuestion ? 'knowledge' : isPerformanceQuestion ? 'skills' : 'requirements';
 
         return {

@@ -14,6 +14,8 @@ export interface ValidationResult {
     confidence: number; // 0-100
 }
 
+export const MINIMUM_FALLBACK_SCORE = 1;
+
 export class AIService {
     private openai: OpenAI;
     private model: string;
@@ -110,6 +112,19 @@ export class AIService {
         });
 
         const bestMatch = scoredUnits.reduce((best, candidate) => candidate.score > best.score ? candidate : best);
+        if (bestMatch.score < MINIMUM_FALLBACK_SCORE) {
+            return {
+                questionId: question.id,
+                isValid: false,
+                mappedUnit: null,
+                mappedCriteria: [],
+                mappedKnowledge: [],
+                reasoning: 'Local fallback could not identify a sufficiently relevant unit. Manual mapping is required.',
+                gaps: ['No meaningful keyword overlap was found; manual mapping is required.'],
+                confidence: 0
+            };
+        }
+
         const matchingUnit = bestMatch.unit;
         const mappedCriteria = (Array.isArray(matchingUnit.elements) ? matchingUnit.elements : [])
             .flatMap((element) => Array.isArray(element.performanceCriteria) ? element.performanceCriteria : [])
@@ -124,8 +139,8 @@ export class AIService {
             mappedCriteria,
             mappedKnowledge: matchingUnit.knowledgeEvidence ? [matchingUnit.knowledgeEvidence.slice(0, 200)] : [],
             reasoning: `Local fallback mapped the question to ${matchingUnit.code} using keyword overlap with the unit data.`,
-            gaps: bestMatch.score === 0 ? ['No strong keyword overlap was detected; review this mapping manually.'] : [],
-            confidence: bestMatch.score === 0 ? 35 : Math.min(95, 50 + bestMatch.score * 5)
+            gaps: [],
+            confidence: Math.min(95, 50 + bestMatch.score * 5)
         };
     }
 

@@ -1,7 +1,7 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { parseEvidenceHierarchy, EvidenceNode } from '../../src/utils/evidenceHierarchy';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, AlertCircle, ChevronDown, ChevronUp, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronUp, ChevronRight } from 'lucide-react';
 import { Unit, QuestionResult } from '../types';
 
 interface MatrixViewProps {
@@ -10,9 +10,20 @@ interface MatrixViewProps {
     initialScrollTarget?: { unitCode: string, criteriaId: string } | null;
 }
 
+interface MatrixQuestion {
+    id: string;
+    text: string;
+    section: string;
+    mappedTo: {
+        unit: string | null;
+        criteria: string[];
+        knowledge: string[];
+    };
+}
+
 export function MatrixView({ mappedUnits, results, initialScrollTarget }: MatrixViewProps) {
     // Gather all unique questions from results with section info
-    const allQuestions = (results || [])
+    const allQuestions: MatrixQuestion[] = (results || [])
         .map(r => ({
             id: r.questionId,
             text: r.questionText,
@@ -45,26 +56,25 @@ export function MatrixView({ mappedUnits, results, initialScrollTarget }: Matrix
         setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
     };
 
-    const scrollToMapping = (unitCode: string, id: string) => {
-        // 1. Expand the unit if not already expanded
-        if (!expandedUnits[unitCode]) {
-            setExpandedUnits(prev => ({ ...prev, [unitCode]: true }));
-        }
+    const scrollToMapping = useCallback((unitCode: string, id: string) => {
+        setExpandedUnits((previous) => {
+            if (previous[unitCode]) return previous;
+            return { ...previous, [unitCode]: true };
+        });
 
-        // 2. Scroll to the element (give a small delay for expansion)
+        // Wait for the accordion expansion before scrolling to the target criterion.
         setTimeout(() => {
             const elementId = `${unitCode}-${id}`;
             const element = document.getElementById(elementId);
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Highlight the element briefly
                 element.classList.add('bg-yellow-100', 'transition-colors', 'duration-500');
                 setTimeout(() => element.classList.remove('bg-yellow-100'), 2000);
             } else {
                 console.warn(`Element not found: ${elementId}`);
             }
-        }, 300); // 300ms delay for accordion animation
-    };
+        }, 300);
+    }, []);
 
     // Handle initial scroll target from props
     useEffect(() => {
@@ -74,7 +84,7 @@ export function MatrixView({ mappedUnits, results, initialScrollTarget }: Matrix
                 scrollToMapping(initialScrollTarget.unitCode, initialScrollTarget.criteriaId);
             }, 500);
         }
-    }, [initialScrollTarget]);
+    }, [initialScrollTarget, scrollToMapping]);
 
     const scrollToQuestion = (questionId: string) => {
         const question = allQuestions.find(q => q.id === questionId);
@@ -378,9 +388,9 @@ export function MatrixView({ mappedUnits, results, initialScrollTarget }: Matrix
 }
 
 function QuestionList({ questions, scrollToMapping, mappedUnits }: {
-    questions: any[],
-    scrollToMapping: (unit: string, id: string) => void,
-    mappedUnits: Unit[]
+    questions: MatrixQuestion[];
+    scrollToMapping: (unit: string, id: string) => void;
+    mappedUnits: Unit[];
 }) {
     // Helper to render text with [[ANSWER: ...]] in red
     const renderQuestionText = (text: string) => {

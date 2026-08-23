@@ -16,21 +16,67 @@ export interface ValidationResult {
 
 export const MINIMUM_FALLBACK_SCORE = 1;
 
+export type AiMappingMode = 'auto' | 'remote' | 'local';
+type ProviderStatus = 'available' | 'unknown' | 'unavailable';
+
+interface RefinedQuestionPayload {
+    text: string;
+    source_indices: number[];
+}
+
+function isRefinedQuestionPayload(value: unknown): value is RefinedQuestionPayload {
+    if (!value || typeof value !== 'object') return false;
+    const candidate = value as { text?: unknown; source_indices?: unknown };
+    return typeof candidate.text === 'string' &&
+        Array.isArray(candidate.source_indices) &&
+        candidate.source_indices.every((index) => typeof index === 'number');
+}
+
+function resolveMappingMode(value: string | undefined): AiMappingMode {
+    return value === 'local' || value === 'remote' ? value : 'auto';
+}
+
 export class AIService {
     private openai: OpenAI;
     private model: string;
+    private mappingMode: AiMappingMode;
+    private providerStatus: ProviderStatus = 'unknown';
+    private providerFailureReason: string | null = null;
 
-    constructor(apiKey: string, model: string = 'gpt-4o') {
-        this.openai = new OpenAI({ apiKey: apiKey || 'mock-key' }); // Allow mock key
+    constructor(apiKey: string, model: string = 'gpt-4o', mappingMode?: AiMappingMode) {
+        this.openai = new OpenAI({ apiKey: apiKey || 'mock-key' });
         this.model = model;
+        this.mappingMode = mappingMode ?? resolveMappingMode(process.env.AI_MAPPING_MODE);
+    }
+
+    public getMappingStatus() {
+        return {
+            mode: this.mappingMode,
+            providerStatus: this.providerStatus,
+            providerFailureReason: this.providerFailureReason
+        };
+    }
+
+    private shouldUseLocalMapping(): boolean {
+        return this.mappingMode === 'local' ||
+            this.providerStatus === 'unavailable' ||
+            this.openai.apiKey === 'mock-key' ||
+            this.openai.apiKey.startsWith('sk-mock');
+    }
+
+    private markProviderUnavailable(error: unknown): void {
+        if (this.providerStatus === 'unavailable') return;
+
+        this.providerStatus = 'unavailable';
+        this.providerFailureReason = error instanceof Error ? error.message : String(error);
+        logger.warn(`AI provider unavailable; using local mapping for the remaining questions in this request. ${this.providerFailureReason}`);
     }
 
     public async validateQuestion(
         question: AssessmentQuestion,
         uocs: Unit[]
     ): Promise<ValidationResult> {
-        // Use deterministic local mapping when no API key has been configured.
-        if (this.openai.apiKey === 'mock-key' || this.openai.apiKey.startsWith('sk-mock')) {
+        if (this.shouldUseLocalMapping()) {
             return this.localValidateQuestion(question, uocs);
         }
 
@@ -46,9 +92,10 @@ export class AIService {
                 response_format: { type: "json_object" }
             });
 
-            const content = completion.choices[0].message.content;
-            if (!content) throw new Error("Empty response from AI");
+            const content = completion.choices?.[0]?.message?.content;
+            if (!content) throw new Error('Empty response from AI');
 
+            this.providerStatus = 'available';
             const result = JSON.parse(content);
             return {
                 questionId: question.id,
@@ -62,7 +109,7 @@ export class AIService {
             };
 
         } catch (error) {
-            logger.warn(`AI validation failed for Q${question.id}; using local fallback instead.`, error);
+            this.markProviderUnavailable(error);
             return this.localValidateQuestion(question, uocs);
         }
     }
@@ -297,16 +344,19 @@ ${JSON.stringify(inputList, null, 2)}
                 temperature: 0 // Deterministic
             });
 
-            const content = completion.choices[0].message.content;
+            const content = completion.choices?.[0]?.message?.content;
             if (!content) return rawQuestions;
 
-            const result = JSON.parse(content);
-            const cleanedQuestions = result.questions;
+            const result: unknown = JSON.parse(content);
+            const cleanedQuestions = result && typeof result === 'object' && Array.isArray((result as { questions?: unknown }).questions)
+                ? (result as { questions: unknown[] }).questions.filter(isRefinedQuestionPayload)
+                : [];
+            if (cleanedQuestions.length === 0) return rawQuestions;
 
             console.log(`   ✨ Refinement complete. Reduced ${rawQuestions.length} blocks to ${cleanedQuestions.length} questions.`);
 
-            const finalQuestions: AssessmentQuestion[] = cleanedQuestions.map((q: any) => {
-                const indices = q.source_indices as number[];
+            const finalQuestions = cleanedQuestions.map((q): AssessmentQuestion | null => {
+                const indices = q.source_indices;
                 if (!indices || indices.length === 0) return null;
 
                 const primaryIndex = indices[0];
@@ -325,7 +375,7 @@ ${JSON.stringify(inputList, null, 2)}
                     text: q.text,
                     images: allImages.length > 0 ? allImages : undefined
                 };
-            }).filter((q: AssessmentQuestion | null) => q !== null);
+            }).filter((q): q is AssessmentQuestion => q !== null);
 
             return finalQuestions;
 

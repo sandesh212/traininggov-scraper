@@ -1,8 +1,10 @@
-const pdf = require('pdf-parse');
+import { PDFParse } from 'pdf-parse';
 import { AssessmentQuestion } from '../models/types';
 
 export async function extractQuestionsFromPdf(buffer: Buffer): Promise<AssessmentQuestion[]> {
-    const data = await pdf(buffer);
+    const parser = new PDFParse({ data: buffer });
+    const data = await parser.getText();
+    await parser.destroy();
     const text = data.text;
 
     // Split text into lines

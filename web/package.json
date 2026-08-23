@@ -9,7 +9,9 @@
     "lint": "eslint app src",
     "test:integration": "node scripts/integration-test.cjs",
     "test:fallback": "tsx scripts/fallback-policy-test.ts",
-    "benchmark:saved-workflow": "tsx scripts/benchmark-saved-workflow.ts"
+    "benchmark:saved-workflow": "tsx scripts/benchmark-saved-workflow.ts",
+    "test:circuit-breaker": "tsx scripts/provider-circuit-breaker-test.ts",
+    "benchmark:provider-concurrency": "tsx scripts/benchmark-provider-concurrency.ts"
   },
   "dependencies": {
     "@types/adm-zip": "^0.5.7",

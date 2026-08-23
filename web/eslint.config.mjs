@@ -15,9 +15,16 @@ const eslintConfig = defineConfig([
   ]),
   {
     rules: {
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-require-imports": "warn",
-      "react/no-unescaped-entities": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-require-imports": "error",
+      "react/no-unescaped-entities": "error",
+    },
+  },
+  {
+    files: ["src/components/DetailedReportView.tsx", "src/components/UnifiedReportView.tsx"],
+    rules: {
+      // These views render generated data-URI previews from uploaded DOCX content; Next image optimization is not applicable.
+      "@next/next/no-img-element": "off",
     },
   },
 ]);

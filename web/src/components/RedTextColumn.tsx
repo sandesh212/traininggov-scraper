@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, FileText, ChevronDown, ChevronRight } from 'lucide-react';
+import type { QuestionResult } from '../types';
 
 interface RedTextColumnProps {
     segments: string[];
-    results: any[]; // Analysis results to match answers with questions
+    results: Array<Pick<QuestionResult, 'questionId' | 'questionText' | 'questionSection'>>;
 }
 
 interface GroupedAnswer {
@@ -28,7 +29,7 @@ export function RedTextColumn({ segments, results }: RedTextColumnProps) {
             <div className="flex flex-col items-center justify-center py-16 text-center">
                 <AlertCircle size={48} className="text-gray-300 mb-4" />
                 <h2 className="text-xl font-bold text-gray-700 mb-2">No Red Text Found</h2>
-                <p className="text-gray-500">We couldn't extract any text with red color formatting from the document.</p>
+                <p className="text-gray-500">We couldn&apos;t extract any text with red color formatting from the document.</p>
             </div>
         );
     }

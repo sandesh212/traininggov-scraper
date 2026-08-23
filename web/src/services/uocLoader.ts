@@ -66,10 +66,17 @@ export class UocLoader {
         return null;
     }
 
-    public async addUnit(unit: Unit): Promise<void> {
-        // Update memory
+    public async addUnit(unit: Unit, persist: boolean = true): Promise<void> {
+        // Update memory for the current request or management session.
         this.uocMap.set(unit.code, unit);
-        // Save all to keep file clean and unique
+
+        // Persist only when the caller explicitly requests a database update.
+        if (persist) {
+            await this.save();
+        }
+    }
+
+    public async persist(): Promise<void> {
         await this.save();
     }
 

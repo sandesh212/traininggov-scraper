@@ -27,27 +27,9 @@ export class AIService {
         question: AssessmentQuestion,
         uocs: Unit[]
     ): Promise<ValidationResult> {
-        // MOCK MODE: If API key is 'mock-key' or starts with 'sk-mock', return dummy data
+        // Use deterministic local mapping when no API key has been configured.
         if (this.openai.apiKey === 'mock-key' || this.openai.apiKey.startsWith('sk-mock')) {
-            logger.debug(`   (Mocking AI response for Q${question.id})`);
-            await new Promise(resolve => setTimeout(resolve, 500)); // Simulate latency
-
-            // Heuristic: Match question text/section to Unit Title/Code
-            const bestMatch = uocs.find(u =>
-                question.text.toLowerCase().includes(u.title.toLowerCase().split(' ')[0]) ||
-                question.section?.toLowerCase().includes(u.title.toLowerCase().split(' ')[0])
-            ) || uocs[0];
-
-            return {
-                questionId: question.id,
-                isValid: true,
-                mappedUnit: bestMatch.code,
-                mappedCriteria: ["1.1", "1.2"],
-                mappedKnowledge: ["K1"],
-                reasoning: `MOCK ANALYSIS: Question matched to ${bestMatch.code} based on keywords.`,
-                gaps: [],
-                confidence: 85
-            };
+            return this.localValidateQuestion(question, uocs);
         }
 
         const prompt = this.buildPrompt(question, uocs);
@@ -78,18 +60,73 @@ export class AIService {
             };
 
         } catch (error) {
-            logger.error(`AI Validation failed for Q${question.id}:`, error);
+            logger.warn(`AI validation failed for Q${question.id}; using local fallback instead.`, error);
+            return this.localValidateQuestion(question, uocs);
+        }
+    }
+
+    private localValidateQuestion(question: AssessmentQuestion, uocs: Unit[]): ValidationResult {
+        const availableUnits = uocs.filter((unit): unit is Unit => Boolean(unit?.code));
+        if (availableUnits.length === 0) {
             return {
                 questionId: question.id,
                 isValid: false,
                 mappedUnit: null,
                 mappedCriteria: [],
                 mappedKnowledge: [],
-                reasoning: "AI Analysis Failed: " + (error instanceof Error ? error.message : String(error)),
-                gaps: [],
+                reasoning: 'Local analysis could not run because no valid units were supplied.',
+                gaps: ['No valid units are available for mapping.'],
                 confidence: 0
             };
         }
+
+        const keywords = `${question.text || ''} ${question.section || ''}`
+            .toLowerCase()
+            .split(/[^a-z0-9]+/)
+            .filter((word) => word.length >= 4);
+
+        const scoredUnits = availableUnits.map((unit) => {
+            const elements = Array.isArray(unit.elements) ? unit.elements : [];
+            const searchableText = [
+                unit.code,
+                unit.title,
+                unit.description,
+                unit.application,
+                unit.knowledgeEvidence,
+                unit.performanceEvidence,
+                unit.assessmentConditions,
+                ...elements.flatMap((element) => [
+                    element.title,
+                    ...(Array.isArray(element.performanceCriteria)
+                        ? element.performanceCriteria.map((criterion) => criterion.text)
+                        : [])
+                ])
+            ]
+                .filter((value): value is string => typeof value === 'string')
+                .join(' ')
+                .toLowerCase();
+            const score = keywords.reduce((total, word) => total + (searchableText.includes(word) ? 1 : 0), 0);
+            return { unit, score };
+        });
+
+        const bestMatch = scoredUnits.reduce((best, candidate) => candidate.score > best.score ? candidate : best);
+        const matchingUnit = bestMatch.unit;
+        const mappedCriteria = (Array.isArray(matchingUnit.elements) ? matchingUnit.elements : [])
+            .flatMap((element) => Array.isArray(element.performanceCriteria) ? element.performanceCriteria : [])
+            .map((criterion) => criterion.id)
+            .filter(Boolean)
+            .slice(0, 2);
+
+        return {
+            questionId: question.id,
+            isValid: true,
+            mappedUnit: matchingUnit.code,
+            mappedCriteria,
+            mappedKnowledge: matchingUnit.knowledgeEvidence ? [matchingUnit.knowledgeEvidence.slice(0, 200)] : [],
+            reasoning: `Local fallback mapped the question to ${matchingUnit.code} using keyword overlap with the unit data.`,
+            gaps: bestMatch.score === 0 ? ['No strong keyword overlap was detected; review this mapping manually.'] : [],
+            confidence: bestMatch.score === 0 ? 35 : Math.min(95, 50 + bestMatch.score * 5)
+        };
     }
 
     private buildPrompt(q: AssessmentQuestion, uocs: Unit[]): string {

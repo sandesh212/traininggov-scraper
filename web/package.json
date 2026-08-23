@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint app src"
   },
   "dependencies": {
     "@types/adm-zip": "^0.5.7",

@@ -15,9 +15,9 @@ export async function extractQuestionsFromDocx(filePath: string): Promise<Assess
   try {
     // 1. Convert DOCX to HTML with embedded images
     const { value: html } = await mammoth.convertToHtml({ path: filePath }, {
-      convertImage: mammoth.images.inline((element) => {
-        return element.read("base64").then((imageBuffer: Buffer) => {
-          return { src: `data:${element.contentType};base64,${imageBuffer.toString('base64')}` };
+      convertImage: mammoth.images.imgElement((element) => {
+        return element.read("base64").then((base64) => {
+          return { src: `data:${element.contentType};base64,${base64}` };
         });
       })
     });

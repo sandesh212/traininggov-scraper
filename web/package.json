@@ -11,7 +11,8 @@
     "test:fallback": "tsx scripts/fallback-policy-test.ts",
     "benchmark:saved-workflow": "tsx scripts/benchmark-saved-workflow.ts",
     "test:circuit-breaker": "tsx scripts/provider-circuit-breaker-test.ts",
-    "benchmark:provider-concurrency": "tsx scripts/benchmark-provider-concurrency.ts"
+    "benchmark:provider-concurrency": "tsx scripts/benchmark-provider-concurrency.ts",
+    "monitor:api-latency": "node scripts/monitor-api-latency.cjs"
   },
   "dependencies": {
     "@types/adm-zip": "^0.5.7",

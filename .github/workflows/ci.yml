@@ -1,31 +1,76 @@
-name: CI
+name: Web Application CI
 
 on:
-  push:
-    branches: ["**"]
   pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
-  build-test-lint:
+  verify-web-application:
+    name: Build and integration verification
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+
     steps:
-      - name: Checkout repository
+      - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: npm
+          cache-dependency-path: web/package-lock.json
 
-      - name: Install dependencies
+      - name: Install locked dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build --if-present
+      - name: Run lint policy
+        run: npm run lint
 
-      - name: Run tests
-        run: npm test --silent
+      - name: Run fallback policy test
+        run: npm run test:fallback
 
-      - name: Lint markdown
-        run: npm run lint:md --silent
+      - name: Run provider circuit-breaker test
+        run: npm run test:circuit-breaker
+
+      - name: Build production application
+        run: npm run build
+
+      - name: Start production application
+        run: |
+          npm run start -- -p 3000 > /tmp/traininggov-next.log 2>&1 &
+          echo $! > /tmp/traininggov-next.pid
+
+      - name: Wait for application readiness
+        run: |
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:3000/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/traininggov-next.log
+          exit 1
+
+      - name: Run complete eight-workflow integration suite
+        env:
+          BASE_URL: http://127.0.0.1:3000
+          AI_MAPPING_MODE: local
+        run: npm run test:integration
+
+      - name: Stop production application
+        if: always()
+        run: |
+          if [ -f /tmp/traininggov-next.pid ]; then kill "$(cat /tmp/traininggov-next.pid)" || true; fi
+
+      - name: Upload server log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-server-log
+          path: /tmp/traininggov-next.log
+          if-no-files-found: ignore
